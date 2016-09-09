@@ -1,2 +1,7 @@
+# Files in folders downloaded with npm install
 node_modules/
 typings/
+
+# Files generated with npm run tsc
+app/*.js
+app/*.map
