@@ -3,6 +3,8 @@ Angular2 Universal can pre- render html server side. See also: https://github.co
 
 For simplicity in this demo it's all done client side. The generated html is then displayed as alert.
 
+![alt tag](https://github.com/WorkplaceX/Research/blob/master/Isomorphic/doc/ScreenShot.png)
+
 #Prerequiste
 nodejs.org (Download https://nodejs.org/en/download/)
 
