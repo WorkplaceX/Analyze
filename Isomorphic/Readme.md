@@ -10,7 +10,7 @@ nodejs.org (Download https://nodejs.org/en/download/)
 
 npmjs.com (Included in nodejs.org)
 #Install
-Command Prompt: 
+Run the following commands from command prompt: 
 
 **npm install**
 
