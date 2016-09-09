@@ -23,3 +23,5 @@ Runs type script compiler. Generates *.js and *.map files into folder app/
 **npm run webpack**
 
 Runs webpack and generates files to folder dist/
+
+![alt tag](https://github.com/WorkplaceX/Research/blob/master/Isomorphic/doc/ScreenShotWebPack.png)
