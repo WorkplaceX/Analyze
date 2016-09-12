@@ -16,13 +16,17 @@ namespace WebApplication
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+
+            app.UseMvc();
+
+            app.UseStaticFiles();
 
             if (env.IsDevelopment())
             {
@@ -31,7 +35,7 @@ namespace WebApplication
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                await context.Response.WriteAsync("<html><head></head><body>Hello World! Go to: <a href='Debug.html'>Debug</a></body></html>");
             });
         }
     }
