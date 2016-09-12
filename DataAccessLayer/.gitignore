@@ -1,5 +1,9 @@
 .vs/
 *.user
 project.lock.json
+
 WebApplication/bin/
 WebApplication/obj/
+
+ContinuousIntegration/bin/
+ContinuousIntegration/obj/
