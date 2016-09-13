@@ -1,5 +1,6 @@
 ﻿SELECT
 	NEWID() AS IdView, -- For EF
+	TableList.SchemaName,
 	TableList.TableName,
 	ColumnList.name AS FieldName,
 	ColumnList.column_id AS FieldNameOrderBy,
@@ -41,9 +42,9 @@ FROM
 
 JOIN
 	(
-		SELECT OBJECT_SCHEMA_NAME(object_id) + '.' + name as TableName, object_id, type FROM sys.tables
+		SELECT OBJECT_SCHEMA_NAME(object_id) AS SchemaName, name as TableName, object_id, type FROM sys.tables
 		UNION ALL
-		SELECT OBJECT_SCHEMA_NAME(object_id) + '.' + name as TableName, object_id, type FROM sys.views
+		SELECT OBJECT_SCHEMA_NAME(object_id) AS SchemaName, name as TableName, object_id, type FROM sys.views
 	) TableList ON (TableList.object_id = ColumnList.object_id)
 
 LEFT JOIN
@@ -51,6 +52,3 @@ LEFT JOIN
 
 ORDER BY
 	TableList.TableName, ColumnList.column_id
-
-
- 

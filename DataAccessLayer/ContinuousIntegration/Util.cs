@@ -12,5 +12,10 @@ namespace ContinuousIntegration
         {
             return File.ReadAllText(fileName);
         }
+
+        public static void FileSave(string fileName, string text)
+        {
+            File.WriteAllText(fileName, text);
+        }
     }
 }
