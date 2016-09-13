@@ -7,3 +7,9 @@ Access database tables with dynamic LINQ. Read from SQL views.
 * Visual Studio 2015 Update 3 
 * Microsoft .NET Core Tools (Preview 2)
 * SQL Server 2014 (Version 12.0.2569.0)
+
+#ConnectionManager
+All file name and ConnectionString is centraly managed by class ConnectionManager.
+
+#Build
+Class Build queries database schema and generates Database.cs file.
