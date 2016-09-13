@@ -1,5 +1,5 @@
 ﻿SELECT
-	NEWGUID() AS IdView, -- For EF
+	NEWID() AS IdView, -- For EF
 	TableList.TableName,
 	ColumnList.name AS FieldName,
 	ColumnList.column_id AS FieldNameOrderBy,
@@ -12,7 +12,7 @@
 		SELECT * 
 		FROM sys.index_columns PkFieldName 
 		WHERE PkFieldName.object_id = Pk.object_id AND PkFieldName.index_id = Pk.index_id AND PkFieldName.column_id = ColumnList.column_id)
-		THEN 1 ELSE 0 END
+		THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END
 	) AS IsPrimaryKey,
 	/* IsForeignKey */
 	(

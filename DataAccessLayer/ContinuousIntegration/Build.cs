@@ -8,8 +8,9 @@
     {
         public static void Run()
         {
-            DbContextBuild dbContext = new ContinuousIntegration.DbContextBuild();
-            foreach (var schema in dbContext.Schema)
+            string sql = Util.FileLoad(ConnectionManager.SchemaFileName);
+            DbContextBuild dbContext = new DbContextBuild();
+            foreach (var schema in dbContext.Schema.FromSql(sql))
             {
 
             }
@@ -39,7 +40,7 @@
 
         public bool IsView { get; set; }
 
-        public int SqlType { get; set; }
+        public byte SqlType { get; set; }
 
         public bool IsNullable { get; set; }
 

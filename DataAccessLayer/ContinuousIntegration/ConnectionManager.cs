@@ -24,7 +24,7 @@ namespace ContinuousIntegration
             }
         }
 
-        public static string SqlSchemaFileName
+        public static string SchemaFileName
         {
             get
             {
