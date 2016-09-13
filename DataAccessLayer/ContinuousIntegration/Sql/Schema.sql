@@ -1,4 +1,5 @@
 ﻿SELECT
+	NEWGUID() AS IdView, -- For EF
 	TableList.TableName,
 	ColumnList.name AS FieldName,
 	ColumnList.column_id AS FieldNameOrderBy,

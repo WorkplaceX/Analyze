@@ -1,14 +1,16 @@
 ﻿{
   "version": "1.0.0-*",
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "copyToOutput": { "include": ["Sql/"] }
   },
 
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0"
-    }
+    },
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0"
   },
 
   "frameworks": {
