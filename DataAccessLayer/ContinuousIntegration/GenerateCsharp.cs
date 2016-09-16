@@ -5,6 +5,7 @@
     using System.Linq;
     using System.ComponentModel.DataAnnotations;
     using System.Text;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Generate csharp code for database tables.
@@ -65,6 +66,8 @@
         private static void FieldName(Schema[] dataList, string schemaName, string tableName, StringBuilder result)
         {
             Schema[] fieldList = dataList.Where(item => item.SchemaName == schemaName && item.TableName == tableName).ToArray();
+            List<string> nameExceptList = new List<string>();
+            nameExceptList.Add(tableName); // Csharp propery can not have same name like class.
             bool isFirst = true;
             foreach (var field in fieldList)
             {
@@ -76,8 +79,19 @@
                 {
                     result.AppendLine();
                 }
-                result.AppendLine($"        public string {field.FieldName} {{ get; set; }}");
+                string nameCsharp = Framework.Util.NameCsharp(field.FieldName, nameExceptList);
+                result.AppendLine($"        public string {nameCsharp} {{ get; set; }}");
+                nameExceptList.Add(field.FieldName);
             }
+        }
+
+        private static void Meta(Schema[] dataList, StringBuilder result)
+        {
+            result.AppendLine();
+            result.AppendLine("namespace Database");
+            result.AppendLine("{");
+            result.AppendLine("}");
+
         }
 
         /// <summary>
@@ -90,6 +104,7 @@
             StringBuilder result = new StringBuilder();
             Schema[] dataList = dbContext.Schema.FromSql(sql).OrderBy(item => item.SchemaName).ThenBy(item => item.TableName).ToArray();
             SchemaName(dataList, result);
+            Meta(dataList, result);
             string csharp = result.ToString();
             Util.FileSave(ConnectionManager.DatabaseFileName, csharp);
         }

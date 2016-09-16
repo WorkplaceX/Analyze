@@ -7,6 +7,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebApplication", "WebApplic
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ContinuousIntegration", "ContinuousIntegration\ContinuousIntegration.xproj", "{224489BE-E53C-40F3-BCB0-E2AC90E625F7}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Framework", "Framework\Framework.xproj", "{34463139-CAE0-42DD-ADB7-18FED75E0898}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Test", "Test\Test.xproj", "{CD4F0F52-CF63-46B8-A3F6-6FFD57479998}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{224489BE-E53C-40F3-BCB0-E2AC90E625F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{224489BE-E53C-40F3-BCB0-E2AC90E625F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{224489BE-E53C-40F3-BCB0-E2AC90E625F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34463139-CAE0-42DD-ADB7-18FED75E0898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34463139-CAE0-42DD-ADB7-18FED75E0898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34463139-CAE0-42DD-ADB7-18FED75E0898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34463139-CAE0-42DD-ADB7-18FED75E0898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD4F0F52-CF63-46B8-A3F6-6FFD57479998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD4F0F52-CF63-46B8-A3F6-6FFD57479998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD4F0F52-CF63-46B8-A3F6-6FFD57479998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD4F0F52-CF63-46B8-A3F6-6FFD57479998}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

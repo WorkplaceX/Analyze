@@ -7,3 +7,9 @@ WebApplication/obj/
 
 ContinuousIntegration/bin/
 ContinuousIntegration/obj/
+
+Framework/bin/
+Framework/obj/
+
+Test/bin/
+Test/obj/

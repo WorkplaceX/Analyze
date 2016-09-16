@@ -1,4 +1,4 @@
-﻿namespace Database.dbo
+namespace Database.dbo
 {
     public class Data
     {
@@ -130,7 +130,7 @@
     {
         public string Id { get; set; }
 
-        public string Version_ { get; set; }
+        public string Version2 { get; set; }
     }
 }
 
@@ -146,4 +146,8 @@ namespace Database.lp
 
         public string LogId { get; set; }
     }
+}
+
+namespace Database
+{
 }
