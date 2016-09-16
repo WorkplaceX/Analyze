@@ -8,7 +8,7 @@
         {
             Console.WriteLine("Run method GenerateCSharp.Run(); ...");
             GenerateCSharp.Run();
-            Console.WriteLine($"File generated successfully! ({ ConnectionManager.DatabaseFileName})");
+            Console.WriteLine($"File generated successfully! ({ ConnectionManager.DatabaseLockFileName})");
             Console.ReadLine();
         }
     }

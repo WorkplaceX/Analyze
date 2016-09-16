@@ -32,11 +32,11 @@ namespace ContinuousIntegration
             }
         }
 
-        public static string DatabaseFileName
+        public static string DatabaseLockFileName
         {
             get
             {
-                return new Uri(new Uri(FolderName), @"..\..\..\..\WebApplication\Database.cs").LocalPath;
+                return new Uri(new Uri(FolderName), @"..\..\..\..\WebApplication\Database.lock.cs").LocalPath;
             }
         }
     }

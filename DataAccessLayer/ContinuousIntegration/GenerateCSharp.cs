@@ -33,6 +33,7 @@
                 Framework.Util.NameCSharp("namespace Database.{0}", schemaName, nameExceptList, result);
                 result.AppendLine("{");
                 result.AppendLine("    using System;");
+                result.AppendLine("    using Framework;");
                 result.AppendLine();
                 TableName(dataList, schemaName, result);
                 result.AppendLine("}");
@@ -62,6 +63,7 @@
                 FieldName(dataList, schemaName, tableName, result);
                 result.AppendLine("    }");
             }
+            Row(tableNameList, result);
         }
 
         /// <summary>
@@ -88,6 +90,19 @@
             }
         }
 
+        /// <summary>
+        /// Generate for each table a row CSharp class.
+        /// </summary>
+        private static void Row(string[] tableNameList, StringBuilder result) // TODO Read from Meta
+        {
+            List<string> nameExceptList = new List<string>();
+            foreach (string tableName in tableNameList)
+            {
+                result.AppendLine();
+                Framework.Util.NameCSharp("    public partial class {0}_ : Row<{0}> {{ }}", tableName, nameExceptList, result);
+            }
+        }
+
         private static void Meta(Schema[] dataList, StringBuilder result)
         {
             result.AppendLine();
@@ -109,7 +124,7 @@
             SchemaName(dataList, result);
             Meta(dataList, result);
             string cSharp = result.ToString();
-            Util.FileSave(ConnectionManager.DatabaseFileName, cSharp);
+            Util.FileSave(ConnectionManager.DatabaseLockFileName, cSharp);
         }
     }
 
@@ -149,5 +164,30 @@
         public bool IsNullable { get; set; }
 
         public bool IsPrimaryKey { get; set; }
+    }
+
+    public class Meta
+    {
+        public void Add(string schemaNameSql, string schemaNameCSharp, string tableNameSql, string tableNameCSharp, string fieldNameSql, string fieldNameCSharp)
+        {
+            this.SchemaNameList.Add(schemaNameSql, schemaNameCSharp);
+            this.TableNameList.Add(tableNameSql, tableNameCSharp);
+            this.FieldNameList.Add(fieldNameSql, fieldNameCSharp);
+        }
+
+        /// <summary>
+        /// (SchemaNameSql, SchemaNameCSharp)
+        /// </summary>
+        public readonly Dictionary<string, string> SchemaNameList = new Dictionary<string, string>();
+
+        /// <summary>
+        /// (SchemaNameSql, SchemaNameCSharp)
+        /// </summary>
+        public readonly Dictionary<string, string> TableNameList = new Dictionary<string, string>();
+
+        /// <summary>
+        /// (SchemaNameSql, SchemaNameCSharp)
+        /// </summary>
+        public readonly Dictionary<string, string> FieldNameList = new Dictionary<string, string>();
     }
 }
