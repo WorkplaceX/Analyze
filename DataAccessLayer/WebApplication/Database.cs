@@ -11,6 +11,17 @@ namespace Database.dbo
         public string LogId { get; set; }
     }
 
+    public class Data2
+    {
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Value { get; set; }
+
+        public string LogId { get; set; }
+    }
+
     public class FrameworkSession
     {
         public string Id { get; set; }

@@ -8,16 +8,17 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Generate csharp code for database tables.
+    /// Generate CSharp code for database tables.
     /// </summary>
-    public static class GenerateCsharp
+    public static class GenerateCSharp
     {
         /// <summary>
-        /// Generate csharp code for each database schema.
+        /// Generate CSharp code for each database schema.
         /// </summary>
         private static void SchemaName(Schema[] dataList, StringBuilder result)
         {
             string[] schemaNameList = dataList.GroupBy(item => item.SchemaName, (key, group) => key).ToArray();
+            List<string> nameExceptList = new List<string>();
             bool isFirst = true;
             foreach (string schemaName in schemaNameList)
             {
@@ -29,7 +30,7 @@
                 {
                     result.AppendLine();
                 }
-                result.AppendLine($"namespace Database.{schemaName}");
+                Framework.Util.NameCSharp("namespace Database.{0}", schemaName, nameExceptList, result);
                 result.AppendLine("{");
                 TableName(dataList, schemaName, result);
                 result.AppendLine("}");
@@ -37,11 +38,12 @@
         }
 
         /// <summary>
-        /// Generate csharp code for each database table.
+        /// Generate CSharp code for each database table.
         /// </summary>
         private static void TableName(Schema[] dataList, string schemaName, StringBuilder result)
         {
             string[] tableNameList = dataList.Where(item => item.SchemaName == schemaName).GroupBy(item => item.TableName, (key, group) => key).ToArray();
+            List<string> nameExceptList = new List<string>();
             bool isFirst = true;
             foreach (string tableName in tableNameList)
             {
@@ -53,7 +55,7 @@
                 {
                     result.AppendLine();
                 }
-                result.AppendLine($"    public class {tableName}");
+                Framework.Util.NameCSharp("    public class {0}", tableName, nameExceptList, result);
                 result.AppendLine("    {");
                 FieldName(dataList, schemaName, tableName, result);
                 result.AppendLine("    }");
@@ -61,13 +63,13 @@
         }
 
         /// <summary>
-        /// Generate csharp code for each database field.
+        /// Generate CSharp code for each database field.
         /// </summary>
         private static void FieldName(Schema[] dataList, string schemaName, string tableName, StringBuilder result)
         {
             Schema[] fieldList = dataList.Where(item => item.SchemaName == schemaName && item.TableName == tableName).ToArray();
             List<string> nameExceptList = new List<string>();
-            nameExceptList.Add(tableName); // Csharp propery can not have same name like class.
+            nameExceptList.Add(tableName); // CSharp propery can not have same name like class.
             bool isFirst = true;
             foreach (var field in fieldList)
             {
@@ -79,9 +81,7 @@
                 {
                     result.AppendLine();
                 }
-                string nameCsharp = Framework.Util.NameCsharp(field.FieldName, nameExceptList);
-                result.AppendLine($"        public string {nameCsharp} {{ get; set; }}");
-                nameExceptList.Add(field.FieldName);
+                Framework.Util.NameCSharp("        public string {0} {{ get; set; }}", field.FieldName, nameExceptList, result);
             }
         }
 
@@ -95,7 +95,7 @@
         }
 
         /// <summary>
-        /// Script to generate csharp code.
+        /// Script to generate CSharp code.
         /// </summary>
         public static void Run()
         {
@@ -105,8 +105,8 @@
             Schema[] dataList = dbContext.Schema.FromSql(sql).OrderBy(item => item.SchemaName).ThenBy(item => item.TableName).ToArray();
             SchemaName(dataList, result);
             Meta(dataList, result);
-            string csharp = result.ToString();
-            Util.FileSave(ConnectionManager.DatabaseFileName, csharp);
+            string cSharp = result.ToString();
+            Util.FileSave(ConnectionManager.DatabaseFileName, cSharp);
         }
     }
 

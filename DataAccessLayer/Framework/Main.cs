@@ -10,7 +10,7 @@
         /// <summary>
         /// Filter out special characters. Allow only characters and numbers.
         /// </summary>
-        private static string NameCsharp(string name)
+        private static string NameCSharp(string name)
         {
             StringBuilder result = new StringBuilder();
             foreach (char item in name)
@@ -28,15 +28,29 @@
             return result.ToString();
         }
 
-        public static string NameCsharp(string name, List<string> nameExceptList)
+        /// <summary>
+        /// (Name, NameCSharp). For example ("World*", "WorldNew")
+        /// </summary>
+        public static Dictionary<string, string> NameCSharpCustomizeList = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Return CSharp code compliant name.
+        /// </summary>
+        private static string NameCSharp(string name, List<string> nameExceptList)
         {
+            string nameCSharpCustomize;
+            if (NameCSharpCustomizeList.TryGetValue(name, out nameCSharpCustomize))
+            {
+                return nameCSharpCustomize;
+            }
+            //
             nameExceptList = new List<string>(nameExceptList); // Do not modify list passed as parameter.
             for (int i = 0; i < nameExceptList.Count; i++)
             {
-                nameExceptList[i] = NameCsharp(nameExceptList[i]).ToUpper();
+                nameExceptList[i] = NameCSharp(nameExceptList[i]).ToUpper();
             }
             //
-            name = NameCsharp(name);
+            name = NameCSharp(name);
             string result = name;
             int count = 1;
             while (nameExceptList.Contains(result.ToUpper()))
@@ -45,6 +59,20 @@
                 result = name + count;
             }
             return result;
+        }
+
+        /// <summary>
+        /// Generate CSharp compliant line of code.
+        /// </summary>
+        /// <param name="cSharp">For example: "public class {0}"</param>
+        /// <param name="name">For example: "My_Class"</param>
+        /// <param name="nameExceptList">Name is automatically added.</param>
+        /// <param name="result">Returns for example: "public class MyClass"</param>
+        public static void NameCSharp(string cSharp, string name, List<string> nameExceptList, StringBuilder result)
+        {
+            string nameCSharp = Util.NameCSharp(name, nameExceptList);
+            result.AppendLine(string.Format(cSharp, nameCSharp));
+            nameExceptList.Add(name);
         }
     }
 }
