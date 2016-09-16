@@ -1,39 +1,41 @@
 namespace Database.dbo
 {
+    using System;
+
     public class Data
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string Name { get; set; }
+        public Guid Name { get; set; }
 
-        public string Value { get; set; }
+        public byte[] Value { get; set; }
 
-        public string LogId { get; set; }
+        public int LogId { get; set; }
     }
 
     public class Data2
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string Name { get; set; }
+        public Guid Name { get; set; }
 
-        public string Value { get; set; }
+        public byte[] Value { get; set; }
 
-        public string LogId { get; set; }
+        public int LogId { get; set; }
     }
 
     public class FrameworkSession
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string Name { get; set; }
+        public Guid Name { get; set; }
 
-        public string UserId { get; set; }
+        public int? UserId { get; set; }
     }
 
     public class FrameworkUser
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Email { get; set; }
 
@@ -42,104 +44,104 @@ namespace Database.dbo
 
     public class Log
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string Time { get; set; }
+        public DateTime? Time { get; set; }
 
         public string Ip { get; set; }
 
-        public string ExternalName { get; set; }
+        public Guid? ExternalName { get; set; }
 
-        public string SessionName { get; set; }
+        public Guid? SessionName { get; set; }
     }
 
     public class LoginSession
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string LoginUserId { get; set; }
+        public int? LoginUserId { get; set; }
 
-        public string Token { get; set; }
+        public Guid? Token { get; set; }
 
-        public string DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
     }
 
     public class LoginUser
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Email { get; set; }
 
         public string Password { get; set; }
 
-        public string IsAdmin { get; set; }
+        public bool? IsAdmin { get; set; }
 
-        public string IsReseller { get; set; }
+        public bool? IsReseller { get; set; }
 
-        public string ResellerId { get; set; }
+        public int? ResellerId { get; set; }
 
         public string Company { get; set; }
     }
 
     public class Product
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Title { get; set; }
 
-        public string Price { get; set; }
+        public double? Price { get; set; }
 
-        public string IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
-        public string IsDelete { get; set; }
+        public bool? IsDelete { get; set; }
 
         public string Image { get; set; }
     }
 
     public class TableLoginSession
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string LoginUserId { get; set; }
+        public int? LoginUserId { get; set; }
 
-        public string Token { get; set; }
+        public Guid? Token { get; set; }
 
-        public string DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
     }
 
     public class TableLoginUser
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Email { get; set; }
 
         public string Password { get; set; }
 
-        public string IsAdmin { get; set; }
+        public bool? IsAdmin { get; set; }
 
-        public string IsReseller { get; set; }
+        public bool? IsReseller { get; set; }
 
-        public string ResellerId { get; set; }
+        public int? ResellerId { get; set; }
 
         public string Company { get; set; }
     }
 
     public class TableProduct
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Title { get; set; }
 
-        public string Price { get; set; }
+        public double? Price { get; set; }
 
-        public string IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
-        public string IsDelete { get; set; }
+        public bool? IsDelete { get; set; }
     }
 
     public class Version
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Version2 { get; set; }
     }
@@ -147,15 +149,17 @@ namespace Database.dbo
 
 namespace Database.lp
 {
+    using System;
+
     public class Data
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
-        public string Name { get; set; }
+        public Guid Name { get; set; }
 
-        public string Value { get; set; }
+        public byte[] Value { get; set; }
 
-        public string LogId { get; set; }
+        public int LogId { get; set; }
     }
 }
 
