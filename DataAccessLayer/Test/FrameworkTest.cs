@@ -85,14 +85,5 @@
             string nameCSharp = Framework.Util.NameCSharp("WorLD", nameExceptList);
             Util.Assert(nameCSharp == "WorLD2");
         }
-
-        public void Name10()
-        {
-            List<string> nameExceptList = new List<string>();
-            nameExceptList.Add("World");
-            Framework.Util.NameCSharpCustomizeList.Add("WorLD", "WorldNew");
-            string nameCSharp = Framework.Util.NameCSharp("WorLD", nameExceptList);
-            Util.Assert(nameCSharp == "WorldNew");
-        }
     }
 }

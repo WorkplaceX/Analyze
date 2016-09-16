@@ -32,6 +32,8 @@
                 }
                 Framework.Util.NameCSharp("namespace Database.{0}", schemaName, nameExceptList, result);
                 result.AppendLine("{");
+                result.AppendLine("    using System;");
+                result.AppendLine();
                 TableName(dataList, schemaName, result);
                 result.AppendLine("}");
             }
@@ -81,7 +83,8 @@
                 {
                     result.AppendLine();
                 }
-                Framework.Util.NameCSharp("        public string {0} {{ get; set; }}", field.FieldName, nameExceptList, result);
+                string typeCSharp = Framework.Util.SqlTypeToCSharp(field.SqlType, field.IsNullable);
+                Framework.Util.NameCSharp("        public " + typeCSharp + " {0} {{ get; set; }}", field.FieldName, nameExceptList, result);
             }
         }
 
