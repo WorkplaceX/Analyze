@@ -6,7 +6,10 @@
     using System.ComponentModel.DataAnnotations;
     using System.Text;
 
-    public static class Build
+    /// <summary>
+    /// Generate csharp code for database tables.
+    /// </summary>
+    public static class GenerateCsharp
     {
         /// <summary>
         /// Generate csharp code for each database schema.
@@ -77,6 +80,9 @@
             }
         }
 
+        /// <summary>
+        /// Script to generate csharp code.
+        /// </summary>
         public static void Run()
         {
             string sql = Util.FileLoad(ConnectionManager.SchemaFileName);
@@ -89,6 +95,9 @@
         }
     }
 
+    /// <summary>
+    /// DbContext used to query database schema.
+    /// </summary>
     public class DbContextBuild : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -99,6 +108,9 @@
         public DbSet<Schema> Schema { get; set; }
     }
 
+    /// <summary>
+    /// See also file Sql\Schema.sql
+    /// </summary>
     public class Schema
     {
         [Key]
