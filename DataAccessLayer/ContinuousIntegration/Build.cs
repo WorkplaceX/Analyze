@@ -8,19 +8,18 @@
 
     public static class Build
     {
-        public static void Run()
+        /// <summary>
+        /// Generate csharp code for each database schema.
+        /// </summary>
+        private static void SchemaName(Schema[] dataList, StringBuilder result)
         {
-            string sql = Util.FileLoad(ConnectionManager.SchemaFileName);
-            DbContextBuild dbContext = new DbContextBuild();
-            StringBuilder result = new StringBuilder();
-            Schema[] schemaList = dbContext.Schema.FromSql(sql).OrderBy(item => item.SchemaName).ThenBy(item => item.TableName).ToArray();
-            string[] schemaNameList = schemaList.GroupBy(item => item.SchemaName, (key, group) => key).ToArray();
-            bool isFirstSchema = true;
+            string[] schemaNameList = dataList.GroupBy(item => item.SchemaName, (key, group) => key).ToArray();
+            bool isFirst = true;
             foreach (string schemaName in schemaNameList)
             {
-                if (isFirstSchema)
+                if (isFirst)
                 {
-                    isFirstSchema = false;
+                    isFirst = false;
                 }
                 else
                 {
@@ -28,38 +27,63 @@
                 }
                 result.AppendLine($"namespace Database.{schemaName}");
                 result.AppendLine("{");
-                string[] tableNameList = schemaList.Where(item => item.SchemaName == schemaName).GroupBy(item => item.TableName, (key, group) => key).ToArray();
-                bool isFirstTableName = true;
-                foreach (string tableName in tableNameList)
-                {
-                    if (isFirstTableName)
-                    {
-                        isFirstTableName = false;
-                    }
-                    else
-                    {
-                        result.AppendLine();
-                    }
-                    result.AppendLine($"    public class {tableName}");
-                    result.AppendLine("    {");
-                    Schema[] fieldList = schemaList.Where(item => item.SchemaName == schemaName && item.TableName == tableName).ToArray();
-                    bool isFirstField = true;
-                    foreach (var field in fieldList)
-                    {
-                        if (isFirstField)
-                        {
-                            isFirstField = false;
-                        }
-                        else
-                        {
-                            result.AppendLine();
-                        }
-                        result.AppendLine($"        public string {field.FieldName} {{ get; set; }}");
-                    }
-                    result.AppendLine("    }");
-                }
+                TableName(dataList, schemaName, result);
                 result.AppendLine("}");
             }
+        }
+
+        /// <summary>
+        /// Generate csharp code for each database table.
+        /// </summary>
+        private static void TableName(Schema[] dataList, string schemaName, StringBuilder result)
+        {
+            string[] tableNameList = dataList.Where(item => item.SchemaName == schemaName).GroupBy(item => item.TableName, (key, group) => key).ToArray();
+            bool isFirst = true;
+            foreach (string tableName in tableNameList)
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    result.AppendLine();
+                }
+                result.AppendLine($"    public class {tableName}");
+                result.AppendLine("    {");
+                FieldName(dataList, schemaName, tableName, result);
+                result.AppendLine("    }");
+            }
+        }
+
+        /// <summary>
+        /// Generate csharp code for each database field.
+        /// </summary>
+        private static void FieldName(Schema[] dataList, string schemaName, string tableName, StringBuilder result)
+        {
+            Schema[] fieldList = dataList.Where(item => item.SchemaName == schemaName && item.TableName == tableName).ToArray();
+            bool isFirst = true;
+            foreach (var field in fieldList)
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    result.AppendLine();
+                }
+                result.AppendLine($"        public string {field.FieldName} {{ get; set; }}");
+            }
+        }
+
+        public static void Run()
+        {
+            string sql = Util.FileLoad(ConnectionManager.SchemaFileName);
+            DbContextBuild dbContext = new DbContextBuild();
+            StringBuilder result = new StringBuilder();
+            Schema[] dataList = dbContext.Schema.FromSql(sql).OrderBy(item => item.SchemaName).ThenBy(item => item.TableName).ToArray();
+            SchemaName(dataList, result);
             string csharp = result.ToString();
             Util.FileSave(ConnectionManager.DatabaseFileName, csharp);
         }
