@@ -51,4 +51,4 @@ LEFT JOIN
 	sys.indexes Pk ON Pk.object_id = TableList.object_id AND Pk.is_primary_key = 1
 
 ORDER BY
-	TableList.TableName, ColumnList.column_id
+	TableList.SchemaName, TableList.TableName, ColumnList.column_id

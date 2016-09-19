@@ -3,7 +3,7 @@ namespace Database.dbo
     using System;
     using Framework;
 
-    public class Data : Row
+    public partial class Data : Row
     {
         public int Id { get; set; }
 
@@ -14,7 +14,7 @@ namespace Database.dbo
         public int LogId { get; set; }
     }
 
-    public class Data2 : Row
+    public partial class Data2 : Row
     {
         public int Id { get; set; }
 
@@ -25,7 +25,7 @@ namespace Database.dbo
         public int LogId { get; set; }
     }
 
-    public class FrameworkSession : Row
+    public partial class FrameworkSession : Row
     {
         public int Id { get; set; }
 
@@ -34,7 +34,7 @@ namespace Database.dbo
         public int? UserId { get; set; }
     }
 
-    public class FrameworkUser : Row
+    public partial class FrameworkUser : Row
     {
         public int Id { get; set; }
 
@@ -43,7 +43,7 @@ namespace Database.dbo
         public string Password { get; set; }
     }
 
-    public class Log : Row
+    public partial class Log : Row
     {
         public int Id { get; set; }
 
@@ -56,7 +56,7 @@ namespace Database.dbo
         public Guid? SessionName { get; set; }
     }
 
-    public class LoginSession : Row
+    public partial class LoginSession : Row
     {
         public int Id { get; set; }
 
@@ -67,7 +67,7 @@ namespace Database.dbo
         public DateTime? DateTime { get; set; }
     }
 
-    public class LoginUser : Row
+    public partial class LoginUser : Row
     {
         public int Id { get; set; }
 
@@ -84,7 +84,7 @@ namespace Database.dbo
         public string Company { get; set; }
     }
 
-    public class Product : Row
+    public partial class Product : Row
     {
         public int Id { get; set; }
 
@@ -99,7 +99,7 @@ namespace Database.dbo
         public string Image { get; set; }
     }
 
-    public class TableLoginSession : Row
+    public partial class TableLoginSession : Row
     {
         public int Id { get; set; }
 
@@ -110,7 +110,7 @@ namespace Database.dbo
         public DateTime? DateTime { get; set; }
     }
 
-    public class TableLoginUser : Row
+    public partial class TableLoginUser : Row
     {
         public int Id { get; set; }
 
@@ -127,7 +127,7 @@ namespace Database.dbo
         public string Company { get; set; }
     }
 
-    public class TableProduct : Row
+    public partial class TableProduct : Row
     {
         public int Id { get; set; }
 
@@ -140,7 +140,7 @@ namespace Database.dbo
         public bool? IsDelete { get; set; }
     }
 
-    public class Version : Row
+    public partial class Version : Row
     {
         public int Id { get; set; }
 
@@ -153,7 +153,7 @@ namespace Database.lp
     using System;
     using Framework;
 
-    public class Data : Row
+    public partial class Data : Row
     {
         public int Id { get; set; }
 

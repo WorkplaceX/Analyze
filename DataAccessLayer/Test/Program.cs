@@ -38,20 +38,4 @@
             }
         }
     }
-
-    public static class Util
-    {
-        public static void Assert(bool value, string errorText)
-        {
-            if (value == false)
-            {
-                throw new Exception(errorText);
-            }
-        }
-
-        public static void Assert(bool value)
-        {
-            Assert(value, "Assert!");
-        }
-    }
 }

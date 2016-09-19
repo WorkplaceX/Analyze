@@ -15,12 +15,11 @@
         /// <summary>
         /// Generate CSharp code for each database schema.
         /// </summary>
-        private static void SchemaName(Schema[] dataList, StringBuilder result)
+        private static void SchemaName(Meta meta, StringBuilder result)
         {
-            string[] schemaNameList = dataList.GroupBy(item => item.SchemaName, (key, group) => key).ToArray();
-            List<string> nameExceptList = new List<string>();
+            var schemaNameList = meta.List.GroupBy(item => new { item.Schema.SchemaName, item.SchemaNameCSharp } , (key, group) => key).ToArray();
             bool isFirst = true;
-            foreach (string schemaName in schemaNameList)
+            foreach (var item in schemaNameList)
             {
                 if (isFirst)
                 {
@@ -30,12 +29,12 @@
                 {
                     result.AppendLine();
                 }
-                Framework.Util.NameCSharp("namespace Database.{0}", schemaName, nameExceptList, result);
+                result.AppendLine(string.Format("namespace Database.{0}", item.SchemaNameCSharp));
                 result.AppendLine("{");
                 result.AppendLine("    using System;");
                 result.AppendLine("    using Framework;");
                 result.AppendLine();
-                TableName(dataList, schemaName, result);
+                TableName(meta, item.SchemaName, result);
                 result.AppendLine("}");
             }
         }
@@ -43,12 +42,12 @@
         /// <summary>
         /// Generate CSharp code for each database table.
         /// </summary>
-        private static void TableName(Schema[] dataList, string schemaName, StringBuilder result)
+        private static void TableName(Meta meta, string schemaName, StringBuilder result)
         {
-            string[] tableNameList = dataList.Where(item => item.SchemaName == schemaName).GroupBy(item => item.TableName, (key, group) => key).ToArray();
+            var tableNameList = meta.List.Where(item => item.Schema.SchemaName == schemaName).GroupBy(item => new { item.Schema.TableName, item.TableNameCSharp } , (key, group) => key).ToArray();
             List<string> nameExceptList = new List<string>();
             bool isFirst = true;
-            foreach (string tableName in tableNameList)
+            foreach (var item in tableNameList)
             {
                 if (isFirst)
                 {
@@ -58,9 +57,9 @@
                 {
                     result.AppendLine();
                 }
-                Framework.Util.NameCSharp("    public class {0} : Row", tableName, nameExceptList, result);
+                result.AppendLine(string.Format("    public partial class {0} : Row", item.TableNameCSharp));
                 result.AppendLine("    {");
-                FieldName(dataList, schemaName, tableName, result);
+                FieldName(meta, schemaName, item.TableName, result);
                 result.AppendLine("    }");
             }
         }
@@ -68,13 +67,11 @@
         /// <summary>
         /// Generate CSharp code for each database field.
         /// </summary>
-        private static void FieldName(Schema[] dataList, string schemaName, string tableName, StringBuilder result)
+        private static void FieldName(Meta meta, string schemaName, string tableName, StringBuilder result)
         {
-            Schema[] fieldList = dataList.Where(item => item.SchemaName == schemaName && item.TableName == tableName).ToArray();
-            List<string> nameExceptList = new List<string>();
-            nameExceptList.Add(tableName); // CSharp propery can not have same name like class.
+            var  fieldNameList = meta.List.Where(item => item.Schema.SchemaName == schemaName && item.Schema.TableName == tableName).ToArray();
             bool isFirst = true;
-            foreach (var field in fieldList)
+            foreach (var item in fieldNameList)
             {
                 if (isFirst)
                 {
@@ -84,12 +81,12 @@
                 {
                     result.AppendLine();
                 }
-                string typeCSharp = Framework.Util.SqlTypeToCSharp(field.SqlType, field.IsNullable);
-                Framework.Util.NameCSharp("        public " + typeCSharp + " {0} {{ get; set; }}", field.FieldName, nameExceptList, result);
+                string typeCSharp = Framework.Util.SqlTypeToCSharp(item.Schema.SqlType, item.Schema.IsNullable);
+                result.AppendLine(string.Format("        public " + typeCSharp + " {0} {{ get; set; }}", item.fieldNameCSharp));
             }
         }
 
-        private static void Meta(Schema[] dataList, StringBuilder result)
+        private static void Meta(Schema[] schemaSql, StringBuilder result)
         {
             result.AppendLine();
             result.AppendLine("namespace Database");
@@ -106,9 +103,10 @@
             string sql = Util.FileLoad(ConnectionManager.SchemaFileName);
             DbContextBuild dbContext = new DbContextBuild();
             StringBuilder result = new StringBuilder();
-            Schema[] dataList = dbContext.Schema.FromSql(sql).OrderBy(item => item.SchemaName).ThenBy(item => item.TableName).ToArray();
-            SchemaName(dataList, result);
-            Meta(dataList, result);
+            Schema[] schemaSql = dbContext.Schema.FromSql(sql).ToArray();
+            Meta meta = new Meta(schemaSql);
+            SchemaName(meta, result);
+            Meta(schemaSql, result);
             string cSharp = result.ToString();
             Util.FileSave(ConnectionManager.DatabaseLockFileName, cSharp);
         }
@@ -154,40 +152,65 @@
 
     public class Meta
     {
-        public void Add(string schemaNameSql, string schemaNameCSharp, string tableNameSql, string tableNameCSharp, string fieldNameSql, string fieldNameCSharp)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public Meta(Schema[] schemaSql)
         {
-            this.SchemaNameList.Add(schemaNameSql, schemaNameCSharp);
-            this.TableNameList.Add(tableNameSql, tableNameCSharp);
-            this.FieldNameList.Add(fieldNameSql, fieldNameCSharp);
+            SchemaName(schemaSql);
         }
 
-        /// <summary>
-        /// (SchemaNameSql, SchemaNameCSharp)
-        /// </summary>
-        public readonly Dictionary<string, string> SchemaNameList = new Dictionary<string, string>();
-
-        /// <summary>
-        /// (SchemaNameSql, SchemaNameCSharp)
-        /// </summary>
-        public readonly Dictionary<string, string> TableNameList = new Dictionary<string, string>();
-
-        /// <summary>
-        /// (SchemaNameSql, SchemaNameCSharp)
-        /// </summary>
-        public readonly Dictionary<string, string> FieldNameList = new Dictionary<string, string>();
-
-        private static Meta instance;
-
-        public static Meta Instance
+        public class SchemaCSharp
         {
-            get
+            public Schema Schema { get; set; }
+
+            public string SchemaNameCSharp { get; set; }
+
+            public string TableNameCSharp { get; set; }
+
+            public string fieldNameCSharp { get; set; }
+        }
+
+        private void SchemaName(Schema[] dataList)
+        {
+            string[] schemaNameList = dataList.GroupBy(item => item.SchemaName, (key, group) => key).ToArray();
+            List<string> nameExceptList = new List<string>();
+            foreach (string schemaName in schemaNameList)
             {
-                if (instance == null)
-                {
-                    instance = new Meta();
-                }
-                return instance;
+                string schemaNameCSharp = Framework.Util.NameCSharp(schemaName, nameExceptList);
+                TableName(dataList, schemaName, schemaNameCSharp);
             }
         }
+
+        private void TableName(Schema[] dataList, string schemaName, string schemaNameCSharp)
+        {
+            string[] tableNameList = dataList.Where(item => item.SchemaName == schemaName).GroupBy(item => item.TableName, (key, group) => key).ToArray();
+            List<string> nameExceptList = new List<string>();
+            foreach (string tableName in tableNameList)
+            {
+                string tableNameCSharp = Framework.Util.NameCSharp(tableName, nameExceptList);
+                FieldName(dataList, schemaName, schemaNameCSharp, tableName, tableNameCSharp);
+            }
+        }
+
+        private void FieldName(Schema[] dataList, string schemaName, string schemaNameCSharp, string tableName, string tableNameCSharp)
+        {
+            Schema[] fieldList = dataList.Where(item => item.SchemaName == schemaName && item.TableName == tableName).ToArray();
+            List<string> nameExceptList = new List<string>();
+            nameExceptList.Add(tableName); // CSharp propery can not have same name like class.
+            foreach (Schema field in fieldList)
+            {
+                string fieldNameCSharp = Framework.Util.NameCSharp(field.FieldName, nameExceptList);
+                List.Add(new SchemaCSharp()
+                {
+                    Schema = field,
+                    SchemaNameCSharp = schemaNameCSharp,
+                    TableNameCSharp = tableNameCSharp,
+                    fieldNameCSharp = fieldNameCSharp,
+                });
+            }
+        }
+
+        public readonly List<SchemaCSharp> List = new List<SchemaCSharp>();
     }
 }

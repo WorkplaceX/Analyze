@@ -1,6 +1,8 @@
 ﻿namespace Test
 {
     using System.Collections.Generic;
+    //
+    using Framework;
 
     public class FrameworkTest : TestBase
     {

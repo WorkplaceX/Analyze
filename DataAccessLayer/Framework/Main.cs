@@ -42,35 +42,22 @@
         /// </summary>
         public static string NameCSharp(string name, List<string> nameExceptList)
         {
-            nameExceptList = new List<string>(nameExceptList); // Do not modify list passed as parameter.
-            for (int i = 0; i < nameExceptList.Count; i++)
+            var nameExceptListCopy = new List<string>(nameExceptList); // Do not modify list passed as parameter.
+            for (int i = 0; i < nameExceptListCopy.Count; i++)
             {
-                nameExceptList[i] = NameCSharp(nameExceptList[i]).ToUpper();
+                nameExceptListCopy[i] = NameCSharp(nameExceptListCopy[i]).ToUpper();
             }
             //
             name = NameCSharp(name);
             string result = name;
             int count = 1;
-            while (nameExceptList.Contains(result.ToUpper()))
+            while (nameExceptListCopy.Contains(result.ToUpper()))
             {
                 count += 1;
                 result = name + count;
             }
-            return result;
-        }
-
-        /// <summary>
-        /// Generate CSharp compliant line of code. (Overload);
-        /// </summary>
-        /// <param name="cSharp">For example: "public class {0}"</param>
-        /// <param name="name">For example: "My_Class"</param>
-        /// <param name="nameExceptList">Name is automatically added.</param>
-        /// <param name="result">Returns for example: "public class MyClass"</param>
-        public static void NameCSharp(string cSharp, string name, List<string> nameExceptList, StringBuilder result)
-        {
-            string nameCSharp = Util.NameCSharp(name, nameExceptList);
-            result.AppendLine(string.Format(cSharp, nameCSharp));
             nameExceptList.Add(name);
+            return result;
         }
 
         private static void SqlTypeToType(int sqlType, out Type type)
@@ -152,6 +139,19 @@
                 }
             }
             return result;
+        }
+
+        public static void Assert(bool value, string errorText)
+        {
+            if (value == false)
+            {
+                throw new Exception(errorText);
+            }
+        }
+
+        public static void Assert(bool value)
+        {
+            Assert(value, "Assert!");
         }
     }
 }
