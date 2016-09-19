@@ -1,6 +1,6 @@
 ﻿namespace Database.dbo
 {
-    public partial class Data_
+    public partial class Data
     {
         protected override bool IsReadOnly()
         {

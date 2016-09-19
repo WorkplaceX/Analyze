@@ -58,12 +58,11 @@
                 {
                     result.AppendLine();
                 }
-                Framework.Util.NameCSharp("    public class {0}", tableName, nameExceptList, result);
+                Framework.Util.NameCSharp("    public class {0} : Row", tableName, nameExceptList, result);
                 result.AppendLine("    {");
                 FieldName(dataList, schemaName, tableName, result);
                 result.AppendLine("    }");
             }
-            Row(tableNameList, result);
         }
 
         /// <summary>
@@ -87,19 +86,6 @@
                 }
                 string typeCSharp = Framework.Util.SqlTypeToCSharp(field.SqlType, field.IsNullable);
                 Framework.Util.NameCSharp("        public " + typeCSharp + " {0} {{ get; set; }}", field.FieldName, nameExceptList, result);
-            }
-        }
-
-        /// <summary>
-        /// Generate for each table a row CSharp class.
-        /// </summary>
-        private static void Row(string[] tableNameList, StringBuilder result) // TODO Read from Meta
-        {
-            List<string> nameExceptList = new List<string>();
-            foreach (string tableName in tableNameList)
-            {
-                result.AppendLine();
-                Framework.Util.NameCSharp("    public partial class {0}_ : Row<{0}> {{ }}", tableName, nameExceptList, result);
             }
         }
 
@@ -189,5 +175,19 @@
         /// (SchemaNameSql, SchemaNameCSharp)
         /// </summary>
         public readonly Dictionary<string, string> FieldNameList = new Dictionary<string, string>();
+
+        private static Meta instance;
+
+        public static Meta Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Meta();
+                }
+                return instance;
+            }
+        }
     }
 }

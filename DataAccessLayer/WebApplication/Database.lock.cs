@@ -3,7 +3,7 @@ namespace Database.dbo
     using System;
     using Framework;
 
-    public class Data
+    public class Data : Row
     {
         public int Id { get; set; }
 
@@ -14,7 +14,7 @@ namespace Database.dbo
         public int LogId { get; set; }
     }
 
-    public class Data2
+    public class Data2 : Row
     {
         public int Id { get; set; }
 
@@ -25,7 +25,7 @@ namespace Database.dbo
         public int LogId { get; set; }
     }
 
-    public class FrameworkSession
+    public class FrameworkSession : Row
     {
         public int Id { get; set; }
 
@@ -34,7 +34,7 @@ namespace Database.dbo
         public int? UserId { get; set; }
     }
 
-    public class FrameworkUser
+    public class FrameworkUser : Row
     {
         public int Id { get; set; }
 
@@ -43,7 +43,7 @@ namespace Database.dbo
         public string Password { get; set; }
     }
 
-    public class Log
+    public class Log : Row
     {
         public int Id { get; set; }
 
@@ -56,7 +56,7 @@ namespace Database.dbo
         public Guid? SessionName { get; set; }
     }
 
-    public class LoginSession
+    public class LoginSession : Row
     {
         public int Id { get; set; }
 
@@ -67,7 +67,7 @@ namespace Database.dbo
         public DateTime? DateTime { get; set; }
     }
 
-    public class LoginUser
+    public class LoginUser : Row
     {
         public int Id { get; set; }
 
@@ -84,7 +84,7 @@ namespace Database.dbo
         public string Company { get; set; }
     }
 
-    public class Product
+    public class Product : Row
     {
         public int Id { get; set; }
 
@@ -99,7 +99,7 @@ namespace Database.dbo
         public string Image { get; set; }
     }
 
-    public class TableLoginSession
+    public class TableLoginSession : Row
     {
         public int Id { get; set; }
 
@@ -110,7 +110,7 @@ namespace Database.dbo
         public DateTime? DateTime { get; set; }
     }
 
-    public class TableLoginUser
+    public class TableLoginUser : Row
     {
         public int Id { get; set; }
 
@@ -127,7 +127,7 @@ namespace Database.dbo
         public string Company { get; set; }
     }
 
-    public class TableProduct
+    public class TableProduct : Row
     {
         public int Id { get; set; }
 
@@ -140,36 +140,12 @@ namespace Database.dbo
         public bool? IsDelete { get; set; }
     }
 
-    public class Version
+    public class Version : Row
     {
         public int Id { get; set; }
 
         public string Version2 { get; set; }
     }
-
-    public partial class Data_ : Row<Data> { }
-
-    public partial class Data2_ : Row<Data2> { }
-
-    public partial class FrameworkSession_ : Row<FrameworkSession> { }
-
-    public partial class FrameworkUser_ : Row<FrameworkUser> { }
-
-    public partial class Log_ : Row<Log> { }
-
-    public partial class LoginSession_ : Row<LoginSession> { }
-
-    public partial class LoginUser_ : Row<LoginUser> { }
-
-    public partial class Product_ : Row<Product> { }
-
-    public partial class TableLoginSession_ : Row<TableLoginSession> { }
-
-    public partial class TableLoginUser_ : Row<TableLoginUser> { }
-
-    public partial class TableProduct_ : Row<TableProduct> { }
-
-    public partial class Version_ : Row<Version> { }
 }
 
 namespace Database.lp
@@ -177,7 +153,7 @@ namespace Database.lp
     using System;
     using Framework;
 
-    public class Data
+    public class Data : Row
     {
         public int Id { get; set; }
 
@@ -187,8 +163,6 @@ namespace Database.lp
 
         public int LogId { get; set; }
     }
-
-    public partial class Data_ : Row<Data> { }
 }
 
 namespace Database

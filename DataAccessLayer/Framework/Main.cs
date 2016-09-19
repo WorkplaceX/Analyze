@@ -8,35 +8,9 @@
 
     public class Row
     {
-        internal void Constructor(object table)
-        {
-            this.table = table;
-        }
-
-        private object table;
-
-        public object Table
-        {
-            get
-            {
-                return table;
-            }
-        }
-
         protected virtual bool IsReadOnly()
         {
             return false;
-        }
-    }
-
-    public class Row<TTable> : Row
-    {
-        public new TTable Table
-        {
-            get
-            {
-                return (TTable)base.Table;
-            }
         }
     }
 
