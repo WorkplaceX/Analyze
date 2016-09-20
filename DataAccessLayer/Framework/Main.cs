@@ -2,15 +2,57 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
     using System.Reflection;
 
+    /// <summary>
+    /// Base class for every database row.
+    /// </summary>
     public class Row
     {
         protected virtual bool IsReadOnly()
         {
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Base class for every database field.
+    /// </summary>
+    public class Cell
+    {
+        internal void Constructor(object row)
+        {
+            this.row = row;
+        }
+
+        private object row;
+
+        public object Row
+        {
+            get
+            {
+                return row;
+            }
+        }
+
+        protected virtual bool IsReadOnly()
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Base class for every database field.
+    /// </summary>
+    public class Cell<TRow> : Cell
+    {
+        public new TRow Row
+        {
+            get
+            {
+                return (TRow)base.Row;
+            }
         }
     }
 
@@ -98,7 +140,7 @@
         /// </summary>
         /// <param name="type">For example: "Int32"</param>
         /// <returns>Returns "int"</returns>
-        private static string TypeToCSharp(Type type)
+        private static string TypeToCSharpType(Type type)
         {
             if (type == typeof(Int32))
             {
@@ -126,11 +168,11 @@
         /// <summary>
         /// SqlType to CSharp code.
         /// </summary>
-        public static string SqlTypeToCSharp(int sqlType, bool isNullable)
+        public static string SqlTypeToCSharpType(int sqlType, bool isNullable)
         {
             Type type;
             SqlTypeToType(sqlType, out type);
-            string result = TypeToCSharp(type);
+            string result = TypeToCSharpType(type);
             if (type.GetTypeInfo().IsValueType)
             {
                 if (isNullable)

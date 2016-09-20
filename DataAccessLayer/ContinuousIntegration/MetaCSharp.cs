@@ -4,7 +4,7 @@
     using System.Linq;
 
     /// <summary>
-    /// Meta data for CSharp code.
+    /// Meta information for CSharp code.
     /// </summary>
     public class MetaCSharp
     {
@@ -51,7 +51,7 @@
                     Schema = field,
                     SchemaNameCSharp = schemaNameCSharp,
                     TableNameCSharp = tableNameCSharp,
-                    fieldNameCSharp = fieldNameCSharp,
+                    FieldNameCSharp = fieldNameCSharp,
                 });
             }
         }
@@ -67,6 +67,6 @@
 
         public string TableNameCSharp { get; set; }
 
-        public string fieldNameCSharp { get; set; }
+        public string FieldNameCSharp { get; set; }
     }
 }

@@ -6,7 +6,7 @@
     using System.Linq;
 
     /// <summary>
-    /// Contains sql schema.
+    /// Meta information about sql schema.
     /// </summary>
     public class MetaSql
     {
