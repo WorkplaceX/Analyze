@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace ContinuousIntegration
+﻿namespace ContinuousIntegration
 {
+    using System;
+    using System.Reflection;
+
     public static class ConnectionManager
     {
         public static string ConnectionString
@@ -38,6 +35,11 @@ namespace ContinuousIntegration
             {
                 return new Uri(new Uri(FolderName), @"..\..\..\..\WebApplication\Database.lock.cs").LocalPath;
             }
+        }
+
+        public static void Log(string text)
+        {
+            Console.WriteLine(text);
         }
     }
 }

@@ -6,9 +6,9 @@
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Run method GenerateCSharp.Run(); ...");
-            GenerateCSharp.Run();
-            Console.WriteLine($"File generated successfully! ({ ConnectionManager.DatabaseLockFileName})");
+            ConnectionManager.Log("Run method Script.Run(); ...");
+            new Script().Run();
+            ConnectionManager.Log($"File generated successfully! ({ ConnectionManager.DatabaseLockFileName})");
             Console.ReadLine();
         }
     }
