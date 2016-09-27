@@ -22,7 +22,7 @@ namespace aspnetcoreapp
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("server=127.0.0.1;userid=root;pwd=;database=My;sslmode=none;");
+            optionsBuilder.UseMySQL("server=localhost;userid=root;pwd=*********;database=My;sslmode=none;");
         }
 
         public DbSet<Person> Person { get; set; }

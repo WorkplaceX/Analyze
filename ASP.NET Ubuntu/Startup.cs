@@ -15,10 +15,10 @@ namespace aspnetcoreapp
                 var myContext = new MyContext();
                 foreach (var item in myContext.Person)
                 {
-                    text.AppendLine($"Name=" + item.Name + "; ");
+                    text.AppendLine($"Id=" + item.Id + "; " + "Name=" + item.Name + "; ");
                 }
                 //
-                return context.Response.WriteAsync("Hello from ASP.NET Core! " + text.ToString());
+                return context.Response.WriteAsync("Hello from ASP.NET Core!\r\r" + text.ToString());
             });
         }
     }
