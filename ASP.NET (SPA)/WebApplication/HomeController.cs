@@ -10,6 +10,7 @@ namespace WebApplication
 {
     public class HomeController : Controller
     {
+        [Route("/Debug")]
         public IActionResult Index()
         {
             return View("Index.cshtml");
