@@ -10,10 +10,19 @@ namespace WebApplication
 {
     public class HomeController : Controller
     {
-        [Route("/Debug")]
+        [Route("/Home")]
         public IActionResult Index()
         {
-            return View("Index.cshtml");
+            return View("Home.cshtml");
+        }
+    }
+
+    public class JavaScriptController : Controller
+    {
+        [Route("/JavaScript")]
+        public IActionResult Index()
+        {
+            return View("JavaScript.cshtml");
         }
     }
 }

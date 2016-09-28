@@ -35,7 +35,7 @@ namespace WebApplication
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Hello World! From fallback. <a href='Index.html'>Index.html</a>"); // Fallback if no URL match.
+                await context.Response.WriteAsync("Hello World! From fallback. <a href='/Index.html'>Index.html</a>"); // Fallback if no URL match.
             });
         }
     }
