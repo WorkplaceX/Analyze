@@ -10,7 +10,7 @@ namespace WebApplication
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                // .UseIISIntegration() // Enable IIS
+                .UseIISIntegration() // Enable IIS
                 .UseStartup<Startup>()
                 .Build();
 
