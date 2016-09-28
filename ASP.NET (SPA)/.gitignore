@@ -1,0 +1,6 @@
+.vs/
+WebApplication/.vscode/
+WebApplication/bin/
+WebApplication/obj/
+WebApplication/project.lock.json
+WebApplication/*.user
