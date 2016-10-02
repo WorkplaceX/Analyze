@@ -6,7 +6,7 @@
 
     public class HomeController : Controller
     {
-        [Route("/Home")]
+        [Route("Home/")]
         public IActionResult Index()
         {
             return View("Home.cshtml");
@@ -15,7 +15,7 @@
 
     public class JavaScriptController : Controller
     {
-        [Route("/JavaScript")]
+        [Route("JavaScript/")]
         public IActionResult Index()
         {
             return View("JavaScript.cshtml");
@@ -28,6 +28,15 @@
         public FileResult Angular()
         {
             return Util.FileGet(this, "Angular/"); // Copy requested files from Angular to wwwroot
+        }
+    }
+
+    public class AngularUniversalController : Controller
+    {
+        [Route("AngularUniversal/")]
+        public IActionResult Index()
+        {
+            return View("AngularUniversal.cshtml");
         }
     }
 
