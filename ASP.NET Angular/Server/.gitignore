@@ -5,3 +5,4 @@ WebApplication/obj/
 WebApplication/project.lock.json
 WebApplication/node_modules/
 WebApplication/*.user
+WebApplication/wwwroot/Angular/
