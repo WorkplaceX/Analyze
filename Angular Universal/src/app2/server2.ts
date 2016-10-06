@@ -33,10 +33,13 @@ export class MyModule {
 }
 
 
+// ### Start server side rendering in node
+
 enableProdMode();
 
 import 'zone.js';
 
+// See also: https://github.com/aspnet/JavaScriptServices/commit/5214a553a7d98bc532b956af7ad14b8905302878?w=1
 var requestZone = Zone.current.fork({
   name: 'angular-universal request',
   properties: {
