@@ -46,7 +46,7 @@ var clientConfig = {
 
 var serverConfig = {
   target: 'node',
-  entry: './src/server', // use the entry file of the node server if everything is ts rather than es5
+  entry: './src/app2/server2', // use the entry file of the node server if everything is ts rather than es5
   output: {
     path: root('dist/server'),
     libraryTarget: 'commonjs2'
