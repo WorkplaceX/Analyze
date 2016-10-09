@@ -3,7 +3,8 @@ module.exports = function (params) {
         var result = '<h1>Hello world from Server Side JavaScript!</h1>'
            + '<p>Current time in Node.js is: ' + new Date() + '</p>'
            + '<p>Request path is: ' + params.location.path + '</p>'
-           + '<p>Absolute URL is: ' + params.absoluteUrl + '</p>';
+           + '<p>Absolute URL is: ' + params.absoluteUrl + '</p>'
+           + '<p>Data is: ' + JSON.stringify(JSON.parse(params.data)) + '</p>';
         resolve({ html: result });
     });
 };

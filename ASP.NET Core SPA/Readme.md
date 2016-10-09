@@ -1,6 +1,6 @@
 # ASP.NET Core Single Page Application with Node.js
 
-Demonstrates ASP.NET Core calling JavaScript on server side via Node.js. Example tested on Windows and Ubuntu.
+Demonstrates ASP.NET Core calling JavaScript on server side via Node.js. It also passes data from ASP.NET down to Node.js. Example tested on Windows and Ubuntu.
 
 ## Prerequisites
 * Visual Studio 2015 or Visual Code
