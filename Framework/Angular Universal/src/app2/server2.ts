@@ -40,7 +40,7 @@ declare var module: any;
     var requestZone = Zone.current.fork({
       name: 'angular-universal request',
       properties: {
-        document: '<!DOCTYPE html><html><head></head><body><my-app></my-app></body></html>'
+        document: '<my-app></my-app>'
       }
     });
 
@@ -50,6 +50,8 @@ declare var module: any;
 
     requestZone.run(() => {
       platformNodeDynamic([{ provide: 'paramsData', useValue: params.data }]).serializeModule(MyModule).then(html => {
+        html = (<string>html).substring(48); // Remove <html><head><title></title></head><body><my-app>
+        html = (<string>html).substring(0, (<string>html).length - 234); // Remove </my-app></body></html><universal-script><script> try {window.UNIVERSAL_CACHE = ({"APP_ID":"c04f"}) ...
         // console.log("Html=" + html); // Debug Angular Universal only!
         resolve({ html: html })
       });
