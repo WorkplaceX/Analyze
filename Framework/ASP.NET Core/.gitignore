@@ -7,3 +7,4 @@ WebApplication/node_modules/
 WebApplication/*.user
 
 WebApplication/wwwroot/Angular/
+WebApplication/AngularUniversalServer.js
