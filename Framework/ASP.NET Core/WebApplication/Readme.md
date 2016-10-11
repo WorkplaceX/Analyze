@@ -1,11 +1,10 @@
 ﻿# ASP.NET Core Angular2 Server Side Rendering
 
 ## Install
-* npm run installAll (Installs for "Angular" and "Angular Universal")
 * Open http://localhost:5000/Angular/Debug.html one time. (This copies all necessary files to "wwwroot/Angular")
 
 ## Build
-* npm run buildAll (Builds "Angular" and "Angular Universal" and copies file AngularUniversalServer.js to ASP.NET Core)
+* npm run buildAngular (Builds "Angular" and "Angular Universal" and copies file AngularUniversalServer.js to ASP.NET Core)
 
 # File and folder description
 Folder "node_modules"
