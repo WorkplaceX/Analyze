@@ -1,5 +1,11 @@
 # Application Framework
 
+## Install
+Go to folder "Framework/ASP.NET Core/WebApplication"
+* npm run installAll
+* npm run buildAngular
+* Open WebApplication with Visual Studio or Visual Studio Code and run it.
+
 ## Folder Structure
 * Angular (Based on angular.io quickstart)
 * Angular Universal (Based on Angular Universal starter)
