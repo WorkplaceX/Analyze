@@ -15,7 +15,7 @@
     "angular2-universal": "~2.0.11"
   },
   "scripts": {
-    "installAll": "cd ../../Angular/ && npm install && npm run tsc && cd \"../Angular Universal/\" && npm install && cd ../ASP.NET Core/WebApplication && npm install",
+    "installAll": "cd ../../Angular/ && npm install && npm run tsc && cd \"../Angular Universal/\" && npm install && cd \"../ASP.NET Core/WebApplication\" && npm install",
     "buildAngular": "cd \"../../Angular Universal/\" && npm run build:prod && node distFileCopy.js"
   }
 }
