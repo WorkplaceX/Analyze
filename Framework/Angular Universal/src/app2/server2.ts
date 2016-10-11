@@ -50,9 +50,12 @@ declare var module: any;
 
     requestZone.run(() => {
       platformNodeDynamic([{ provide: 'paramsData', useValue: params.data }]).serializeModule(MyModule).then(html => {
+        // console.log("Html=" + html); // Debug Angular Universal only!
+        resolve({ html: html })
       });
     });
 
   });
 }
 
+// (module).then(); // Debug Angular Universal only! (Call default function)
