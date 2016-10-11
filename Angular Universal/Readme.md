@@ -7,7 +7,8 @@ Based on https://github.com/angular/universal-starter (2016-10-06)
 * New folder "Doc" (With screenshots)
 * New folder "src\app2" (Here goes all new code)
 * New file "src\app2\server2.ts" (Hello world server side node rendering)
-* Changed file webpack.config.ts line 49 from "entry: './src/server'" to "entry: './src/app2/server2',"
+* Change file webpack.config.ts line 49 from "entry: './src/server'" to "entry: './src/app2/server2',"
+* Change file .gitignore line 14 add ".vscode/" 
 
 ## Install
 * npm install (Downloads node_modules)
