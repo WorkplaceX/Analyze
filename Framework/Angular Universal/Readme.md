@@ -9,6 +9,7 @@ Based on https://github.com/angular/universal-starter (2016-10-06)
 * New file "src\app2\server2.ts" (Hello world server side node rendering)
 * Change file webpack.config.ts line 49 from "entry: './src/server'" to "entry: './src/app2/server2',"
 * Change file .gitignore line 14 add ".vscode/" 
+* Change file package.json line 47 add "es6-promis: ^4.0.5",
 
 ## Install
 * npm install (Downloads node_modules)

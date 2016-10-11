@@ -41,19 +41,38 @@ enableProdMode();
 
 import 'zone.js';
 
-// See also: https://github.com/aspnet/JavaScriptServices/commit/5214a553a7d98bc532b956af7ad14b8905302878?w=1
-var requestZone = Zone.current.fork({
-  name: 'angular-universal request',
-  properties: {
-    document: '<!DOCTYPE html><html><head></head><body><my-app></my-app></body></html>'
-  }
-});
-
-requestZone.run(() => 
-{  
-  // platformDynamicServer().bootstrapModule(MyModule).then(obj=>{ console.log("Obj=" + obj) });
-  
-  platformNodeDynamic().serializeModule(MyModule).then(html=>{ console.log("Html=" + html) });
-});
 
 console.log("Hello World!");
+
+
+import { Promise } from 'es6-promise';
+
+declare var module: any;
+
+(module).exports = function (params) {
+    return new Promise(function (resolve, reject) {
+
+
+
+        // See also: https://github.com/aspnet/JavaScriptServices/commit/5214a553a7d98bc532b956af7ad14b8905302878?w=1
+        var requestZone = Zone.current.fork({
+          name: 'angular-universal request',
+          properties: {
+            document: '<!DOCTYPE html><html><head></head><body><my-app></my-app></body></html>'
+          }
+        });
+
+        requestZone.run(() => 
+        {  
+          // platformDynamicServer().bootstrapModule(MyModule).then(obj=>{ console.log("Obj=" + obj) });
+          
+          platformNodeDynamic().serializeModule(MyModule).then(html=>{ console.log("Html=" + html);
+    resolve({ html: html })    
+      
+     });
+        });
+
+
+
+    });
+}
