@@ -67,13 +67,51 @@ namespace WebApplication
 
     public static class Util
     {
+        /// <summary>
+        /// Uri for Windows and Linux.
+        /// </summary>
+        public class Uri
+        {
+            public Uri(string uriString)
+            {
+                if (uriString.StartsWith("/"))
+                {
+                    this.isLinux = true;
+                    uriString = "Linux:" + uriString;
+                }
+                this.uriSystem = new System.Uri(uriString);
+            }
+
+            public Uri(Uri baseUri, string relativeUri)
+            {
+                this.uriSystem = new System.Uri(baseUri.uriSystem, relativeUri);
+            }
+
+            private readonly bool isLinux;
+
+            private readonly System.Uri uriSystem;
+
+            public string LocalPath
+            {
+                get
+                {
+                    string result = uriSystem.LocalPath;
+                    if (isLinux)
+                    {
+                        result = result.Substring("Linux:".Length);
+                    }
+                    return result;
+                }
+            }
+        }
+
         public static FileResult FileGet(ControllerBase controller, string folderNameRelative)
         {
             string requestFileName = controller.Request.Path.Value;
             if (requestFileName.StartsWith("/" + folderNameRelative))
             {
                 requestFileName = requestFileName.Substring(("/" + folderNameRelative).Length);
-                Uri folderName = new Uri(Directory.GetCurrentDirectory() + @"\");
+                Uri folderName = new Uri(Directory.GetCurrentDirectory() + "/");
                 Uri folderNameAngular = new Uri(folderName, "../../" + folderNameRelative);
                 Uri fileNameAngular = new Uri(folderNameAngular, requestFileName);
                 Uri folderNameRoot = new Uri(folderName, "wwwroot/" + folderNameRelative);
