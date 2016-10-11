@@ -13,9 +13,10 @@ export class DataService {
   data: Data;
 
   constructor() {
+      console.log("Data=" + JSON.stringify(this.data));
       var paramsLocal = null;
       if (typeof params !== 'undefined') {
-          this.data = params.Data;
+          this.data = JSON.parse(params.data);
       } else {
           this.data = new Data();
           this.data.Name = "Data from dataService.ts";

@@ -23,7 +23,7 @@ namespace WebApplication
         [Route("/JavaScript")]
         public IActionResult Index()
         {
-            Data data = new Data() { Name = "MyData" };
+            Data data = new Data() { Name = "Data from Controller.cs" };
             string dataJsonText = JsonConvert.SerializeObject(data);
             return View("JavaScript.cshtml", dataJsonText); // Pass data object from ASP.NET to Node.js
         }

@@ -11,27 +11,17 @@ import { BrowserModule, platformBrowser } from '@angular/platform-browser';
 import { UniversalModule } from 'angular2-universal';
 
 import { AppComponent } from '../../../Angular/app/app.component'
+import { DataService, Data } from '../../../Angular/app/dataService'
 
-@Component({
-  selector: 'app',
-  template: '<p>Hello world2</p>',
-})
-export class MyComponent {
-    constructor()
-    {
-        console.log("Constructor MyComponent");
-    }
-}
+import 'zone.js';
 
 @NgModule({
   imports: [ UniversalModule ], 
   declarations: [ AppComponent ],
   bootstrap: [ AppComponent ],
+
 })
 export class MyModule { 
-  constructor() {
-    console.log("Constructor MyModule");    
-  }
 }
 
 
@@ -39,20 +29,19 @@ export class MyModule {
 
 enableProdMode();
 
-import 'zone.js';
 
 
-console.log("Hello World!");
+console.log("Hello World2!");
 
 
 import { Promise } from 'es6-promise';
 
 declare var module: any;
 
+
+
 (module).exports = function (params) {
     return new Promise(function (resolve, reject) {
-
-
 
         // See also: https://github.com/aspnet/JavaScriptServices/commit/5214a553a7d98bc532b956af7ad14b8905302878?w=1
         var requestZone = Zone.current.fork({
@@ -65,9 +54,12 @@ declare var module: any;
         requestZone.run(() => 
         {  
           // platformDynamicServer().bootstrapModule(MyModule).then(obj=>{ console.log("Obj=" + obj) });
-          
-          platformNodeDynamic().serializeModule(MyModule).then(html=>{ console.log("Html=" + html);
-    resolve({ html: html })    
+          console.log("X");
+          platformNodeDynamic([
+      { provide: 'paramsData', useValue: params.data }
+    ]).serializeModule(MyModule).then(html=>{ console.log("Html=" + html);
+
+    resolve({ html: html + "X=" + params.data })    
       
      });
         });
@@ -76,3 +68,5 @@ declare var module: any;
 
     });
 }
+
+// (module).then(); // Call default function. For debug only!

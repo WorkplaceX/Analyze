@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService, Data } from './dataService';
+import { Inject } from '@angular/core';
 
 @Component({
   selector: 'my-app',
@@ -9,7 +10,10 @@ import { DataService, Data } from './dataService';
 export class AppComponent { 
   data: Data;
 
-  constructor(dataService: DataService){
+  constructor(@Inject('paramsData') paramsData: string, dataService: DataService){
     this.data = dataService.data;
+    if (paramsData != null){
+      this.data.Name = paramsData;
+    }
   }
 }
