@@ -8,3 +8,4 @@ WebApplication/*.user
 
 WebApplication/wwwroot/Angular/
 WebApplication/AngularUniversalServer.js
+WebApplication/Properties/PublishProfiles

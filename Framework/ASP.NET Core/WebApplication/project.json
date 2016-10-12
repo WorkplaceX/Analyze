@@ -32,5 +32,18 @@
     "configProperties": {
       "System.GC.Server": true
     }
+  },
+
+  "publishOptions": {
+    "include": [
+      "wwwroot",
+      "node_modules",
+      "web.config",
+      "_ViewImports.cshtml",
+      "AngularDebug.cshtml",
+      "AngularUniversal.cshtml",
+      "AngularUniversalServer.js",
+      "Home.cshtml"
+    ]
   }
 }
