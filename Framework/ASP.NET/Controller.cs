@@ -16,12 +16,12 @@ namespace WebApplication
         [Route("/Home")]
         public IActionResult Index()
         {
-            return View("Home.cshtml");
+            return View("Application/Views/Home.cshtml");
         }
     }
 
     /// <summary>
-    /// Load javascript files. And copy them to wwwroot.
+    /// Install javascript files. Copy files on server to folder Application/Node.js/Client.
     /// </summary>
     public class AngularController : Controller
     {
@@ -29,19 +29,19 @@ namespace WebApplication
         public FileResult Angular()
         {
             // Thread.Sleep(100);
-            return Util.FileGet(this, "Angular/"); // Copy requested files from Angular to wwwroot
+            return Util.FileGet(this, "Angular/", "../Angular/", "Application/Node.js/Client/"); // Copy requested files from Angular to wwwroot
         }
     }
 
     /// <summary>
     /// Angular2 Quickstart page.
     /// </summary>
-    public class AngularDebugController : Controller
+    public class AngularInstallClient : Controller
     {
-        [Route("/Angular/Debug.html")]
+        [Route("/Angular/InstallClient.html")]
         public IActionResult Index()
         {
-            return View("AngularDebug.cshtml");
+            return View("Application/Views/AngularInstallClient.cshtml");
         }
     }
 
@@ -50,12 +50,16 @@ namespace WebApplication
     /// </summary>
     public class AngularUniversalController : Controller
     {
-        [Route("/Angular")]
+        [Route("Angular/")]
         public IActionResult Index()
         {
+            if (!Request.Path.Value.EndsWith("/"))
+            {
+                return Redirect(Request.Path.Value + "/"); // Script in served file need to reference to folder.
+            }
             Data data = new Data() { Name = "Data from Controller.cs" };
             string dataJsonText = JsonConvert.SerializeObject(data);
-            return View("AngularUniversal.cshtml", dataJsonText); // Pass data object from ASP.NET to Node.js
+            return View("Application/Views/AngularUniversal.cshtml", dataJsonText); // Pass data object from ASP.NET to Node.js
         }
     }
 
@@ -105,44 +109,60 @@ namespace WebApplication
             }
         }
 
-        public static FileResult FileGet(ControllerBase controller, string folderNameRelative)
+        /// <summary>
+        /// Copy file from source to dest and serve it.
+        /// </summary>
+        /// <param name="controller">WebApi controller</param>
+        /// <param name="requestFolderName">For example: MyApp/</param>
+        /// <param name="folderNameSourceRelative">For example ../Angular/</param>
+        /// <param name="folderNameDestRelative">For example Application/Node.js/Client/</param>
+        public static FileResult FileGet(ControllerBase controller, string requestFolderName, string folderNameSourceRelative, string folderNameDestRelative)
         {
+            FileResult result = null;
             string requestFileName = controller.Request.Path.Value;
-            if (requestFileName.StartsWith("/" + folderNameRelative))
+            string x = requestFileName;
+            if (!x.EndsWith("/"))
             {
-                requestFileName = requestFileName.Substring(("/" + folderNameRelative).Length);
+                x += "/";
+            }
+            if (x.StartsWith("/" + requestFolderName))
+            {
+                requestFileName = requestFileName.Substring(requestFolderName.Length + 1);
                 Uri folderName = new Uri(Directory.GetCurrentDirectory() + "/");
-                Uri folderNameAngular = new Uri(folderName, "../../" + folderNameRelative);
-                Uri fileNameAngular = new Uri(folderNameAngular, requestFileName);
-                Uri folderNameRoot = new Uri(folderName, "wwwroot/" + folderNameRelative);
-                Uri fileNameRoot = new Uri(folderNameRoot, requestFileName);
-                if (File.Exists(fileNameRoot.LocalPath) || System.IO.File.Exists(fileNameAngular.LocalPath))
+                Uri folderNameSource = new Uri(folderName, folderNameSourceRelative);
+                Uri folderNameDest = new Uri(folderName, folderNameDestRelative);
+                Uri fileNameSource = new Uri(folderNameSource, requestFileName);
+                Uri fileNameDest = new Uri(folderNameDest, requestFileName);
+                // ContentType
+                string fileNameExtension = Path.GetExtension(fileNameSource.LocalPath);
+                string contentType; // https://wiki.selfhtml.org/wiki/Referenz:MIME-Typen
+                switch (fileNameExtension)
                 {
-                    if (!File.Exists(fileNameRoot.LocalPath))
+                    case ".html": contentType = "text/html"; break;
+                    case ".css": contentType = "text/css"; break;
+                    case ".js": contentType = "text/javascript"; break;
+                    case ".map": contentType = "text/plain"; break;
+                    default:
+                        throw new Exception("Unknown!");
+                }
+                // Copye from source to dest
+                if (File.Exists(fileNameSource.LocalPath) && !File.Exists(fileNameDest.LocalPath))
+                {
+                    string folderNameCopy = Directory.GetParent(fileNameDest.LocalPath).ToString();
+                    if (!Directory.Exists(folderNameCopy))
                     {
-                        string folderNameCopy = Directory.GetParent(fileNameRoot.LocalPath).ToString();
-                        if (!Directory.Exists(folderNameCopy))
-                        {
-                            Directory.CreateDirectory(folderNameCopy);
-                        }
-                        File.Copy(fileNameAngular.LocalPath, fileNameRoot.LocalPath);
+                        Directory.CreateDirectory(folderNameCopy);
                     }
-                    var byteList = File.ReadAllBytes(fileNameRoot.LocalPath);
-                    string fileNameExtension = Path.GetExtension(fileNameAngular.LocalPath);
-                    string contentType;
-                    switch (fileNameExtension)
-                    {
-                        case ".html": contentType = "text/html"; break;
-                        case ".css": contentType = "text/css"; break;
-                        case ".js": contentType = "text/javascript"; break;
-                        case ".map": contentType = "text/plain"; break;
-                        default:
-                            throw new Exception("Unknown!");
-                    }
-                    return controller.File(byteList, contentType); // https://wiki.selfhtml.org/wiki/Referenz:MIME-Typen
+                    File.Copy(fileNameSource.LocalPath, fileNameDest.LocalPath);
+                }
+                // Serve dest
+                if (File.Exists(fileNameDest.LocalPath))
+                {
+                    var byteList = File.ReadAllBytes(fileNameDest.LocalPath);
+                    result = controller.File(byteList, contentType); 
                 }
             }
-            return null;
+            return result;
         }
     }
 }

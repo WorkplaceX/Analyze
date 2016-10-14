@@ -2,20 +2,11 @@
   "version": "1.0.0",
   "name": "asp.net",
   "dependencies": {
-    "aspnet-prerendering": "1.0.7",
-    "angular2-universal-polyfills": "~2.0.11",
-    "zone.js": "~0.6.25",
-    "@angular/core": "2.0.0",
-    "rxjs": "5.0.0-beta.12",
-    "angular2-platform-node": "~2.0.11",
-    "@angular/platform-browser": "2.0.0",
-    "@angular/common": "2.0.0",
-    "@angular/http": "2.0.0",
-    "@angular/compiler": "2.0.0",
-    "angular2-universal": "~2.0.11"
+    "aspnet-prerendering": "1.0.7"
   },
+
   "scripts": {
-    "installAll": "cd ../../Angular/ && npm install && npm run tsc && cd \"../Angular Universal/\" && npm install && cd \"../ASP.NET Core/WebApplication\" && npm install",
-    "buildAngular": "cd \"../../Angular Universal/\" && npm run build:prod && node distFileCopy.js"
+    "installAll": "npm install && cd ../Angular/ && npm install && npm run tsc && cd \"../Angular Universal/\" && npm install && cd \"../ASP.NET/Application/Node.js/Server/\" && npm install",
+    "buildAll": "cd \"../Angular Universal/\" && npm run build:prod && cd ../ASP.NET/ && node FileCopy.js"
   }
 }
