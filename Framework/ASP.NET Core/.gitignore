@@ -1,11 +1,11 @@
 .vs/
-WebApplication/.vscode/
-WebApplication/bin/
-WebApplication/obj/
-WebApplication/project.lock.json
-WebApplication/node_modules/
-WebApplication/*.user
+.vscode/
+bin/
+obj/
+project.lock.json
+node_modules/
+*.user
 
-WebApplication/wwwroot/Angular/
-WebApplication/AngularUniversalServer.js
-WebApplication/Properties/PublishProfiles
+wwwroot/Angular/
+AngularUniversalServer.js
+Properties/PublishProfiles
