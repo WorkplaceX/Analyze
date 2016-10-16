@@ -1,4 +1,5 @@
 ﻿ToDo
+-Generate defer.js file (with webpack).
 -Doc ASP.NET Core no space in root folder error.
 -Doc Type script blocked.
 -Doc three node_modules folder.

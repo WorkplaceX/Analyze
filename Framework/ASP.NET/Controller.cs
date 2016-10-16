@@ -63,6 +63,26 @@ namespace WebApplication
         }
     }
 
+    /// <summary>
+    /// Angular2 transition from static to dynamic with defer.
+    /// </summary>
+    public class AngularUniversalDeferController : Controller
+    {
+        [Route("Angular/Defer.html")]
+        public IActionResult Index()
+        {
+            Data data = new Data() { Name = "Data from Controller.cs" };
+            string dataJsonText = JsonConvert.SerializeObject(data);
+            return View("Application/Views/AngularUniversalDefer.cshtml", dataJsonText); // Pass data object from ASP.NET to Node.js
+        }
+
+        [Route("Angular/defer.js")]
+        public IActionResult Defer()
+        {
+            string result = System.IO.File.ReadAllText("Application/Node.js/defer.js");
+            return Content(result);
+        }
+    }
 
     public class Data
     {
@@ -116,16 +136,16 @@ namespace WebApplication
         /// <param name="requestFolderName">For example: MyApp/</param>
         /// <param name="folderNameSourceRelative">For example ../Angular/</param>
         /// <param name="folderNameDestRelative">For example Application/Node.js/Client/</param>
-        public static FileResult FileGet(ControllerBase controller, string requestFolderName, string folderNameSourceRelative, string folderNameDestRelative)
+        public static FileContentResult FileGet(ControllerBase controller, string requestFolderName, string folderNameSourceRelative, string folderNameDestRelative)
         {
-            FileResult result = null;
+            FileContentResult result = null;
             string requestFileName = controller.Request.Path.Value;
-            string x = requestFileName;
-            if (!x.EndsWith("/"))
+            string requestFolderNameMatch = requestFileName;
+            if (!requestFolderNameMatch.EndsWith("/"))
             {
-                x += "/";
+                requestFolderNameMatch += "/";
             }
-            if (x.StartsWith("/" + requestFolderName))
+            if (requestFolderNameMatch.StartsWith("/" + requestFolderName))
             {
                 requestFileName = requestFileName.Substring(requestFolderName.Length + 1);
                 Uri folderName = new Uri(Directory.GetCurrentDirectory() + "/");
@@ -156,11 +176,8 @@ namespace WebApplication
                     File.Copy(fileNameSource.LocalPath, fileNameDest.LocalPath);
                 }
                 // Serve dest
-                if (File.Exists(fileNameDest.LocalPath))
-                {
-                    var byteList = File.ReadAllBytes(fileNameDest.LocalPath);
-                    result = controller.File(byteList, contentType); 
-                }
+                var byteList = File.ReadAllBytes(fileNameDest.LocalPath);
+                result = controller.File(byteList, contentType);
             }
             return result;
         }
