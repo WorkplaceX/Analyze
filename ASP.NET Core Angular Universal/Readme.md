@@ -38,8 +38,9 @@ Open with Visual Studio or Visual Studio Code. It contains everything to build a
 
 Hint: For Ubuntu check node version in terminal with “node --version”. You might have to install “sudo apt install nodejs-legacy”.
 
-## Publish to Azure
-* Do not rename and do not use spaces for the folder "ASP.NET". It will result in build error!
-* Temporarly change in file "project.json" the line "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final" into "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview1-final" (Only during publish)
+## Visual Studio and Publish to Azure
+* Do not rename and do not use spaces for the folder "ASP.NET". It will result in publish error!
+* WebApplication.xproj has TypeScriptCompileBlocked enabled to prevent Visual Studio to compile node_modules in sub folders!
+* Temporarly change in file "project.json" the line "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final" to "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview1-final" (Only during publish)
 
 ![alt tag](Doc/Screenshot.png)
