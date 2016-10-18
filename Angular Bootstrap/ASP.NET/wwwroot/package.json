@@ -2,8 +2,7 @@
   "scripts": {
     "tsc": "tsc",
     "typings": "typings",
-    "postinstall": "typings install",
-    "node-sass": "node-sass --include-path node_modules/bootstrap/scss/"
+    "postinstall": "typings install"
   },
   "dependencies": {
     "@angular/common": "~2.0.1",
@@ -21,7 +20,6 @@
     "zone.js": "^0.6.25"
   },
   "devDependencies": {
-    "node-sass": "^3.10.1",
     "typescript": "^2.0.3",
     "typings": "^1.4.0"
   }
