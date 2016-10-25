@@ -2,5 +2,5 @@
 
 ## Folder
 * Angular (Based on Angular2 Quickstart and Angular2 Bootstrap)
-* Angular Universal
+* Angular Universal (Based on Angular2 Universal Starter)
 * ASP.NET
