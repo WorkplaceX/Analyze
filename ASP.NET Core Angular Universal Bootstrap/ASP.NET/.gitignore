@@ -1,0 +1,13 @@
+/.vs/
+/.vscode/
+/bin/
+/obj/
+/project.lock.json
+/Properties/PublishProfiles/
+/node_modules/
+*.user
+
+/Application/Node.js/Server/node_modules/
+/Application/Node.js/Client/
+
+/Application/Node.js/Server/AngularUniversalServer.js
