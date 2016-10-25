@@ -1,5 +1,5 @@
 # Application Framework Basics
-Minimal ASP.NET Core application with Angular2 Universal. Demonstrates transition from server side rendering to single page application. It also passes data from ASP.NET down to Node.js. Example tested on Windows and Ubuntu.
+Minimal ASP.NET Core application with Angular2 Universal and Bootstrap. Demonstrates transition from server side rendering to single page application. It also passes data from ASP.NET down to Node.js. Example tested on Windows and Ubuntu.
 
 ## Install
 Go to folder "ASP.NET"
@@ -30,6 +30,15 @@ Open with Visual Studio or Visual Studio Code. It contains everything to build a
 * ASP.NET/Application/Node.js/Client/ (Gets populated when "AngularInstallClient.cshtml" runs the first time)
 * AngularUniversalServer.js (Is the output of "Angular Universal/dist/server/index.js")
 * FileCopy.js (Used by script "npm run installAll")
+
+## Angular Bootstrap
+Changes made to enable Angular Bootstrap (Based on https://ng-bootstrap.github.io/)
+* File "app.module.ts" add line "import { NgbModule } from '@ng-bootstrap/ng-bootstrap';"
+* File "app.module.ts" modify line "imports: [NgbModule.forRoot(), BrowserModule],"
+* File "index.html" add line "<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">"
+* File "package.json" add line ""@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.9","
+* File "package.json" modify line ""bootstrap": "^4.0.0-alpha.5","
+* File "system.config.js" add line "'@ng-bootstrap/ng-bootstrap': 'node_modules/@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js',"
 
 ## Prerequisites
 * Visual Studio 2015 or Visual Code

@@ -162,6 +162,7 @@ namespace WebApplication
                     case ".css": contentType = "text/css"; break;
                     case ".js": contentType = "text/javascript"; break;
                     case ".map": contentType = "text/plain"; break;
+                    case ".scss": contentType = "text/plain"; break; // Used only if internet explorer is in debug mode!
                     default:
                         throw new Exception("Unknown!");
                 }

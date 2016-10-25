@@ -1,5 +1,7 @@
 ﻿ToDo
 -Generate defer.js file (with webpack).
+-Copy file index.html from folder Angular.
+-Remove file styles.css.
 -Doc ASP.NET Core no space in root folder error. [Done]
 -Doc Type script blocked. [Done]
 -Doc three node_modules folder. [Done]
