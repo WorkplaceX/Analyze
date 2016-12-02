@@ -21,7 +21,7 @@ namespace WebApplication
     }
 
     /// <summary>
-    /// Install javascript files. Copy files on server to folder Application/Node.js/Client.
+    /// Install javascript files. Copy files on server to folder Application/Nodejs/Client.
     /// </summary>
     public class AngularController : Controller
     {
@@ -29,7 +29,7 @@ namespace WebApplication
         public FileResult Angular()
         {
             // Thread.Sleep(100);
-            return Util.FileGet(this, "Angular/", "../Angular/", "Application/Node.js/Client/"); // Copy requested files from Angular to wwwroot
+            return Util.FileGet(this, "Angular/", "../Angular/", "Application/Nodejs/Client/"); // Copy requested files from Angular to wwwroot
         }
     }
 
@@ -79,7 +79,7 @@ namespace WebApplication
         [Route("Angular/defer.js")]
         public IActionResult Defer()
         {
-            string result = System.IO.File.ReadAllText("Application/Node.js/defer.js");
+            string result = System.IO.File.ReadAllText("Application/Nodejs/defer.js");
             return Content(result);
         }
     }
@@ -135,7 +135,7 @@ namespace WebApplication
         /// <param name="controller">WebApi controller</param>
         /// <param name="requestFolderName">For example: MyApp/</param>
         /// <param name="folderNameSourceRelative">For example ../Angular/</param>
-        /// <param name="folderNameDestRelative">For example Application/Node.js/Client/</param>
+        /// <param name="folderNameDestRelative">For example Application/Nodejs/Client/</param>
         public static FileContentResult FileGet(ControllerBase controller, string requestFolderName, string folderNameSourceRelative, string folderNameDestRelative)
         {
             FileContentResult result = null;

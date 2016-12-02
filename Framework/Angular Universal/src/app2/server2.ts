@@ -33,7 +33,7 @@ import { Promise } from 'es6-promise';
 
 declare var module: any;
 
-(module).exports = function (params) {
+function Run (params) {
   return new Promise(function (resolve, reject) {
 
     // See also: https://github.com/aspnet/JavaScriptServices/commit/5214a553a7d98bc532b956af7ad14b8905302878?w=1
@@ -53,11 +53,70 @@ declare var module: any;
         html = (<string>html).substring(48); // Remove <html><head><title></title></head><body><my-app>
         html = (<string>html).substring(0, (<string>html).length - 234); // Remove </my-app></body></html><universal-script><script> try {window.UNIVERSAL_CACHE = ({"APP_ID":"c04f"}) ...
         // console.log("Html=" + html); // Debug Angular Universal only!
-        resolve({ html: html })
+        resolve(html)
       });
     });
 
   });
 }
 
+(module).exports = function (params) {
+  return Run(params);
+}
+
 // (module).then(); // Debug Angular Universal only! (Call default function)
+
+
+/* 
+-Uncomment following code block.
+-npm run build:prod
+-Copy manually file dist/index.js to Application/Nodejs/Server/AngularUniversalServerNoSpa.js
+*/
+/*
+var http = require('http');
+http.createServer(function (req, res) {
+  var htmlBegin = 
+    `
+    <html>
+    <head>
+        <title>Angular QuickStart</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    </head>
+    <!-- 3. Display the application -->
+    <body>
+        <script>
+            params = { data: JSON.stringify({ Name: "Data from index.html" }) };
+        </script>
+        <my-app>
+    `;
+  var htmlEnd =
+    `
+    </my-app>
+
+        <script type="text/javascript">
+            function defer() {
+                var element = document.createElement("script");
+                element.src = "defer.js";
+                document.head.appendChild(element);
+            }
+
+            if (window.addEventListener)
+                window.addEventListener("load", defer, false);
+            else if (window.attachEvent)
+                window.attachEvent("onload", defer);
+            else window.onload = defer;
+        </script>
+
+    </body>
+    </html>
+    `;
+  
+  Run({}).then((html) => { 
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(htmlBegin + html + htmlEnd);
+  })
+}).listen(process.env.PORT); // Debug: listen(process.env.PORT); listen(1337, '127.0.0.1');
+*/

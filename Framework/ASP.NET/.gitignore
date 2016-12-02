@@ -7,7 +7,8 @@
 /node_modules/
 *.user
 
-/Application/Node.js/Server/node_modules/
-/Application/Node.js/Client/
+/Application/Nodejs/Server/node_modules/
+/Application/Nodejs/Client/
 
-/Application/Node.js/Server/AngularUniversalServer.js
+/Application/Nodejs/Server/AngularUniversalServer.js
+/Application/Nodejs/Server/AngularUniversalServerNoSpa.js
