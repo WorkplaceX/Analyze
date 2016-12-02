@@ -53,7 +53,7 @@ function Run (params) {
         html = (<string>html).substring(48); // Remove <html><head><title></title></head><body><my-app>
         html = (<string>html).substring(0, (<string>html).length - 234); // Remove </my-app></body></html><universal-script><script> try {window.UNIVERSAL_CACHE = ({"APP_ID":"c04f"}) ...
         // console.log("Html=" + html); // Debug Angular Universal only!
-        resolve(html)
+        resolve({html: html})
       });
     });
 
@@ -115,8 +115,9 @@ http.createServer(function (req, res) {
     `;
   
   Run({}).then((html) => { 
+    var htmlObject: any = html;
     res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(htmlBegin + html + htmlEnd);
+    res.end(htmlBegin + htmlObject.html + htmlEnd);
   })
 }).listen(process.env.PORT); // Debug: listen(process.env.PORT); listen(1337, '127.0.0.1');
 */
