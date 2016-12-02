@@ -1,0 +1,5 @@
+.vs/
+ASP.NET/bin/
+ASP.NET/obj/
+ASP.NET/project.lock.json
+ASP.NET/*.user
