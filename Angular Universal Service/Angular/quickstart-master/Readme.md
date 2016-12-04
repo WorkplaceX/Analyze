@@ -1,0 +1,1 @@
+Based on https://github.com/angular/quickstart (2016-12-04)

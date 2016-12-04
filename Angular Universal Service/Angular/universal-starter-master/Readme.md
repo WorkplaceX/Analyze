@@ -1,0 +1,1 @@
+Based on https://github.com/angular/universal-starter (2016-12-04)
