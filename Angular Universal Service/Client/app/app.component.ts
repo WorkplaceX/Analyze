@@ -34,10 +34,10 @@ export class AppComponent {
 
   constructor(dataService: DataService){
     this.data = dataService.data;
-  }
+  } 
 
-  click(event){
-    this.data.Name += ".";
-  }
+  click(){
+    this.data.Name += "."; 
+  } 
 }
 
