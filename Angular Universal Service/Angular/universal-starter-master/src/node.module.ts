@@ -3,7 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UniversalModule, isBrowser, isNode } from 'angular2-universal/node'; // for AoT we need to manually split universal packages
 
-import { AppModule, AppComponent } from './+app/app.module';
+import { AppModule } from './+app/app.module';
+import { AppComponent } from '../../../Client/app/app.component';
 import { SharedModule } from './+app/shared/shared.module';
 import { CacheService } from './+app/shared/cache.service';
 
@@ -20,6 +21,7 @@ export function getRequest() {
 export function getResponse() {
   return Zone.current.get('res') || {};
 }
+export function getRequestData() { return JSON.stringify({ Name: "Data from app.module.ts" }); }
 
 // TODO(gdi2290): refactor into Universal
 export const UNIVERSAL_KEY = 'UNIVERSAL_CACHE';
@@ -48,6 +50,8 @@ export const UNIVERSAL_KEY = 'UNIVERSAL_CACHE';
     CacheService,
 
     Meta,
+
+    { provide: 'paramsData', useValue: getRequestData } 
   ]
 })
 export class MainModule {
