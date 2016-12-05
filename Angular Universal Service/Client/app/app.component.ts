@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { DataService, Data } from './dataService';
 
 @Component({
-  selector: 'my-app',
+  selector: 'app',
   template: `
   <div class="container">
     <div class="row">
