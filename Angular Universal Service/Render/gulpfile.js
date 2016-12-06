@@ -49,9 +49,21 @@ gulp.task('t7', function() {
 // Copy folder
 gulp.task('publish', function() {
     return gulp.src('./publish/**/*.*')
+        .pipe(gulp.dest('../Server/Render/'))
+})
+
+// Copy folder
+gulp.task('publishStyles', function() {
+    return gulp.src('../Client/styles.css')
+        .pipe(gulp.dest('../Server/wwwroot/'))
+})
+
+// Copy folder
+gulp.task('publishLocal', function() {
+    return gulp.src('./publish/**/*.*')
         .pipe(gulp.dest('C:/Temp/Publish/'))
 })
 
 gulp.task('default', function(){
-    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7', 'publish');
+    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7', 'publish', 'publishStyles');
 });

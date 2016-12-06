@@ -29,6 +29,8 @@ namespace Server
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles(); // Enable access to files in folder wwwwroot.
+
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");
