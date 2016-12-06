@@ -79,14 +79,6 @@ export var serverConfig = {
     path: root('dist/server'),
     libraryTarget: 'commonjs2'
   },
-  module: {
-    rules: [
-      { test: /@angular(\\|\/)material/, use: "imports-loader?window=>global" }
-    ],
-  },
-  externals: includeClientPackages(
-    /@angularclass|@angular|angular2-|ng2-|ng-|@ng-|angular-|@ngrx|ngrx-|@angular2|ionic|@ionic|-angular2|-ng2|-ng/
-  ),
   node: {
     global: true,
     crypto: true,

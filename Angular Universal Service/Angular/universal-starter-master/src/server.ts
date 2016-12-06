@@ -84,7 +84,7 @@ function ngApp(req, res) {
 /**
  * use universal for specific routes
  */
-app.get('/', ngApp);
+app.get('*', ngApp); /*
 routes.forEach(route => {
   app.get(`/${route}`, ngApp);
   app.get(`/${route}/*`, ngApp);
@@ -95,7 +95,7 @@ app.get('*', function(req, res) {
   var pojo = { status: 404, message: 'No Content' };
   var json = JSON.stringify(pojo, null, 2);
   res.status(404).send(json);
-});
+}); */
 
 // Server
 let server = app.listen(app.get('port'), () => {
