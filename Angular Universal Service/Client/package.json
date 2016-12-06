@@ -2,10 +2,9 @@
   "name": "client",
   "version": "1.0.0",
   "scripts": {
-    "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
-    "lite": "lite-server",
     "tsc": "tsc",
-    "tsc:w": "tsc -w"
+    "tsc:w": "tsc -w",
+    "run": "tsc && concurrently \"tsc -w\" \"lite-server\" "
   },
   "dependencies": {
     "@angular/common": "~2.2.0",

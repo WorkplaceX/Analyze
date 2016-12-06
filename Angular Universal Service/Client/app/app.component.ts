@@ -36,8 +36,8 @@ export class AppComponent {
     this.data = dataService.data;
   } 
 
-  click(){
-    this.data.Name += "."; 
+  click(event: any){
+    this.data.Name += ".2"; 
   } 
 }
 
