@@ -24,6 +24,34 @@ export function getResponse() {
 // TODO(gdi2290): refactor into Universal
 export const UNIVERSAL_KEY = 'UNIVERSAL_CACHE';
 
+export function currentTime(){
+    var result = new Date();
+    //
+    var hour = result.getHours();
+    var hourString = hour.toString();
+    if (hour < 10) {
+        hourString = '0' + hourString;
+    }
+    //
+    var minute = result.getMinutes()
+    var minuteString = minute.toString();
+    if (minute < 10) {
+        minuteString = "0" + minuteString;
+    }
+    //
+    var second = result.getSeconds()
+    var secondString = second.toString();
+    if (second < 10) {
+        secondString = "0" + secondString;
+    }
+    //
+    return hourString + ":" + minuteString + "." + secondString;
+}
+
+export function data(){
+  return JSON.stringify({ Name: "node.module.ts=" + currentTime() });
+}
+
 @NgModule({
   bootstrap: [ AppComponent ],
   imports: [
@@ -49,7 +77,7 @@ export const UNIVERSAL_KEY = 'UNIVERSAL_CACHE';
 
     Meta,
 
-    { provide: 'paramsData', useValue: JSON.stringify({ Name: "node.module.ts" }) },
+    { provide: 'paramsData', useFactory: data },
     
   ]
 })

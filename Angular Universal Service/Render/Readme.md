@@ -8,11 +8,15 @@ Based on https://github.com/angular/universal-starter (2016-12-04)
 * File server.ts line 87 change "app.get('/', ngApp);" to "app.get('*', ngApp); /*"
 * File server.ts line 98 change "});" to "}); */"
 * File webpack.config.ts line 82 - 89 remove.
- 
-## Publish
+
+## Publish with Gulp
+* npm run gulp
+* Files to publish are now in folder "publish"
+
+## Publish manually
 * npm install
 * npm run build
-* Copy folder src into folder dist/server
-* Copy folder dist to IIS.
-* User web.config with iisnode enabled.
+* Copy folder "src" into folder "dist/server"
+* Copy folder "dist" to IIS.
+* Use "web.config" with iisnode enabled.
   
