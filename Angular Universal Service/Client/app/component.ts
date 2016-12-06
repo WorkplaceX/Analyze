@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService, Data } from './dataService';
+import  * as util from './util';
 
 @Component({
   selector: 'app',
@@ -12,7 +13,7 @@ import { DataService, Data } from './dataService';
     </div>    
     <div class="row">
       <div class="col-sm-4">
-        <p>Data=({{ data.Name }})</p>
+        <p>data.Name=({{ data.Name }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
@@ -37,7 +38,7 @@ export class AppComponent {
   } 
 
   click(event: any){
-    this.data.Name += ".2"; 
+    this.data.Name += " " + util.currentTime() + ";" 
   } 
 }
 

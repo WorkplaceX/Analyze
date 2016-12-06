@@ -11,8 +11,8 @@
     // map tells the System loader where to look for things
     map: {
       '@ng-bootstrap/ng-bootstrap': 'node_modules/@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js',
-      // our app is within the app folder
-      app: 'app',
+      // our app is within the dist folder
+      app: 'dist',
 
       // angular bundles
       '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
