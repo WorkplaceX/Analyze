@@ -8,7 +8,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   declarations: [AppComponent],
   bootstrap: [AppComponent],
   providers: [
-    { provide: 'paramsData', useValue: JSON.stringify({ Name: "Data from app.module.ts" }) },
   ]
 })
 export class AppModule { }

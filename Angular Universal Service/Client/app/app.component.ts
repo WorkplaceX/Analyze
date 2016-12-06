@@ -12,7 +12,7 @@ import { DataService, Data } from './dataService';
     </div>    
     <div class="row">
       <div class="col-sm-4">
-        <p>Data=({{ data.Name }})</p>
+        <p>Data=()</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
@@ -26,18 +26,8 @@ import { DataService, Data } from './dataService';
       </div>
     </div>
   </div>  
-`,
-  providers: [DataService]  
+`
 })
 export class AppComponent { 
-  data: Data;
-
-  constructor(dataService: DataService){
-    this.data = dataService.data;
-  } 
-
-  click(event: any){
-    this.data.Name += ".2"; 
-  } 
 }
 
