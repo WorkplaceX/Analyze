@@ -48,8 +48,31 @@ export function currentTime(){
     return hourString + ":" + minuteString + "." + secondString;
 }
 
+function showObject(obj) {
+  var result = "";
+  for (var p in obj) {
+    if( obj.hasOwnProperty(p) ) {
+      // result += p + " , " + obj[p] + "\n";
+      var value = 'null';
+      if (obj[p] != null){
+        try
+        {
+          value = String(obj[p]);
+        }
+        catch(err)
+        {
+          value = '?';
+        }
+      }
+      result += p + "=" + value + "; ";
+    } 
+  }              
+  return result;
+}
+
 export function data(){
-  return JSON.stringify({ Name: "node.module.ts=" + currentTime() });
+  var a = getRequest().url; // showObject(getRequest());
+  return JSON.stringify({ Name: "node.module.ts=" + currentTime() + a });
 }
 
 @NgModule({

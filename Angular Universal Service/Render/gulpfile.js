@@ -40,13 +40,18 @@ gulp.task('t6', function() {
         .pipe(gulp.dest('./publish/'))
 })
 
-// Copy folder
+// Copy file
 gulp.task('t7', function() {
     return gulp.src('../Client/index.html')
         .pipe(gulp.dest('./publish/src/'))
 })
 
+// Copy folder
+gulp.task('publish', function() {
+    return gulp.src('./publish/**/*.*')
+        .pipe(gulp.dest('C:/Temp/Publish/'))
+})
 
 gulp.task('default', function(){
-    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7');
+    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7', 'publish');
 });
