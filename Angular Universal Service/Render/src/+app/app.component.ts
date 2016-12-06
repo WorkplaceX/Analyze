@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { DataService, Data } from './dataService';
+import  * as util from './util';
 
 @Component({
   selector: 'app',
@@ -11,7 +13,7 @@ import { Component } from '@angular/core';
     </div>    
     <div class="row">
       <div class="col-sm-4">
-        <p>Data=()</p>
+        <p>data.Name=({{ data.Name }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
@@ -25,8 +27,18 @@ import { Component } from '@angular/core';
       </div>
     </div>
   </div>  
-`  
+`,
+  providers: [DataService]  
 })
 export class AppComponent { 
+  data: Data;
+
+  constructor(dataService: DataService){
+    this.data = dataService.data;
+  } 
+
+  click(event: any){
+    this.data.Name += " " + util.currentTime() + ";" 
+  } 
 }
 

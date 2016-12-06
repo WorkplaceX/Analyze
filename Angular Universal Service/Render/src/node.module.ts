@@ -48,6 +48,9 @@ export const UNIVERSAL_KEY = 'UNIVERSAL_CACHE';
     CacheService,
 
     Meta,
+
+    { provide: 'paramsData', useValue: JSON.stringify({ Name: "node.module.ts" }) },
+    
   ]
 })
 export class MainModule {
