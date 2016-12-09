@@ -9,7 +9,7 @@ import * as util from './app/util';
   declarations: [AppComponent],
   bootstrap: [AppComponent],
   providers: [
-    { provide: 'paramsData', useValue: JSON.stringify({ Name: "app.module.ts=" + util.currentTime() }) },
+    { provide: 'paramsData', useValue: JSON.stringify({ Name: "app.module.ts Web02=" + util.currentTime() }) },
   ]
 })
 export class AppModule { }
