@@ -10,7 +10,7 @@ Based on https://github.com/angular/universal-starter (2016-12-04)
 * File webpack.config.ts line 82 - 89 remove.
 
 ## Publish with Gulp
-* npm run gulp
+* npm run publish
 * Files to publish are now in folder "publish"
 
 ## Publish manually
