@@ -18,6 +18,16 @@ gulp.task('copy', function () {
         .pipe(gulp.dest('./Render/'))
 })
 
+// Copy file
+gulp.task('copyExpress', function () {
+    return gulp.src('../Render/publish/**/*.*')
+        .pipe(gulp.dest('../RenderExpress/Render/'))
+})
+
+gulp.task('end', shell.task([
+  'ECHO. & ECHO End'
+]))
+
 gulp.task('default', function () {
-    return runSequence('publish', 'copy');
+    return runSequence('publish', 'copy', 'copyExpress', 'end');
 });
