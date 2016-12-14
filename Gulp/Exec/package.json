@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "shelljs": "0.7.5"
+  }
+}
