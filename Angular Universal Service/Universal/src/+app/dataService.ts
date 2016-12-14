@@ -17,7 +17,7 @@ export class DataService {
     constructor( @Inject('paramsData') paramsData: string) {
         // Default params
         this.data = new Data();
-        this.data.Name = "dataService.ts=" + util.currentTime();
+        this.data.Name = "dataService.ts web01=" + util.currentTime();
         // Browser params
         if (typeof params !== 'undefined') {
             this.data = JSON.parse(params.data);
