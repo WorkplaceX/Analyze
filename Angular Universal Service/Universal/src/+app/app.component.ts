@@ -8,7 +8,7 @@ import  * as util from './util';
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
-        <h1>Angular 01 App with Bootstrap</h1>
+        <h1>Angular2 App with Bootstrap</h1>
       </div>
     </div>    
     <div class="row">
@@ -38,7 +38,7 @@ export class AppComponent {
   } 
 
   click(event: any){
-    this.data.Name += " " + util.currentTime() + "-01;" 
+    this.data.Name += " " + util.currentTime() + ";" 
   } 
 }
 

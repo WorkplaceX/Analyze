@@ -7,8 +7,7 @@
     "url": "https://github.com/angular/universal-starter.git"
   },
   "scripts": {
-    "gulp": "gulp",
-    "gulpWeb01": "npm run gulp -- -web01",
+    "publish": "gulp",
     "watch": "webpack --watch",
     "watch:dev": "npm run server & npm run watch",
     "clean:dist": "rimraf dist",

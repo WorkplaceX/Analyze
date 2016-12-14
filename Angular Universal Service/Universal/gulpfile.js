@@ -4,11 +4,9 @@ var rename = require("gulp-rename");
 var shell = require('gulp-shell')
 var runSequence = require('run-sequence');
 
-folder = '../Client/' + process.argv[2].substring(1) + '/'; // For example '../Client/web01/''
-
 // Copy folder
 gulp.task('t1', function() {
-    return gulp.src(folder + '/app/**/*.*')
+    return gulp.src('../Client/app/**/*.*')
         .pipe(gulp.dest('./src/+app/'))
 })
 
@@ -44,8 +42,20 @@ gulp.task('t6', function() {
 
 // Copy file
 gulp.task('t7', function() {
-    return gulp.src(folder + '/index.html')
+    return gulp.src('../Client/index.html')
         .pipe(gulp.dest('./publish/src/'))
+})
+
+// Copy folder
+gulp.task('publish', function() {
+    return gulp.src('./publish/**/*.*')
+        .pipe(gulp.dest('../Server/Render/'))
+})
+
+// Copy folder
+gulp.task('publishStyles', function() {
+    return gulp.src('../Client/styles.css')
+        .pipe(gulp.dest('../Server/wwwroot/'))
 })
 
 // Copy folder
@@ -55,6 +65,5 @@ gulp.task('publishLocal', function() {
 })
 
 gulp.task('default', function(){
-    console.log(folder);
-    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7');
+    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7', 'publish', 'publishStyles');
 });
