@@ -1,8 +1,9 @@
 {
-	"version": "1.0.0",
-	"name": "asp.net",
-	"private": true,
+  "scripts": {
+    "gulp": "gulp"
+  },
   "devDependencies": {
+    "event-stream": "^3.3.4",
     "gulp": "3.9.1",
     "gulp-shell": "0.5.2",
     "run-sequence": "1.2.2"

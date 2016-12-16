@@ -1,33 +1,27 @@
-﻿/*
-This file in the main entry point for defining Gulp tasks and using Gulp plugins.
-Click here to learn more. http://go.microsoft.com/fwlink/?LinkId=518007
-*/
-
-var gulp = require('gulp');
+﻿var gulp = require('gulp');
 var shell = require('gulp-shell')
 var runSequence = require('run-sequence');
+var es = require('event-stream');
 
-// npm run publish
-gulp.task('publish', shell.task([
-  'cd.. & cd Render & npm run publish'
+// npm run gulp (../Universal)
+gulp.task('universal', shell.task([
+  'cd.. & cd Universal & npm run gulp'
 ]))
 
 // Copy file
 gulp.task('copy', function () {
-    return gulp.src('../Render/publish/**/*.*')
-        .pipe(gulp.dest('./Render/'))
+    return es.concat(
+        gulp.src('../Universal/publish/**/*.*')
+            .pipe(gulp.dest('./Universal/')),
+        gulp.src('../Client/*.html')
+            .pipe(gulp.dest('./Universal/')),
+        gulp.src('../Client/*.css')
+            .pipe(gulp.dest('./Universal/')),
+        gulp.src('../Universal/publish/**/*.*')
+            .pipe(gulp.dest('../UniversalExpress/Universal/'))
+    );
 })
-
-// Copy file
-gulp.task('copyExpress', function () {
-    return gulp.src('../Render/publish/**/*.*')
-        .pipe(gulp.dest('../RenderExpress/Render/'))
-})
-
-gulp.task('end', shell.task([
-  'ECHO. & ECHO End'
-]))
 
 gulp.task('default', function () {
-    return runSequence('publish', 'copy', 'copyExpress', 'end');
+    return runSequence('universal', 'copy');
 });

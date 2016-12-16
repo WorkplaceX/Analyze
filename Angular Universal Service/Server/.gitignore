@@ -2,7 +2,6 @@
 /obj/
 /project.lock.json
 /*.user
-/Render/
-/wwwroot/
+/Universal/
 /node_modules/
 /**/*.log
