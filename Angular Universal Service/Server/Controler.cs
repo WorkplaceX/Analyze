@@ -1,7 +1,9 @@
 ﻿using Application;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Server
@@ -14,6 +16,8 @@ namespace Server
         [Route(path + "{*uri}")]
         public async Task<IActionResult> Web(Data data)
         {
+            data = Main.Request(data);
+            // Html
             if (HttpContext.Request.Path == path)
             {
                 bool isUniversal = true; // Use Angular Universal server side render engine.
@@ -21,18 +25,11 @@ namespace Server
                 if (isUniversal)
                 {
                     string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
-                    using (HttpClient client = new HttpClient())
+                    result = await Post(url, data, false); // Call Angular Universal server side rendering service.
+                    if (result == null)
                     {
-                        HttpResponseMessage response = await client.GetAsync(url);
-                        if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                        {
-                            result = await UniversalExpress();
-                        }
-                        else
-                        {
-                            response.EnsureSuccessStatusCode();
-                            result = await response.Content.ReadAsStringAsync();
-                        }
+                        url = "http://localhost:1337/"; // Application not running on IIS. Divert to UniversalExpress when running in Visual Studio.
+                        result = await Post(url, data, true);
                     }
                 }
                 else
@@ -41,36 +38,42 @@ namespace Server
                 }
                 return Content(result, "text/html");
             }
+            // Data API
             if (HttpContext.Request.Path == path + "api/data/")
             {
                 var result = Application.Main.Request(data);
                 return Json(result);
             }
-            if (HttpContext.Request.Path == path + "Universal/index.js")
-            {
-                // Not running on IIS. Divert to UniversalExpress
-                string url = "http://localhost:1337/";
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string result = await response.Content.ReadAsStringAsync();
-                return Content(result);
-            }
             return NotFound();
         }
 
         /// <summary>
-        /// Not running on IIS. Divert to UniversalExpress when running in Visual Studio.
+        /// Post json data to url.
         /// </summary>
-        private async Task<string> UniversalExpress()
+        private async Task<string> Post(string url, Data data, bool isEnsureSuccessStatusCode)
         {
-            string url = "http://localhost:1337/";
+            string json = JsonConvert.SerializeObject(data);
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string result = await response.Content.ReadAsStringAsync();
-                return result;
+                HttpResponseMessage response = await client.PostAsync(url, new StringContent(json, Encoding.Unicode, "application/json"));
+                if (isEnsureSuccessStatusCode)
+                {
+                    response.EnsureSuccessStatusCode();
+                    string result = await response.Content.ReadAsStringAsync();
+                    return result;
+                }
+                else
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        string result = await response.Content.ReadAsStringAsync();
+                        return result;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
             }
         }
     }

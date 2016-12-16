@@ -71,8 +71,12 @@ function showObject(obj) {
 }
 
 export function data(){
-  var a = getRequest().url; // showObject(getRequest());
-  return JSON.stringify({ Name: "node.module.ts=" + currentTime() + a });
+  var result = getRequest().body;
+  if (result.Name != undefined){
+    return JSON.stringify(result);
+  }
+  var data = getRequest().url; // showObject(getRequest());
+  return JSON.stringify({ Name: "node.module.ts=" + currentTime() + data });
 }
 
 @NgModule({

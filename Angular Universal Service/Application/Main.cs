@@ -23,7 +23,7 @@ namespace Application
             {
                 result = data;
             }
-            data.Name += "(" + DateTime.Now.ToString() + "); ";
+            result.Name += ".NET Core=" + DateTime.Now.ToString();
             return result;
         }
     }
