@@ -8,10 +8,11 @@ namespace Server
 {
     public class TodoController : Controller
     {
-        const string path = "/web01/";
+        // const string path = "/web/"; // Run with root debug page.
+        const string path = "/"; // Run direct.
 
         [Route(path + "{*uri}")]
-        public async Task<IActionResult> Web01(Data data)
+        public async Task<IActionResult> Web(Data data)
         {
             if (HttpContext.Request.Path == path)
             {
@@ -19,11 +20,20 @@ namespace Server
                 string result = null;
                 if (isUniversal)
                 {
-                    string url = "http://" + Request.Host.ToUriComponent() + path + "/Universal/index.js";
-                    HttpClient client = new HttpClient();
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-                    result = await response.Content.ReadAsStringAsync();
+                    string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
+                    using (HttpClient client = new HttpClient())
+                    {
+                        HttpResponseMessage response = await client.GetAsync(url);
+                        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                        {
+                            result = await UniversalExpress();
+                        }
+                        else
+                        {
+                            response.EnsureSuccessStatusCode();
+                            result = await response.Content.ReadAsStringAsync();
+                        }
+                    }
                 }
                 else
                 {
@@ -47,6 +57,21 @@ namespace Server
                 return Content(result);
             }
             return NotFound();
+        }
+
+        /// <summary>
+        /// Not running on IIS. Divert to UniversalExpress when running in Visual Studio.
+        /// </summary>
+        private async Task<string> UniversalExpress()
+        {
+            string url = "http://localhost:1337/";
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
         }
     }
 }

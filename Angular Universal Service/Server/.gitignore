@@ -5,3 +5,4 @@
 /Universal/
 /node_modules/
 /**/*.log
+/Properties/PublishProfiles/

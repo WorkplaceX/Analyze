@@ -14,7 +14,7 @@
   },
 
   "tools": {
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview4-final"
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final"
   },
 
   "frameworks": {
@@ -40,6 +40,7 @@
   "publishOptions": {
     "include": [
       "wwwroot",
+      "Universal",
       "web.config"
     ]
   },
