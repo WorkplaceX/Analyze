@@ -17,6 +17,10 @@ gulp.task('copy', function () {
             .pipe(gulp.dest('./Universal/')),
         gulp.src('../Client/*.css')
             .pipe(gulp.dest('./Universal/')),
+        gulp.src('../Client/*.js')
+            .pipe(gulp.dest('./Universal/')),
+        gulp.src('../Client/dist/**/*.js')
+            .pipe(gulp.dest('./Universal/dist/')),
         gulp.src('../Universal/publish/**/*.*')
             .pipe(gulp.dest('../UniversalExpress/Universal/'))
     );
