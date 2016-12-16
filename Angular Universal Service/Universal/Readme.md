@@ -10,8 +10,8 @@ Based on https://github.com/angular/universal-starter (2016-12-04)
 * File webpack.config.ts line 82 - 89 remove.
 
 ## Publish with Gulp
-* npm run publish
-* Files to publish are now in folder "publish"
+* npm run gulp (Files to publish are now in folder "publish")
+* npm run gulp publishIIS (Files to run IIS are now in "C:\Temp\Publish". Launch http://localhost:8080/index.js)
 
 ## Publish manually
 * npm install

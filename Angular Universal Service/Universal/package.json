@@ -7,7 +7,7 @@
     "url": "https://github.com/angular/universal-starter.git"
   },
   "scripts": {
-    "publish": "gulp",
+    "gulp": "gulp",
     "watch": "webpack --watch",
     "watch:dev": "npm run server & npm run watch",
     "clean:dist": "rimraf dist",
@@ -84,6 +84,7 @@
     "angular2-template-loader": "^0.4.0",
     "awesome-typescript-loader": "^2.2.4",
     "cookie-parser": "^1.4.3",
+    "event-stream": "^3.3.4",
     "express-interceptor": "^1.2.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
