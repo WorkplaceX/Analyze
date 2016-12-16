@@ -6,19 +6,20 @@ namespace Server
 {
     public class TodoController : Controller
     {
-        [Route("web01/")]
-        public string Web01()
+        [Route("/web01/{*uri}")]
+        public IActionResult Web01(Data data)
         {
-            string result = System.IO.File.ReadAllText("Render/src/index.html");
-            Response.ContentType = "text/html";
-            return result;
-        }
-
-        [Route("web01/api/data/")]
-        public Data Data(Data data)
-        {
-            var result = Application.Main.Request(data);
-            return result;
+            if (HttpContext.Request.Path == "/web01/")
+            {
+                string result = System.IO.File.ReadAllText("Universal/index.html");
+                return Content(result, "text/html");
+            }
+            if (HttpContext.Request.Path == "/web01/api/data/")
+            {
+                var result = Application.Main.Request(data);
+                return Json(result);
+            }
+            return NotFound();
         }
     }
 }
