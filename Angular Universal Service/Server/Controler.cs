@@ -20,23 +20,10 @@ namespace Server
             // Html
             if (HttpContext.Request.Path == path)
             {
-                bool isUniversal = true; // Use Angular Universal server side render engine.
-                string result = null;
-                if (isUniversal)
-                {
-                    string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
-                    result = await Post(url, data, false); // Call Angular Universal server side rendering service.
-                    if (result == null)
-                    {
-                        url = "http://localhost:1337/"; // Application not running on IIS. Divert to UniversalExpress when running in Visual Studio.
-                        result = await Post(url, data, true);
-                    }
-                }
-                else
-                {
-                    result = System.IO.File.ReadAllText("Universal/index.html");
-                }
-                return Content(result, "text/html");
+                string htmlUniversal = null;
+                string html = System.IO.File.ReadAllText("Universal/index.html"); // Static html.
+                htmlUniversal = await HtmlUniversal(html, data, true); // Angular Universal server side rendering.
+                return Content(htmlUniversal, "text/html");
             }
             // Data API
             if (HttpContext.Request.Path == path + "api/data/")
@@ -45,6 +32,36 @@ namespace Server
                 return Json(result);
             }
             return NotFound();
+        }
+
+
+
+        /// <summary>
+        /// Returns server side rendered index.html.
+        /// </summary>
+        private async Task<string> HtmlUniversal(string html, Data data, bool isUniversal)
+        {
+            if (isUniversal == false)
+            {
+                return html;
+            }
+            else
+            {
+                string htmlUniversal = null;
+                string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
+                htmlUniversal = await Post(url, data, false); // Call Angular Universal server side rendering service.
+                if (htmlUniversal == null)
+                {
+                    url = "http://localhost:1337/"; // Application not running on IIS. Divert to UniversalExpress when running in Visual Studio.
+                    htmlUniversal = await Post(url, data, true);
+                }
+                //
+                int indexBegin = htmlUniversal.IndexOf("<app>");
+                int indexEnd = htmlUniversal.IndexOf("</app>") + "</app>".Length;
+                string htmlUniversalClean = htmlUniversal.Substring(indexBegin, (indexEnd - indexBegin));
+                string htmlClean = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
+                return htmlClean;
+            }
         }
 
         /// <summary>
