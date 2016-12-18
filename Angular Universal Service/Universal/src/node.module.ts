@@ -104,7 +104,7 @@ export function data(){
 
     Meta,
 
-    { provide: 'paramsData', useFactory: data },
+    { provide: 'angularData', useFactory: data },
     
   ]
 })

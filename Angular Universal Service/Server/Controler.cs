@@ -63,6 +63,7 @@ namespace Server
                 {
                     url = "http://localhost:1337/"; // Application not running on IIS. Divert to UniversalExpress when running in Visual Studio.
                     htmlUniversal = await Post(url, data, true);
+                    Util.Assert(htmlUniversal != "<app></app>"); // Catch java script errors. See UniversalExpress console for errors!
                 }
                 //
                 string result = null;
@@ -117,6 +118,19 @@ namespace Server
 
     public static class Util
     {
+        public static void Assert(bool isAssert, string errorText)
+        {
+            if (!isAssert)
+            {
+                throw new Exception(errorText);
+            }
+        }
+
+        public static void Assert(bool isAssert)
+        {
+            Assert(isAssert, "Assert!");
+        }
+
         /// <summary>
         /// Uri for Windows and Linux.
         /// </summary>
