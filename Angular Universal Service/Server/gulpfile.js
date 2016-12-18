@@ -14,6 +14,11 @@ gulp.task('clean', function () {
         .pipe(clean())
 })
 
+gulp.task('cleanExpress', function () {
+    gulp.src('../UniversalExpress/Universal/')
+        .pipe(clean({ force: true }))
+})
+
 // Copy file
 gulp.task('copy', function () {
     return es.concat(
@@ -33,5 +38,5 @@ gulp.task('copy', function () {
 })
 
 gulp.task('default', function () {
-    return runSequence('universal', 'clean', 'copy');
+    return runSequence('clean', 'cleanExpress', 'universal', 'copy');
 });

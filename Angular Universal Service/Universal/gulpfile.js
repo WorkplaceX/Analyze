@@ -4,6 +4,8 @@ var rename = require("gulp-rename");
 var shell = require('gulp-shell');
 var runSequence = require('run-sequence');
 var es = require('event-stream');
+var uglify = require('gulp-uglify');
+var pump = require('pump');
 
 // Copy folder
 gulp.task('t1', function() {
@@ -49,9 +51,10 @@ gulp.task('t7', function() {
 
 // Copy file
 gulp.task('t8', function() {
-    return gulp.src('./dist/client/main.bundle.js')
-        .pipe(gulp.dest('./publish/'))
+    return pump([gulp.src('./dist/client/main.bundle.js'), uglify(), gulp.dest('./publish/')])
 })
+
+
 
 // Copy folder
 gulp.task('publishIIS', function() {
