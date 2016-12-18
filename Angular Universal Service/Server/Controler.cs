@@ -65,11 +65,22 @@ namespace Server
                     htmlUniversal = await Post(url, data, true);
                 }
                 //
-                int indexBegin = htmlUniversal.IndexOf("<app>");
-                int indexEnd = htmlUniversal.IndexOf("</app>") + "</app>".Length;
-                string htmlUniversalClean = htmlUniversal.Substring(indexBegin, (indexEnd - indexBegin));
-                string htmlClean = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
-                return htmlClean;
+                string result = null;
+                // Replace <app> on index.html
+                {
+                    int indexBegin = htmlUniversal.IndexOf("<app>");
+                    int indexEnd = htmlUniversal.IndexOf("</app>") + "</app>".Length;
+                    string htmlUniversalClean = htmlUniversal.Substring(indexBegin, (indexEnd - indexBegin));
+                    result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
+                }
+                // Add data to index.html
+                {
+                    string scriptFind = "System.import('app').catch(function(err){ console.error(err); });";
+                    string dataJson = JsonConvert.SerializeObject(data);
+                    string scriptReplace = "var browserData = '" + dataJson + "'; " + scriptFind;
+                    result = result.Replace(scriptFind, scriptReplace);
+                }
+                return result;
             }
         }
 

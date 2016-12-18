@@ -8,12 +8,13 @@ import  * as util from './util';
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
-        <h1>Angular2 App with Bootstrap</h1>
+        <h1>Application</h1>
       </div>
     </div>    
     <div class="row">
       <div class="col-sm-4">
         <p>data.Name=({{ data.Name }})</p>
+        <p>data.Session=({{ data.Session }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
