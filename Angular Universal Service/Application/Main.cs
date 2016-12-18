@@ -7,6 +7,8 @@ namespace Application
         public string Name { get; set; }
 
         public Guid Session;
+
+        public bool IsBrowser { get; set; }
     }
 
     public static class Main

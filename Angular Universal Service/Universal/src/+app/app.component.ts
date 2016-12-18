@@ -15,6 +15,7 @@ import  * as util from './util';
       <div class="col-sm-4">
         <p>data.Name=({{ data.Name }})</p>
         <p>data.Session=({{ data.Session }})</p>
+        <p>data.IsBrowser=({{ data.IsBrowser }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns

@@ -5,6 +5,7 @@
   "devDependencies": {
     "event-stream": "^3.3.4",
     "gulp": "3.9.1",
+    "gulp-clean": "0.3.2",
     "gulp-shell": "0.5.2",
     "run-sequence": "1.2.2"
   }

@@ -47,6 +47,12 @@ gulp.task('t7', function() {
         .pipe(gulp.dest('./publish/src/'))
 })
 
+// Copy file
+gulp.task('t8', function() {
+    return gulp.src('./dist/client/main.bundle.js')
+        .pipe(gulp.dest('./publish/'))
+})
+
 // Copy folder
 gulp.task('publishIIS', function() {
     console.log('###')
@@ -61,5 +67,5 @@ gulp.task('publishIIS', function() {
 })
 
 gulp.task('default', function(){
-    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7');
+    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8');
 });

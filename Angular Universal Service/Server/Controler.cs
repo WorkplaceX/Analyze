@@ -22,7 +22,7 @@ namespace Server
             if (HttpContext.Request.Path == path)
             {
                 string htmlUniversal = null;
-                string html = System.IO.File.ReadAllText("Universal/index.html"); // Static html.
+                string html = IndexHtml(true);
                 htmlUniversal = await HtmlUniversal(html, data, true); // Angular Universal server side rendering.
                 return Content(htmlUniversal, "text/html");
             }
@@ -35,7 +35,7 @@ namespace Server
             // node_modules
             if (HttpContext.Request.Path.ToString().StartsWith("/node_modules/"))
             {
-                return Util.FileGet(this, "", "../Client/", "Universal/node_modules/");
+                return Util.FileGet(this, "", "../Client/", "Universal/");
             }
             // (*.css; *.js)
             if (HttpContext.Request.Path.ToString().EndsWith(".css") || HttpContext.Request.Path.ToString().EndsWith(".js"))
@@ -58,6 +58,7 @@ namespace Server
             {
                 string htmlUniversal = null;
                 string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
+                data.IsBrowser = false; // Server side rendering mode.
                 htmlUniversal = await Post(url, data, false); // Call Angular Universal server side rendering service.
                 if (htmlUniversal == null)
                 {
@@ -74,13 +75,22 @@ namespace Server
                     string htmlUniversalClean = htmlUniversal.Substring(indexBegin, (indexEnd - indexBegin));
                     result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
                 }
-                // Add data to index.html
+                data.IsBrowser = true; // Client side rendering mode.
+                string dataJson = JsonConvert.SerializeObject(data);
+                string resultAssert = result;
+                // Add data to index.html (Client/index.html)
                 {
                     string scriptFind = "System.import('app').catch(function(err){ console.error(err); });";
-                    string dataJson = JsonConvert.SerializeObject(data);
                     string scriptReplace = "var browserData = '" + dataJson + "'; " + scriptFind;
                     result = result.Replace(scriptFind, scriptReplace);
                 }
+                // Add data to index.html (Server/indexBundle.html)
+                {
+                    string scriptFind = "function downloadJSAtOnload() {";
+                    string scriptReplace = "var browserData = '" + dataJson + "';\r\n" + scriptFind;
+                    result = result.Replace(scriptFind, scriptReplace);
+                }
+                Util.Assert(resultAssert != result, "Adding browserData failed!");
                 return result;
             }
         }
@@ -112,6 +122,22 @@ namespace Server
                         return null;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns index.html.
+        /// </summary>
+        /// <param name="isBundle">If true use Server/index.html else Client/index.html</param>
+        private string IndexHtml(bool isBundle)
+        {
+            if (isBundle == false)
+            {
+                return System.IO.File.ReadAllText("Universal/index.html"); // Original source: Client/index.html
+            }
+            else
+            {
+                return System.IO.File.ReadAllText("indexBundle.html"); // Original source: Client/index.html
             }
         }
     }
