@@ -41,7 +41,8 @@
     "include": [
       "wwwroot",
       "Universal",
-      "web.config"
+      "web.config",
+      "indexBundle.html"
     ]
   },
 
