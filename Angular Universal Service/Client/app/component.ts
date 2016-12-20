@@ -63,6 +63,8 @@ export class AppComponent {
   <LayoutRow *ngIf="data.Type=='LayoutRow'" [data]=data></LayoutRow>
   <LayoutCell *ngIf="data.Type=='LayoutCell'" [data]=data></LayoutCell>
   <ButtonX *ngIf="data.Type=='Button'" [data]=data></ButtonX>
+  <InputX *ngIf="data.Type=='Input'" [data]=data></InputX>
+  <Label *ngIf="data.Type=='Label'" [data]=data></Label>
   <!-- <LayoutDebug [data]=data></LayoutDebug> -->
 `
 })
@@ -139,4 +141,33 @@ export class Button {
     this.data.IsClick = true;
     this.dataService.update();
   } 
+}
+
+@Component({
+  selector: 'InputX',
+  template: `
+  <input (keyup)="onKey($event)" (focus)="focus(true)" (focusout)="focus(false)" value="{{data.Text}}"/>
+  <p>
+    Text={{ data.Text }}<br/>
+    TextNew={{ data.TextNew}}<br/>
+    Focus={{data.IsFocus}}
+  </p>`
+})
+export class InputX {
+  @Input() data: any
+  onKey(event:any) {
+    this.data.TextNew = event.target.value;
+  }
+
+  focus(isFocus: boolean) {
+    this.data.IsFocus = isFocus;
+  }  
+}
+
+@Component({
+  selector: 'Label',
+  template: `{{ data.Text }}`
+})
+export class Label {
+  @Input() data: any
 }

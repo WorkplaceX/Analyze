@@ -85,7 +85,7 @@ namespace Application
 
     public class Button : Component
     {
-        public Button(Component owner, string text) 
+        public Button(Component owner, string text)
             : base(owner, text)
         {
             if (IsClick)
@@ -95,6 +95,24 @@ namespace Application
         }
 
         public bool IsClick { get; set; }
+    }
+
+    public class Input : Component
+    {
+        public Input(Component owner, string text)
+            : base(owner, text)
+        {
+
+        }
+    }
+
+    public class Label : Component
+    {
+        public Label(Component owner, string text)
+            : base(owner, text)
+        {
+
+        }
     }
 
     public static class Main
@@ -122,6 +140,8 @@ namespace Application
             var rowContent = new LayoutRow(container, "Content");
             var cellContent1 = new LayoutCell(rowContent, "ContentCell1");
             var cellContent2 = new LayoutCell(rowContent, "ContentCell2");
+            new Label(cellContent2, "Enter text");
+            new Input(cellContent2, "MyTest");
             var rowFooter = new LayoutRow(container, "Footer");
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
