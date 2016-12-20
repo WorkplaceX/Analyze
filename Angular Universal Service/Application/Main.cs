@@ -15,18 +15,21 @@ namespace Application
 
         public string VersionClient { get; set; }
 
-        public Component Component { get; set; }
+        public ComponentData Component { get; set; }
     }
 
-    public class Component
+    public class ComponentData
     {
-        public Component(Component owner, string text)
+        public ComponentData(ComponentData owner, string text)
         {
-            this.List = new Dictionary<string, Component>();
             this.Type = GetType().Name;
             this.Text = text;
             if (owner != null)
             {
+                if (owner.List == null)
+                {
+                    owner.List = new List<ComponentData>();
+                }
                 int count = 0;
                 foreach (var item in owner.List)
                 {
@@ -35,27 +38,30 @@ namespace Application
                         count += 1;
                     }
                 }
-                owner.List.Add(this.Type + "-" + count.ToString(), this);
+                this.Key = this.Type + "-" + count.ToString();
+                owner.List.Add(this);
             }
         }
+
+        public string Key { get; set; }
 
         public string Type { get; set; }
 
         public string Text { get; set; }
 
-        public Dictionary<string, Component> List { get; set; }
+        public List<ComponentData> List { get; set; }
     }
 
-    public class LayoutContainer : Component
+    public class LayoutContainer : ComponentData
     {
-        public LayoutContainer(Component owner, string text) 
+        public LayoutContainer(ComponentData owner, string text) 
             : base(owner, text)
         {
 
         }
     }
 
-    public class LayoutRow : Component
+    public class LayoutRow : ComponentData
     {
         public LayoutRow(LayoutContainer owner, string text) 
             : base(owner, text)
@@ -64,7 +70,7 @@ namespace Application
         }
     }
 
-    public class LayoutCell : Component
+    public class LayoutCell : ComponentData
     {
         public LayoutCell(LayoutRow owner, string text) 
             : base(owner, text)

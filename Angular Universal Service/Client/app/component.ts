@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { DataService, Data } from './dataService';
+import { Component, Input } from '@angular/core';
+import { DataService, Data, ComponentData } from './dataService';
 import  * as util from './util';
 
 @Component({
   selector: 'app',
   template: `
+  <componentLayout *ngIf="dataService.data.Component!=null" [componentData]="dataService.data.Component"></componentLayout>
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -55,3 +56,53 @@ export class AppComponent {
   }
 }
 
+@Component({
+  selector: 'component',
+  template: `
+  <LayoutRow *ngIf="componentData.Type=='LayoutRow'" [componentData]=componentData></LayoutRow>
+  <LayoutCell *ngIf="componentData.Type=='LayoutCell'" [componentData]=componentData></LayoutCell>
+  <!--<componentLayout [componentData]=componentData></componentLayout>-->
+`
+})
+export class ComponentVisual {
+  @Input() componentData: ComponentData
+}
+
+@Component({
+  selector: 'componentLayout',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
+    Text={{ componentData.Text }}
+    <component [componentData]=item *ngFor="let item of componentData.List"></component>
+  </div>  
+`
+})
+export class Layout {
+  @Input() componentData: ComponentData
+}
+
+@Component({
+  selector: 'LayoutRow',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:red;'>
+    Text={{ componentData.Text }}
+    <component [componentData]=item *ngFor="let item of componentData.List"></component>
+  </div>  
+`
+})
+export class LayoutRow {
+  @Input() componentData: ComponentData
+}
+
+@Component({
+  selector: 'LayoutCell',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:green;'>
+    Text={{ componentData.Text }}
+    <component [componentData]=item *ngFor="let item of componentData.List"></component>
+  </div>  
+`
+})
+export class LayoutCell {
+  @Input() componentData: ComponentData
+}

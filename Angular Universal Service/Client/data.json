@@ -1,6 +1,1 @@
-{
-  "Session": "bb962c09-ad9e-4024-8c3e-be45fb7a31a5",
-  "Name": "MyApp22",
-  "IsBrowser": false,
-  "IsDataGet": true
-}
+{"IsDataGet":true,"Session":"2ee18c20-4c9b-4a72-80ea-32874cd281c1","Name":".NET Core=12/20/2016 3:16:55 PM","IsBrowser":true,"VersionServer":"v0.2 Server","VersionClient":"v0.2 Client","Component":{"Key":null,"Type":"LayoutContainer","Text":"Container","List":[{"Key":"LayoutRow-0","Type":"LayoutRow","Text":"Header","List":[{"Key":"LayoutCell-0","Type":"LayoutCell","Text":"HeaderCell1","List":null}]},{"Key":"LayoutRow-1","Type":"LayoutRow","Text":"Content","List":[{"Key":"LayoutCell-0","Type":"LayoutCell","Text":"ContentCell1","List":null},{"Key":"LayoutCell-1","Type":"LayoutCell","Text":"ContentCell2","List":null}]},{"Key":"LayoutRow-2","Type":"LayoutRow","Text":"Footer","List":[{"Key":"LayoutCell-0","Type":"LayoutCell","Text":"FooterCell1","List":null}]}]}}

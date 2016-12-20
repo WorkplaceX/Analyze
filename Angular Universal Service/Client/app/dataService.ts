@@ -14,6 +14,10 @@ export class Data {
     VersionServer: string; // Angular client version.
 }
 
+export class ComponentData {
+    Text: string;
+}
+
 @Injectable()
 export class DataService {
 
@@ -36,6 +40,10 @@ export class DataService {
         }
         //
         this.data.VersionClient = util.versionClient();
+        //
+        if (this.data.IsDataGet == true) {
+            this.update(); // For debug mode.
+        }
     }
 
     update() {
