@@ -5,7 +5,7 @@ import  * as util from './util';
 @Component({
   selector: 'app',
   template: `
-  <Selector *ngIf="dataService.data.Component!=null" [data]="dataService.data.Component"></Selector>
+  <Selector [data]=item *ngFor="let item of dataService.data.List"></Selector>
   <div class="container">
     <div class="row">
       <div class="col-sm-12">

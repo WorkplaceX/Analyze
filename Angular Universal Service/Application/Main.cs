@@ -3,8 +3,14 @@ using System.Collections.Generic;
 
 namespace Application
 {
-    public class Data 
+    public class Data : Component
     {
+        public Data() 
+            : base(null, "Data")
+        {
+
+        }
+
         public string Name { get; set; }
 
         public Guid Session;
@@ -14,8 +20,6 @@ namespace Application
         public string VersionServer { get; set; }
 
         public string VersionClient { get; set; }
-
-        public Component Component { get; set; }
     }
 
     public class Component
@@ -112,7 +116,7 @@ namespace Application
             Data result = new Data();
             result.Session = Guid.NewGuid();
             //
-            var container = new LayoutContainer(null, "Container");
+            var container = new LayoutContainer(result, "Container");
             var rowHeader = new LayoutRow(container, "Header");
             var cellHeader1 = new LayoutCell(rowHeader, "HeaderCell1");
             var rowContent = new LayoutRow(container, "Content");
@@ -122,7 +126,6 @@ namespace Application
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
             //
-            result.Component = container;
             return result;
         }
     }
