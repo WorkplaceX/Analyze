@@ -17,6 +17,7 @@ import  * as util from './util';
         <p>data.Session=({{ dataService.data.Session }})</p>
         <p>data.IsBrowser=({{ dataService.data.IsBrowser }})</p>
         <p>Version=({{ dataService.data.VersionClient + '; ' + dataService.data.VersionServer }})</p>
+        <p>data=({{ dataJson() }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
@@ -48,5 +49,9 @@ export class AppComponent {
   clickServer(){
     this.dataService.update();
   } 
+
+  dataJson(){
+    return JSON.stringify(this.dataService.data);
+  }
 }
 

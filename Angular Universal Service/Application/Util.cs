@@ -18,7 +18,7 @@ namespace Application
         {
             get
             {
-                return "v0.1 Server";
+                return "v0.2 Server";
             }
         }
     }
