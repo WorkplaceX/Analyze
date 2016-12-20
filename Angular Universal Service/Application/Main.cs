@@ -79,6 +79,20 @@ namespace Application
         }
     }
 
+    public class Button : Component
+    {
+        public Button(Component owner, string text) 
+            : base(owner, text)
+        {
+            if (IsClick)
+            {
+                Text += "."; // TODO
+            }
+        }
+
+        public bool IsClick { get; set; }
+    }
+
     public static class Main
     {
         public static Data Request(Data dataIn)
@@ -88,7 +102,7 @@ namespace Application
             {
                 dataOut = DataCreate();
             }
-            dataOut.Name = ".NET Core=" + DateTime.Now.ToString();
+            dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
             dataOut.VersionServer = Util.VersionServer;
             return dataOut;
         }
@@ -106,6 +120,7 @@ namespace Application
             var cellContent2 = new LayoutCell(rowContent, "ContentCell2");
             var rowFooter = new LayoutRow(container, "Footer");
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
+            var button = new Button(cellFooter1, "Hello");
             //
             result.Component = container;
             return result;

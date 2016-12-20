@@ -5,7 +5,7 @@ import  * as util from './util';
 @Component({
   selector: 'app',
   template: `
-  <Selector *ngIf="dataService.data.Component!=null" [componentData]="dataService.data.Component"></Selector>
+  <Selector *ngIf="dataService.data.Component!=null" [data]="dataService.data.Component"></Selector>
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -59,64 +59,84 @@ export class AppComponent {
 @Component({
   selector: 'Selector',
   template: `
-  <LayoutContainer *ngIf="componentData.Type=='LayoutContainer'" [componentData]=componentData></LayoutContainer>
-  <LayoutRow *ngIf="componentData.Type=='LayoutRow'" [componentData]=componentData></LayoutRow>
-  <LayoutCell *ngIf="componentData.Type=='LayoutCell'" [componentData]=componentData></LayoutCell>
-  <!-- <LayoutDebug [componentData]=componentData></LayoutDebug> -->
+  <LayoutContainer *ngIf="data.Type=='LayoutContainer'" [data]=data></LayoutContainer>
+  <LayoutRow *ngIf="data.Type=='LayoutRow'" [data]=data></LayoutRow>
+  <LayoutCell *ngIf="data.Type=='LayoutCell'" [data]=data></LayoutCell>
+  <ButtonX *ngIf="data.Type=='Button'" [data]=data></ButtonX>
+  <!-- <LayoutDebug [data]=data></LayoutDebug> -->
 `
 })
 export class Selector {
-  @Input() componentData: any
+  @Input() data: any
 }
 
 @Component({
   selector: 'LayoutContainer',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
-    Text={{ componentData.Text }}
-    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+    Text={{ data.Text }}
+    <Selector [data]=item *ngFor="let item of data.List"></Selector>
   </div>  
 `
 })
 export class LayoutContainer {
-  @Input() componentData: any
+  @Input() data: any
 }
 
 @Component({
   selector: 'LayoutRow',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:red;'>
-    Text={{ componentData.Text }}
-    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+    Text={{ data.Text }}
+    <Selector [data]=item *ngFor="let item of data.List"></Selector>
   </div>  
 `
 })
 export class LayoutRow {
-  @Input() componentData: any
+  @Input() data: any
 }
 
 @Component({
   selector: 'LayoutCell',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:green;'>
-    Text={{ componentData.Text }}
-    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+    Text={{ data.Text }}
+    <Selector [data]=item *ngFor="let item of data.List"></Selector>
   </div>  
 `
 })
 export class LayoutCell {
-  @Input() componentData: any
+  @Input() data: any
 }
 
 @Component({
   selector: 'LayoutDebug',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
-    Text={{ componentData.Text }}
-    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+    Text={{ data.Text }}
+    <Selector [data]=item *ngFor="let item of data.List"></Selector>
   </div>  
 `
 })
 export class LayoutDebug {
-  @Input() componentData: any
+  @Input() data: any
+}
+
+@Component({
+  selector: 'ButtonX',
+  template: `<button class="btn btn-primary" (click)="click()">{{ data.Text }}</button>`
+})
+export class Button {
+  @Input() data: any
+
+  dataService: DataService;
+
+  constructor(dataService: DataService){
+    this.dataService = dataService;
+  }
+
+  click(){
+    this.data.IsClick = true;
+    this.dataService.update();
+  } 
 }
