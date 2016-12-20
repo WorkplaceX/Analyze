@@ -10,12 +10,12 @@ gulp.task('universal', shell.task([
 ]))
 
 gulp.task('clean', function () {
-    gulp.src('./Universal/')
+    return gulp.src('./Universal/')
         .pipe(clean())
 })
 
 gulp.task('cleanExpress', function () {
-    gulp.src('../UniversalExpress/Universal/')
+    return gulp.src('../UniversalExpress/Universal/')
         .pipe(clean({ force: true }))
 })
 
@@ -38,5 +38,5 @@ gulp.task('copy', function () {
 })
 
 gulp.task('default', function () {
-    return runSequence('clean', 'cleanExpress', 'universal', 'copy');
+    return runSequence('universal', 'clean', 'cleanExpress', 'copy');
 });

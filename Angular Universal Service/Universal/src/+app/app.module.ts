@@ -8,11 +8,11 @@ import { TodoModule } from './+todo/todo.module';
 import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+/* GulpFind01 */ import { AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug } from './app.component';
 
 
 @NgModule({
-  declarations: [ AppComponent ],
+/* GulpFind02 */ declarations: [AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug],
   imports: [
     SharedModule,
     HomeModule,

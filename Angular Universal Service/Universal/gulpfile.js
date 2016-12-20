@@ -6,6 +6,7 @@ var runSequence = require('run-sequence');
 var es = require('event-stream');
 var uglify = require('gulp-uglify');
 var pump = require('pump');
+var fs = require('fs');
 
 // Copy folder
 gulp.task('t1', function() {
@@ -24,6 +25,42 @@ gulp.task('t2', function() {
 gulp.task('t3', function() {
     return gulp.src('./src/+app/component.ts')
         .pipe(clean())
+})
+
+// Replace text in app.module.ts
+gulp.task('t3.5', function(cb) {
+    fs.readFile('../Client/app.module.ts', 'utf8', function(err, source) {
+        fs.readFile('./src/+app/app.module.ts', 'utf8', function(err, dest) {
+            /* GulpFind01 */
+            indexBegin = source.indexOf('/* GulpFind01 */');
+            if (indexBegin < 0) throw "Not found!";
+            indexEnd = source.indexOf('\r', indexBegin);
+            var replace = source.substring(indexBegin, indexEnd);
+            replace = replace.replace('./app/component', './app.component');
+            //
+            indexBegin = dest.indexOf('/* GulpFind01 */');
+            if (indexBegin < 0) throw "Not found!";
+            indexEnd = dest.indexOf('\r', indexBegin);
+            var find = dest.substring(indexBegin, indexEnd);
+            //       
+            dest = dest.replace(find, replace);     
+            /* GulpFind02 */
+            indexBegin = source.indexOf('/* GulpFind02 */');
+            if (indexBegin < 0) throw "Not found!";
+            indexEnd = source.indexOf('\r', indexBegin);
+            var replace = source.substring(indexBegin, indexEnd);
+            //
+            indexBegin = dest.indexOf('/* GulpFind02 */');
+            if (indexBegin < 0) throw "Not found!";
+            indexEnd = dest.indexOf('\r', indexBegin);
+            var find = dest.substring(indexBegin, indexEnd);
+            //       
+            dest = dest.replace(find, replace);     
+            fs.writeFile('./src/+app/app.module.ts', dest, function(err){
+                cb();
+            })
+        });
+    });
 })
 
 // npm run build
@@ -70,5 +107,5 @@ gulp.task('publishIIS', function() {
 })
 
 gulp.task('default', function(){
-    return runSequence('t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8');
+    return runSequence('t1', 't2', 't3', 't3.5', 't4', 't5', 't6', 't7', 't8');
 });
