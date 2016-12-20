@@ -36,6 +36,10 @@ export class DataService {
         }
         //
         this.data.VersionClient = util.versionClient();
+        //
+        if (this.data.IsDataGet == true) {
+            this.update(); // For debug mode.
+        }
     }
 
     update() {

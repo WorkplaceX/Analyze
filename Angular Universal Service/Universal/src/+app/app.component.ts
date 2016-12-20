@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DataService, Data } from './dataService';
 import  * as util from './util';
 
 @Component({
   selector: 'app',
   template: `
+  <Selector *ngIf="dataService.data.Component!=null" [componentData]="dataService.data.Component"></Selector>
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -55,3 +56,67 @@ export class AppComponent {
   }
 }
 
+@Component({
+  selector: 'Selector',
+  template: `
+  <LayoutContainer *ngIf="componentData.Type=='LayoutContainer'" [componentData]=componentData></LayoutContainer>
+  <LayoutRow *ngIf="componentData.Type=='LayoutRow'" [componentData]=componentData></LayoutRow>
+  <LayoutCell *ngIf="componentData.Type=='LayoutCell'" [componentData]=componentData></LayoutCell>
+  <!-- <LayoutDebug [componentData]=componentData></LayoutDebug> -->
+`
+})
+export class Selector {
+  @Input() componentData: any
+}
+
+@Component({
+  selector: 'LayoutContainer',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
+    Text={{ componentData.Text }}
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+  </div>  
+`
+})
+export class LayoutContainer {
+  @Input() componentData: any
+}
+
+@Component({
+  selector: 'LayoutRow',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:red;'>
+    Text={{ componentData.Text }}
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+  </div>  
+`
+})
+export class LayoutRow {
+  @Input() componentData: any
+}
+
+@Component({
+  selector: 'LayoutCell',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:green;'>
+    Text={{ componentData.Text }}
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+  </div>  
+`
+})
+export class LayoutCell {
+  @Input() componentData: any
+}
+
+@Component({
+  selector: 'LayoutDebug',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
+    Text={{ componentData.Text }}
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+  </div>  
+`
+})
+export class LayoutDebug {
+  @Input() componentData: any
+}

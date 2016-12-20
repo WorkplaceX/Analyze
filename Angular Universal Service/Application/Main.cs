@@ -15,12 +15,12 @@ namespace Application
 
         public string VersionClient { get; set; }
 
-        public ComponentData Component { get; set; }
+        public Component Component { get; set; }
     }
 
-    public class ComponentData
+    public class Component
     {
-        public ComponentData(ComponentData owner, string text)
+        public Component(Component owner, string text)
         {
             this.Type = GetType().Name;
             this.Text = text;
@@ -28,7 +28,7 @@ namespace Application
             {
                 if (owner.List == null)
                 {
-                    owner.List = new List<ComponentData>();
+                    owner.List = new List<Component>();
                 }
                 int count = 0;
                 foreach (var item in owner.List)
@@ -49,19 +49,19 @@ namespace Application
 
         public string Text { get; set; }
 
-        public List<ComponentData> List { get; set; }
+        public List<Component> List { get; set; }
     }
 
-    public class LayoutContainer : ComponentData
+    public class LayoutContainer : Component
     {
-        public LayoutContainer(ComponentData owner, string text) 
+        public LayoutContainer(Component owner, string text) 
             : base(owner, text)
         {
 
         }
     }
 
-    public class LayoutRow : ComponentData
+    public class LayoutRow : Component
     {
         public LayoutRow(LayoutContainer owner, string text) 
             : base(owner, text)
@@ -70,7 +70,7 @@ namespace Application
         }
     }
 
-    public class LayoutCell : ComponentData
+    public class LayoutCell : Component
     {
         public LayoutCell(LayoutRow owner, string text) 
             : base(owner, text)

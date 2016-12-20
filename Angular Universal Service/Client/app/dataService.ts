@@ -14,10 +14,6 @@ export class Data {
     VersionServer: string; // Angular client version.
 }
 
-export class ComponentData {
-    Text: string;
-}
-
 @Injectable()
 export class DataService {
 

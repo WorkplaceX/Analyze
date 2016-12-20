@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DataService, Data, ComponentData } from './dataService';
+import { DataService, Data } from './dataService';
 import  * as util from './util';
 
 @Component({
@@ -66,7 +66,7 @@ export class AppComponent {
 `
 })
 export class Selector {
-  @Input() componentData: ComponentData
+  @Input() componentData: any
 }
 
 @Component({
@@ -79,7 +79,7 @@ export class Selector {
 `
 })
 export class LayoutContainer {
-  @Input() componentData: ComponentData
+  @Input() componentData: any
 }
 
 @Component({
@@ -92,7 +92,7 @@ export class LayoutContainer {
 `
 })
 export class LayoutRow {
-  @Input() componentData: ComponentData
+  @Input() componentData: any
 }
 
 @Component({
@@ -105,7 +105,7 @@ export class LayoutRow {
 `
 })
 export class LayoutCell {
-  @Input() componentData: ComponentData
+  @Input() componentData: any
 }
 
 @Component({
@@ -118,5 +118,5 @@ export class LayoutCell {
 `
 })
 export class LayoutDebug {
-  @Input() componentData: ComponentData
+  @Input() componentData: any
 }
