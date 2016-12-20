@@ -1,12 +1,17 @@
 import { Inject } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 import * as util from './util';
+import {Observable} from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
 
 declare var browserData: any; // Params from browser
 
 export class Data {
     Name: string;
+    IsDataGet: boolean; // GET not POST when debugging client. See also file data.json
+    VersionClient: string; // Angular client version.
+    VersionServer: string; // Angular client version.
 }
 
 @Injectable()
@@ -14,7 +19,10 @@ export class DataService {
 
     data: Data;
 
-    constructor( @Inject('angularData') angularData: string) {
+    http: Http;
+
+    constructor( @Inject('angularData') angularData: string, http: Http) {
+        this.http = http;
         // Default data
         this.data = new Data();
         this.data.Name = "dataService.ts=" + util.currentTime();
@@ -26,5 +34,31 @@ export class DataService {
         if (typeof browserData !== 'undefined') {
             this.data = JSON.parse(browserData);
         }
+        //
+        this.data.VersionClient = util.versionClient();
+    }
+
+    update() {
+        var result: Observable<Data>;
+        if (this.data.IsDataGet == true) {
+            // GET for debug
+            console.log("Send GET");
+            result = this.http.get('data.json').map(this.mapData);
+        } else {
+            // POST
+            console.log("Send POST");
+            var headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            console.log(JSON.stringify(this.data));
+            result = this.http.post('data.json', JSON.stringify(this.data), { headers: headers }).map(this.mapData);
+        }
+        result.forEach(x => this.data = x);
+    }
+
+    mapData(response: Response) : Data {
+        console.log("Receive");
+        let result = <Data>(response.json())
+        result.VersionClient = util.versionClient();
+        return result;
     }
 }

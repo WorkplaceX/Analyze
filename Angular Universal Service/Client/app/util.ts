@@ -21,3 +21,7 @@ export function currentTime(){
     //
     return hourString + ":" + minuteString + "." + secondString;
 }
+
+export function versionClient(){
+    return "v0.1 Client";
+}

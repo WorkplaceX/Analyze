@@ -15,22 +15,25 @@ namespace Server
         const string path = "/"; // Run direct.
 
         [Route(path + "{*uri}")]
-        public async Task<IActionResult> Web(Data data)
+        public async Task<IActionResult> Web()
         {
-            data = Main.Request(data);
             // Html
             if (HttpContext.Request.Path == path)
             {
+                Data dataOut = Main.Request(null);
                 string htmlUniversal = null;
                 string html = IndexHtml(true);
-                htmlUniversal = await HtmlUniversal(html, data, true); // Angular Universal server side rendering.
+                htmlUniversal = await HtmlUniversal(html, dataOut, true); // Angular Universal server side rendering.
                 return Content(htmlUniversal, "text/html");
             }
             // Data API
-            if (HttpContext.Request.Path == path + "api/data/")
+            if (HttpContext.Request.Path == path + "data.json")
             {
-                var result = Application.Main.Request(data);
-                return Json(result);
+                string jsonIn = Util.StreamToString(Request.Body);
+                Data dataIn = JsonConvert.DeserializeObject<Data>(jsonIn);
+                Data dataOut = Main.Request(dataIn);
+                string jsonOut = JsonConvert.SerializeObject(dataOut);
+                return Content(jsonOut, "application/json");
             }
             // node_modules
             if (HttpContext.Request.Path.ToString().StartsWith("/node_modules/"))
@@ -144,6 +147,14 @@ namespace Server
 
     public static class Util
     {
+        public static string StreamToString(Stream stream)
+        {
+            using (var streamReader = new StreamReader(stream))
+            {
+                return streamReader.ReadToEnd();
+            }
+        }
+
         public static void Assert(bool isAssert, string errorText)
         {
             if (!isAssert)

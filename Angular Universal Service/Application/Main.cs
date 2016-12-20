@@ -9,24 +9,25 @@ namespace Application
         public Guid Session;
 
         public bool IsBrowser { get; set; }
+
+        public string VersionServer { get; set; }
+
+        public string VersionClient { get; set; }
     }
 
     public static class Main
     {
-        public static Data Request(Data data)
+        public static Data Request(Data dataIn)
         {
-            Data result = null;
-            if (data == null || data.Session == Guid.Empty)
+            Data dataOut = Util.JsonObjectClone<Data>(dataIn);
+            if (dataOut == null || dataOut.Session == Guid.Empty)
             {
-                result = new Data();
-                result.Session = Guid.NewGuid();
+                dataOut = new Data();
+                dataOut.Session = Guid.NewGuid();
             }
-            else
-            {
-                result = data;
-            }
-            result.Name += ".NET Core=" + DateTime.Now.ToString();
-            return result;
+            dataOut.Name = ".NET Core=" + DateTime.Now.ToString();
+            dataOut.VersionServer = Util.VersionServer;
+            return dataOut;
         }
     }
 }

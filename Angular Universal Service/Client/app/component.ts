@@ -13,13 +13,15 @@ import  * as util from './util';
     </div>    
     <div class="row">
       <div class="col-sm-4">
-        <p>data.Name=({{ data.Name }})</p>
-        <p>data.Session=({{ data.Session }})</p>
-        <p>data.IsBrowser=({{ data.IsBrowser }})</p>
+        <p>data.Name=({{ dataService.data.Name }})</p>
+        <p>data.Session=({{ dataService.data.Session }})</p>
+        <p>data.IsBrowser=({{ dataService.data.IsBrowser }})</p>
+        <p>Version=({{ dataService.data.VersionClient + '; ' + dataService.data.VersionServer }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
-        <button class="btn btn-primary" (click)="click($event)">Click</button>
+        <button class="btn btn-primary" (click)="clickClient()">Client Update</button>
+        <button class="btn btn-primary" (click)="clickServer()">Server Update</button>
       </div>
       <div class="col-sm-4">
         Third of three columns
@@ -33,14 +35,18 @@ import  * as util from './util';
   providers: [DataService]  
 })
 export class AppComponent { 
-  data: Data;
+  dataService: DataService;
 
   constructor(dataService: DataService){
-    this.data = dataService.data;
+    this.dataService = dataService;
   } 
 
-  click(event: any){
-    this.data.Name += " " + util.currentTime() + ";" 
+  clickClient(){
+    this.dataService.data.Name += " " + util.currentTime() + ";" 
+  } 
+
+  clickServer(){
+    this.dataService.update();
   } 
 }
 
