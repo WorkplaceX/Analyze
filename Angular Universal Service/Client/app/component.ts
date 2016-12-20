@@ -5,7 +5,7 @@ import  * as util from './util';
 @Component({
   selector: 'app',
   template: `
-  <componentLayout *ngIf="dataService.data.Component!=null" [componentData]="dataService.data.Component"></componentLayout>
+  <Selector *ngIf="dataService.data.Component!=null" [componentData]="dataService.data.Component"></Selector>
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -57,27 +57,28 @@ export class AppComponent {
 }
 
 @Component({
-  selector: 'component',
+  selector: 'Selector',
   template: `
+  <LayoutContainer *ngIf="componentData.Type=='LayoutContainer'" [componentData]=componentData></LayoutContainer>
   <LayoutRow *ngIf="componentData.Type=='LayoutRow'" [componentData]=componentData></LayoutRow>
   <LayoutCell *ngIf="componentData.Type=='LayoutCell'" [componentData]=componentData></LayoutCell>
-  <!--<componentLayout [componentData]=componentData></componentLayout>-->
+  <!-- <LayoutDebug [componentData]=componentData></LayoutDebug> -->
 `
 })
-export class ComponentVisual {
+export class Selector {
   @Input() componentData: ComponentData
 }
 
 @Component({
-  selector: 'componentLayout',
+  selector: 'LayoutContainer',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
     Text={{ componentData.Text }}
-    <component [componentData]=item *ngFor="let item of componentData.List"></component>
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
   </div>  
 `
 })
-export class Layout {
+export class LayoutContainer {
   @Input() componentData: ComponentData
 }
 
@@ -86,7 +87,7 @@ export class Layout {
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:red;'>
     Text={{ componentData.Text }}
-    <component [componentData]=item *ngFor="let item of componentData.List"></component>
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
   </div>  
 `
 })
@@ -99,10 +100,23 @@ export class LayoutRow {
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:green;'>
     Text={{ componentData.Text }}
-    <component [componentData]=item *ngFor="let item of componentData.List"></component>
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
   </div>  
 `
 })
 export class LayoutCell {
+  @Input() componentData: ComponentData
+}
+
+@Component({
+  selector: 'LayoutDebug',
+  template: `
+  <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
+    Text={{ componentData.Text }}
+    <Selector [componentData]=item *ngFor="let item of componentData.List"></Selector>
+  </div>  
+`
+})
+export class LayoutDebug {
   @Input() componentData: ComponentData
 }
