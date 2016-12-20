@@ -1,6 +1,6 @@
 import { Inject } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import * as util from './util';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
@@ -47,10 +47,8 @@ export class DataService {
         } else {
             // POST
             console.log("Send POST");
-            var headers = new Headers();
-            headers.append('Content-Type', 'application/json');
             console.log(JSON.stringify(this.data));
-            result = this.http.post('data.json', JSON.stringify(this.data), { headers: headers }).map(this.mapData);
+            result = this.http.post('data.json', JSON.stringify(this.data)).map(this.mapData);
         }
         result.forEach(x => this.data = x);
     }
