@@ -5,7 +5,7 @@ import  * as util from './util';
 @Component({
   selector: 'app',
   template: `
-  <Selector [data]=item *ngFor="let item of dataService.data.List"></Selector>
+  <Selector [data]=item *ngFor="let item of dataService.data.List; trackBy:fn"></Selector>
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -18,12 +18,13 @@ import  * as util from './util';
         <p>data.Session=({{ dataService.data.Session }})</p>
         <p>data.IsBrowser=({{ dataService.data.IsBrowser }})</p>
         <p>Version=({{ dataService.data.VersionClient + '; ' + dataService.data.VersionServer }})</p>
-        <p>data=({{ dataJson() }})</p>
+        <p>data=({{ jsonText }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
         <button class="btn btn-primary" (click)="clickClient()">Client Update</button>
         <button class="btn btn-primary" (click)="clickServer()">Server Update</button>
+        <button class="btn btn-primary" (click)="clickJson()">Json</button>
       </div>
       <div class="col-sm-4">
         Third of three columns
@@ -38,10 +39,15 @@ import  * as util from './util';
 })
 export class AppComponent { 
   dataService: DataService;
+  jsonText: string;
 
   constructor(dataService: DataService){
     this.dataService = dataService;
   } 
+
+  fn() {
+    return 0;
+  }
 
   clickClient(){
     this.dataService.data.Name += " " + util.currentTime() + ";" 
@@ -51,8 +57,8 @@ export class AppComponent {
     this.dataService.update();
   } 
 
-  dataJson(){
-    return JSON.stringify(this.dataService.data);
+  clickJson() {
+    this.jsonText = JSON.stringify(this.dataService.data);
   }
 }
 
@@ -77,12 +83,16 @@ export class Selector {
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
     Text={{ data.Text }}
-    <Selector [data]=item *ngFor="let item of data.List"></Selector>
+    <Selector [data]=item *ngFor="let item of data.List; trackBy trackBy"></Selector>
   </div>  
 `
 })
 export class LayoutContainer {
   @Input() data: any
+
+  trackBy(index: any, item: any) {
+    return item.Type;
+  }
 }
 
 @Component({
@@ -90,12 +100,16 @@ export class LayoutContainer {
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:red;'>
     Text={{ data.Text }}
-    <Selector [data]=item *ngFor="let item of data.List"></Selector>
+    <Selector [data]=item *ngFor="let item of data.List; trackBy trackBy"></Selector>
   </div>  
 `
 })
 export class LayoutRow {
   @Input() data: any
+
+  trackBy(index: any, item: any) {
+    return item.Type;
+  }
 }
 
 @Component({
@@ -103,12 +117,16 @@ export class LayoutRow {
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:green;'>
     Text={{ data.Text }}
-    <Selector [data]=item *ngFor="let item of data.List"></Selector>
+    <Selector [data]=item *ngFor="let item of data.List; trackBy trackBy"></Selector>
   </div>  
 `
 })
 export class LayoutCell {
   @Input() data: any
+
+  trackBy(index: any, item: any): any {
+    return item.Type;
+  }
 }
 
 @Component({
@@ -146,17 +164,32 @@ export class Button {
 @Component({
   selector: 'InputX',
   template: `
-  <input (keyup)="onKey($event)" (focus)="focus(true)" (focusout)="focus(false)" value="{{data.Text}}"/>
+  <input value="{{text}}" (keyup)="onKey($event)" (focus)="focus(true)" (focusout)="focus(false)" placeholder="Empty" />
   <p>
     Text={{ data.Text }}<br/>
     TextNew={{ data.TextNew}}<br/>
-    Focus={{data.IsFocus}}
+    Focus={{data.IsFocus}}<br/>
+    AutoComplete={{data.AutoComplete}}
   </p>`
 })
 export class InputX {
   @Input() data: any
+  dataService: DataService;
+  text: string;
+  inputFocused: any;
+
+  constructor( dataService: DataService){
+    this.dataService = dataService;
+  }
+
+  ngOnInit() {
+    this.text = this.data.Text;
+  }  
+
   onKey(event:any) {
-    this.data.TextNew = event.target.value;
+    this.text = event.target.value;
+    this.data.TextNew = this.text;
+    this.dataService.update();
   }
 
   focus(isFocus: boolean) {

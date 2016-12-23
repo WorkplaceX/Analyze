@@ -121,6 +121,12 @@ namespace Application
         {
 
         }
+
+        public bool IsFocus;
+
+        public string TextNew;
+
+        public string AutoComplete;
     }
 
     public class Label : Component
@@ -145,6 +151,8 @@ namespace Application
             }
             dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
             dataOut.VersionServer = Util.VersionServer;
+            Input input = (Input)dataOut.List[0].List[1].List[1].List[1];
+            input.AutoComplete = input.TextNew?.ToUpper();
             return dataOut;
         }
 
