@@ -11,20 +11,27 @@ namespace Application
 
         }
 
-        public string Name { get; set; }
+        public string Name;
 
         public Guid Session;
 
-        public bool IsBrowser { get; set; }
+        public bool IsBrowser;
 
-        public string VersionServer { get; set; }
+        public string VersionServer;
 
-        public string VersionClient { get; set; }
+        public string VersionClient;
     }
 
     public class Component
     {
+        public Component() : this(null, null) { }
+
         public Component(Component owner, string text)
+        {
+            Constructor(owner, text);
+        }
+
+        private void Constructor(Component owner, string text)
         {
             this.Type = GetType().Name;
             this.Text = text;
@@ -47,17 +54,19 @@ namespace Application
             }
         }
 
-        public string Key { get; set; }
+        public string Key;
 
-        public string Type { get; set; }
+        public string Type;
 
-        public string Text { get; set; }
+        public string Text;
 
-        public List<Component> List { get; set; }
+        public List<Component> List = new List<Component>();
     }
 
     public class LayoutContainer : Component
     {
+        public LayoutContainer() : this(null, null) { }
+
         public LayoutContainer(Component owner, string text) 
             : base(owner, text)
         {
@@ -67,6 +76,8 @@ namespace Application
 
     public class LayoutRow : Component
     {
+        public LayoutRow() : this(null, null) { }
+
         public LayoutRow(LayoutContainer owner, string text) 
             : base(owner, text)
         {
@@ -76,6 +87,8 @@ namespace Application
 
     public class LayoutCell : Component
     {
+        public LayoutCell() : this(null, null) { }
+
         public LayoutCell(LayoutRow owner, string text) 
             : base(owner, text)
         {
@@ -85,6 +98,8 @@ namespace Application
 
     public class Button : Component
     {
+        public Button() : this(null, null) { }
+
         public Button(Component owner, string text)
             : base(owner, text)
         {
@@ -94,11 +109,13 @@ namespace Application
             }
         }
 
-        public bool IsClick { get; set; }
+        public bool IsClick;
     }
 
     public class Input : Component
     {
+        public Input() : this(null, null) { }
+
         public Input(Component owner, string text)
             : base(owner, text)
         {
@@ -108,6 +125,8 @@ namespace Application
 
     public class Label : Component
     {
+        public Label() : this(null, null) { }
+
         public Label(Component owner, string text)
             : base(owner, text)
         {
@@ -117,7 +136,7 @@ namespace Application
 
     public static class Main
     {
-        public static Data Request(Data dataIn)
+        public static Data Process(Data dataIn)
         {
             Data dataOut = Util.JsonObjectClone<Data>(dataIn);
             if (dataOut == null || dataOut.Session == Guid.Empty)

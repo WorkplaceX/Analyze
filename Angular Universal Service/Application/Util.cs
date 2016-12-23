@@ -10,8 +10,8 @@ namespace Application
     {
         public static T JsonObjectClone<T>(T data)
         {
-            string json = JsonConvert.SerializeObject(data);
-            return JsonConvert.DeserializeObject<T>(json);
+            string json = JsonConvert.SerializeObject(data, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
+            return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
         }
 
         public static string VersionServer

@@ -1,6 +1,5 @@
 ﻿using Application;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -20,7 +19,7 @@ namespace Server
             // Html
             if (HttpContext.Request.Path == path)
             {
-                Data dataOut = Main.Request(null);
+                Data dataOut = Main.Process(null);
                 string htmlUniversal = null;
                 string html = IndexHtml(true);
                 htmlUniversal = await HtmlUniversal(html, dataOut, true); // Angular Universal server side rendering.
@@ -30,9 +29,9 @@ namespace Server
             if (HttpContext.Request.Path == path + "data.json")
             {
                 string jsonIn = Util.StreamToString(Request.Body);
-                Data dataIn = JsonConvert.DeserializeObject<Data>(jsonIn);
-                Data dataOut = Main.Request(dataIn);
-                string jsonOut = JsonConvert.SerializeObject(dataOut);
+                Data dataIn = (Data)Server.Json.Deserialize(jsonIn);
+                Data dataOut = Main.Process(dataIn);
+                string jsonOut = Server.Json.Serialize(dataOut);
                 return Content(jsonOut, "application/json");
             }
             // node_modules
@@ -62,11 +61,12 @@ namespace Server
                 string htmlUniversal = null;
                 string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
                 data.IsBrowser = false; // Server side rendering mode.
-                htmlUniversal = await Post(url, data, false); // Call Angular Universal server side rendering service.
+                string json = Server.Json.Serialize(data);
+                htmlUniversal = await Post(url, json, false); // Call Angular Universal server side rendering service.
                 if (htmlUniversal == null)
                 {
                     url = "http://localhost:1337/"; // Application not running on IIS. Divert to UniversalExpress when running in Visual Studio.
-                    htmlUniversal = await Post(url, data, true);
+                    htmlUniversal = await Post(url, json, true);
                     Util.Assert(htmlUniversal != "<app></app>"); // Catch java script errors. See UniversalExpress console for errors!
                 }
                 //
@@ -79,7 +79,7 @@ namespace Server
                     result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
                 }
                 data.IsBrowser = true; // Client side rendering mode.
-                string dataJson = JsonConvert.SerializeObject(data);
+                string dataJson = Server.Json.Serialize(data);
                 string resultAssert = result;
                 // Add data to index.html (Client/index.html)
                 {
@@ -101,9 +101,8 @@ namespace Server
         /// <summary>
         /// Post json data to url.
         /// </summary>
-        private async Task<string> Post(string url, Data data, bool isEnsureSuccessStatusCode)
+        private async Task<string> Post(string url, string json, bool isEnsureSuccessStatusCode)
         {
-            string json = JsonConvert.SerializeObject(data);
             using (HttpClient client = new HttpClient())
             {
                 HttpResponseMessage response = await client.PostAsync(url, new StringContent(json, Encoding.Unicode, "application/json"));
@@ -155,11 +154,11 @@ namespace Server
             }
         }
 
-        public static void Assert(bool isAssert, string errorText)
+        public static void Assert(bool isAssert, string exceptionText)
         {
             if (!isAssert)
             {
-                throw new Exception(errorText);
+                throw new Exception(exceptionText);
             }
         }
 
