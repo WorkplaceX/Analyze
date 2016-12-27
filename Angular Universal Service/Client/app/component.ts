@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { DataService, Data } from './dataService';
 import  * as util from './util';
 
+/* AppComponent */
 @Component({
   selector: 'app',
   template: `
@@ -62,6 +63,7 @@ export class AppComponent {
   }
 }
 
+/* Selector */
 @Component({
   selector: 'Selector',
   template: `
@@ -78,6 +80,7 @@ export class Selector {
   @Input() data: any
 }
 
+/* LayoutContainer */
 @Component({
   selector: 'LayoutContainer',
   template: `
@@ -95,6 +98,7 @@ export class LayoutContainer {
   }
 }
 
+/* LayoutRow */
 @Component({
   selector: 'LayoutRow',
   template: `
@@ -129,6 +133,7 @@ export class LayoutCell {
   }
 }
 
+/* LayoutDebug */
 @Component({
   selector: 'LayoutDebug',
   template: `
@@ -142,9 +147,10 @@ export class LayoutDebug {
   @Input() data: any
 }
 
+/* Button */
 @Component({
   selector: 'ButtonX',
-  template: `<button class="btn btn-primary" (click)="click()">{{ data.Text }}</button>`
+  template: `<button type="text" class="btn btn-primary" (click)="click()">{{ data.Text }}</button>`
 })
 export class Button {
   @Input() data: any
@@ -161,6 +167,7 @@ export class Button {
   } 
 }
 
+/* InputX */
 @Component({
   selector: 'InputX',
   template: `
@@ -197,6 +204,7 @@ export class InputX {
   }  
 }
 
+/* Label */
 @Component({
   selector: 'Label',
   template: `{{ data.Text }}`
