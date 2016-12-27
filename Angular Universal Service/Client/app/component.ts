@@ -6,6 +6,7 @@ import  * as util from './util';
 @Component({
   selector: 'app',
   template: `
+  <p>data.IsBrowser=({{ dataService.data.IsBrowser }})</p>
   <Selector [data]=item *ngFor="let item of dataService.data.List; trackBy:fn"></Selector>
   <div class="container">
     <div class="row">
