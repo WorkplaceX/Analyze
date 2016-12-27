@@ -1,3 +1,5 @@
+require('es6-weak-map/implement'); // Prevent error: "'WeakMap' is undefined" in IE10
+
 // the polyfills must be the first thing imported
 import 'angular2-universal-polyfills';
 import 'ts-helpers';
