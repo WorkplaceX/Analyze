@@ -12,6 +12,9 @@ export class Data {
     IsDataGet: boolean; // GET not POST when debugging client. See also file data.json
     VersionClient: string; // Angular client version.
     VersionServer: string; // Angular client version.
+    List:any;
+    IsBrowser:any;
+    Session:string;
 }
 
 @Injectable()

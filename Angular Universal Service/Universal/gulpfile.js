@@ -65,7 +65,7 @@ gulp.task('t3.5', function(cb) {
 
 // npm run build
 gulp.task('t4', shell.task([
-  'npm run build'
+  'npm run build:prod:ngc'
 ]))
 
 // Clean folder
