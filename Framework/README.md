@@ -17,7 +17,7 @@ Angular 2 with server side rendering and ASP.NET Core
 * UniversalExpress (Used for debug in Visual Studio. Runs Universal in Express server)
 
 ## Server
-![alt tag](Server/Doc/Screenshot.png)
+![alt tag](Server/Doc/Startup.png)
 
-## Universal
+## UniversalExpress
 ![alt tag](UniversalExpress/Doc/Extension.png)
