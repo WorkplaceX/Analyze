@@ -20,6 +20,8 @@ namespace Application
         public string VersionServer;
 
         public string VersionClient;
+
+        public int ResponseCount;
     }
 
     public class Component
@@ -148,6 +150,10 @@ namespace Application
             if (dataOut == null || dataOut.Session == Guid.Empty)
             {
                 dataOut = DataCreate();
+            }
+            else
+            {
+                dataOut.ResponseCount += 1;
             }
             dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
             dataOut.VersionServer = Util.VersionServer;

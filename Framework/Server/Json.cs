@@ -190,37 +190,40 @@
                 foreach (var item in jObject.Properties())
                 {
                     FieldInfo fieldInfo = objectType.GetTypeInfo().GetField(item.Name);
-                    TypeGroup typeGroup;
-                    Type valueType;
-                    Json.TypeInfo(fieldInfo.FieldType, out typeGroup, out valueType);
-                    if (typeGroup == TypeGroup.Dictionary)
+                    if (fieldInfo != null)
                     {
-                        var list = (IDictionary)Activator.CreateInstance(fieldInfo.FieldType);
-                        foreach (var keyValue in ((JObject)item.Value))
+                        TypeGroup typeGroup;
+                        Type valueType;
+                        Json.TypeInfo(fieldInfo.FieldType, out typeGroup, out valueType);
+                        if (typeGroup == TypeGroup.Dictionary)
                         {
-                            object value = DeserializeToken(keyValue.Value, valueType, namespaceName, assembly);
-                            var valueSet = DeserializeObjectConvert(value, valueType);
-                            list.Add(keyValue.Key, valueSet);
-                        }
-                        fieldInfo.SetValue(result, list);
-                    }
-                    else
-                    {
-                        object value = DeserializeToken(item.Value, valueType, namespaceName, assembly);
-                        if (item.Value is JArray)
-                        {
-                            var list = (IList)Activator.CreateInstance(fieldInfo.FieldType);
-                            foreach (var listItem in (IList)value)
+                            var list = (IDictionary)Activator.CreateInstance(fieldInfo.FieldType);
+                            foreach (var keyValue in ((JObject)item.Value))
                             {
-                                var listItemSet = DeserializeObjectConvert(listItem, valueType);
-                                list.Add(listItemSet);
+                                object value = DeserializeToken(keyValue.Value, valueType, namespaceName, assembly);
+                                var valueSet = DeserializeObjectConvert(value, valueType);
+                                list.Add(keyValue.Key, valueSet);
                             }
                             fieldInfo.SetValue(result, list);
                         }
                         else
                         {
-                            object valueSet = DeserializeObjectConvert(value, fieldInfo.FieldType);
-                            fieldInfo.SetValue(result, valueSet);
+                            object value = DeserializeToken(item.Value, valueType, namespaceName, assembly);
+                            if (item.Value is JArray)
+                            {
+                                var list = (IList)Activator.CreateInstance(fieldInfo.FieldType);
+                                foreach (var listItem in (IList)value)
+                                {
+                                    var listItemSet = DeserializeObjectConvert(listItem, valueType);
+                                    list.Add(listItemSet);
+                                }
+                                fieldInfo.SetValue(result, list);
+                            }
+                            else
+                            {
+                                object valueSet = DeserializeObjectConvert(value, fieldInfo.FieldType);
+                                fieldInfo.SetValue(result, valueSet);
+                            }
                         }
                     }
                 }

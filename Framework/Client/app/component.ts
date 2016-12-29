@@ -7,6 +7,9 @@ import  * as util from './util';
   selector: 'app',
   template: `
   <p>data.IsBrowser=({{ dataService.data.IsBrowser }})</p>
+  <p>RequestCount=({{ dataService.RequestCount }})</p>
+  <p>data.ResponseCount=({{ dataService.data.ResponseCount }})</p>
+  <p>log=({{ dataService.log }})</p>
   <Selector [data]=item *ngFor="let item of dataService.data.List; trackBy:fn"></Selector>
   <div class="container">
     <div class="row">

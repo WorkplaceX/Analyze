@@ -15,6 +15,8 @@ export class Data {
     List:any;
     IsBrowser:any;
     Session:string;
+    RequestLog: string;
+    ResponseCount: number;
 }
 
 @Injectable()
@@ -22,12 +24,18 @@ export class DataService {
 
     data: Data;
 
+    log: string;
+
+    RequestCount: number;
+
     http: Http;
 
     constructor( @Inject('angularData') angularData: string, http: Http) {
         this.http = http;
         // Default data
         this.data = new Data();
+        this.log = "";
+        this.RequestCount = 0;
         this.data.Name = "dataService.ts=" + util.currentTime();
         // Angular universal data
         if (angularData != null) {
@@ -43,27 +51,36 @@ export class DataService {
         if (this.data.IsDataGet == true) {
             this.update(); // For debug mode.
         }
+        if (this.data.IsBrowser == true) {
+            this.update();
+        }
     }
 
     update() {
-        var result: Observable<Data>;
+        this.RequestCount += 1;
         if (this.data.IsDataGet == true) {
             // GET for debug
-            console.log("Send GET");
-            result = this.http.get('data.json').map(this.mapData);
+            this.log += "Send GET; "
+            this.http.get('data.json')
+            .map(res => res)
+            .subscribe(
+                data => this.data = <Data>(data.json()),
+                err => this.log += err + "; ",
+                () => this.log += "Receive; "
+            );
         } else {
             // POST
-            console.log("Send POST");
-            console.log(JSON.stringify(this.data));
-            result = this.http.post('data.json', JSON.stringify(this.data)).map(this.mapData);
+            this.log += "Send POST; ";
+            this.http.post('data.json', JSON.stringify(this.data))
+            .map(res => res)
+            .subscribe(
+                data => { 
+                    var dataReceive: Data = <Data>(data.json());
+                    this.data = dataReceive;
+                },
+                err => this.log += err + "; ",
+                () => this.log += "Receive; "
+            );
         }
-        result.forEach(x => this.data = x);
-    }
-
-    mapData(response: Response) : Data {
-        console.log("Receive");
-        let result = <Data>(response.json())
-        result.VersionClient = util.versionClient();
-        return result;
     }
 }
