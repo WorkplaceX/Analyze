@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
     using System.Reflection;
     using System.Runtime.InteropServices;
 
@@ -101,7 +102,12 @@
         {
             get
             {
-                return "C:/Program Files (x86)/Microsoft VS Code/code.exe";
+                string result = "C:/Program Files/Microsoft VS Code/code.exe";
+                if (!File.Exists(result))
+                {
+                    result = "C:/Program Files (x86)/Microsoft VS Code/code.exe";
+                }
+                return result;
             }
         }
 
