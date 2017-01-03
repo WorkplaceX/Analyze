@@ -1,4 +1,5 @@
 require('es6-weak-map/implement'); // Prevent error: "'WeakMap' is undefined" in IE10
+import 'core-js/es6/typed' // Prevent error: "'ArrayBuffer' is undefined" in IE9
 
 // the polyfills must be the first thing imported
 import 'angular2-universal-polyfills';
