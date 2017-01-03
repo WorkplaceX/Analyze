@@ -30,7 +30,7 @@
 
     public static class Script
     {
-        [Description("npm install; dotnet restore; Script error \"Can't find Python\" can be ignored")]
+        [Description("npm install; dotnet restore; Script error Python can be ignored")]
         public static void InstallAll()
         {
             Util.Log("Client>npm install");
