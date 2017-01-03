@@ -2,14 +2,18 @@
 Angular 2 with server side rendering and ASP.NET Core
 
 ## Install
-* cd Server
-* npm install
-* npm run installAll
-* npm run gulp (Also run every time when Client changed)
+* cd Build
+* dotnet restore
+* dotnet start
+* 1=InstallAll
+* 7=Start
+
+## Visual Studio
 * Open Framework.sln
 * Configure multiple start up projects (Server, UniversalExpress)
 
 ## Folder
+* Build (Build script)
 * Application (Contains .NET Core business logic)
 * Client (Angular 2 client)
 * Server (ASP.NET Core server)

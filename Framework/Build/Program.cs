@@ -19,8 +19,19 @@
         }
     }
 
+    public class ScriptDescriptionAttribute : Attribute
+    {
+        public ScriptDescriptionAttribute(string text)
+        {
+            this.Text = text;
+        }
+
+        public readonly string Text;
+    }
+
     public static class Script
     {
+        [ScriptDescription("npm install; dotnet restore;")]
         public static void InstallAll()
         {
             Util.Log("Client>npm install");
@@ -34,32 +45,38 @@
             Gulp();
         }
 
+        [ScriptDescription("npm run gulp; Run everytime when Client changes")]
         public static void Gulp()
         {
             Util.Log("Server>npm run gulp");
             Util.NpmRun(ConnectionManager.FolderName + "Server/", "gulp");
         }
 
+        [ScriptDescription("VS Code")]
         public static void OpenClient()
         {
             Util.OpenCode(ConnectionManager.FolderName + "Client/");
         }
 
+        [ScriptDescription("VS Code")]
         public static void OpenServer()
         {
             Util.OpenCode(ConnectionManager.FolderName + "Server/");
         }
 
+        [ScriptDescription("VS Code")]
         public static void OpenUniversal()
         {
             Util.OpenCode(ConnectionManager.FolderName + "Universal/");
         }
 
-        public static void StartClientOnly()
+        [ScriptDescription("npm run start")]
+        public static void StartClient()
         {
             Util.NpmRun(ConnectionManager.FolderName + "Client/", "start");
         }
 
+        [ScriptDescription("Start Server and UniversalExpress")]
         public static void Start()
         {
             Util.DotNetRun(ConnectionManager.FolderName + "Server/", false);
@@ -159,7 +176,13 @@
             foreach (var methodInfo in Util.MethodList(typeof(Script)))
             {
                 number += 1;
-                Util.Log(number + "=" + methodInfo.Name);
+                string text = number + "=" + methodInfo.Name;
+                ScriptDescriptionAttribute description = methodInfo.GetCustomAttribute(typeof(ScriptDescriptionAttribute)) as ScriptDescriptionAttribute;
+                if (description != null)
+                {
+                    text += " " + "(" + description.Text + ")";
+                }
+                Util.Log(text);
             }
             Console.Write(">");
             string numberText = Console.ReadLine();
