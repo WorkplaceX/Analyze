@@ -13,15 +13,14 @@
         {
             Util.Log("Build command:");
             Util.MethodExecute(typeof(Script));
-            Util.Log("Script run successful!");
             // Console.Write(">");
             // Console.ReadLine();
         }
     }
 
-    public class ScriptDescriptionAttribute : Attribute
+    public class DescriptionAttribute : Attribute
     {
-        public ScriptDescriptionAttribute(string text)
+        public DescriptionAttribute(string text)
         {
             this.Text = text;
         }
@@ -31,7 +30,7 @@
 
     public static class Script
     {
-        [ScriptDescription("npm install; dotnet restore;")]
+        [Description("npm install; dotnet restore; Script error \"Can't find Python\" can be ignored")]
         public static void InstallAll()
         {
             Util.Log("Client>npm install");
@@ -40,43 +39,51 @@
             Util.NpmInstall(ConnectionManager.FolderName + "Server/");
             Util.Log("Universal>npm install");
             Util.NpmInstall(ConnectionManager.FolderName + "Universal/", false); // Throws always an exception!
+            // Application
+            Util.Log("Application>dotnet restore");
+            Util.DotNetRestore(ConnectionManager.FolderName + "Application/");
+            Util.Log("Application>dotnet build");
+            Util.DotNetBuild(ConnectionManager.FolderName + "Application/");
+            // Server
             Util.Log("Server>dotnet restore");
             Util.DotNetRestore(ConnectionManager.FolderName + "Server/");
+            Util.Log("Server>dotnet build");
+            Util.DotNetBuild(ConnectionManager.FolderName + "Server/");
             Gulp();
         }
 
-        [ScriptDescription("npm run gulp; Run everytime when Client changes")]
+        [Description("npm run gulp; Run everytime when Client changes")]
         public static void Gulp()
         {
             Util.Log("Server>npm run gulp");
             Util.NpmRun(ConnectionManager.FolderName + "Server/", "gulp");
         }
 
-        [ScriptDescription("VS Code")]
+        [Description("VS Code")]
         public static void OpenClient()
         {
             Util.OpenCode(ConnectionManager.FolderName + "Client/");
         }
 
-        [ScriptDescription("VS Code")]
+        [Description("VS Code")]
         public static void OpenServer()
         {
             Util.OpenCode(ConnectionManager.FolderName + "Server/");
         }
 
-        [ScriptDescription("VS Code")]
+        [Description("VS Code")]
         public static void OpenUniversal()
         {
             Util.OpenCode(ConnectionManager.FolderName + "Universal/");
         }
 
-        [ScriptDescription("npm run start")]
+        [Description("npm run start")]
         public static void StartClient()
         {
             Util.NpmRun(ConnectionManager.FolderName + "Client/", "start");
         }
 
-        [ScriptDescription("Start Server and UniversalExpress")]
+        [Description("Start Server and UniversalExpress")]
         public static void Start()
         {
             Util.DotNetRun(ConnectionManager.FolderName + "Server/", false);
@@ -177,7 +184,7 @@
             {
                 number += 1;
                 string text = number + "=" + methodInfo.Name;
-                ScriptDescriptionAttribute description = methodInfo.GetCustomAttribute(typeof(ScriptDescriptionAttribute)) as ScriptDescriptionAttribute;
+                DescriptionAttribute description = methodInfo.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
                 if (description != null)
                 {
                     text += " " + "(" + description.Text + ")";
@@ -250,6 +257,12 @@
         {
             string fileName = ConnectionManager.DotNetFileName;
             Start(workingDirectory, fileName, "restore");
+        }
+
+        public static void DotNetBuild(string workingDirectory)
+        {
+            string fileName = ConnectionManager.DotNetFileName;
+            Start(workingDirectory, fileName, "build");
         }
 
         public static void DotNetRun(string workingDirectory, bool isWait = true)
