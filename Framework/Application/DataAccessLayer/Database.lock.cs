@@ -2,10 +2,13 @@ namespace Database.dbo
 {
     using Application.DataAccessLayer;
 
+    [SqlName("LoLoation")]
     public partial class LoLoation : Row
     {
+        [SqlName("Id")]
         public int Id { get; set; }
 
+        [SqlName("Name")]
         public string Name { get; set; }
     }
 
@@ -13,12 +16,16 @@ namespace Database.dbo
 
     public partial class LoLoation_Name : Cell<LoLoation> { }
 
+    [SqlName("LoRole")]
     public partial class LoRole : Row
     {
+        [SqlName("Id")]
         public int Id { get; set; }
 
+        [SqlName("Name")]
         public string Name { get; set; }
 
+        [SqlName("IsAdmin")]
         public bool IsAdmin { get; set; }
     }
 
@@ -28,14 +35,19 @@ namespace Database.dbo
 
     public partial class LoRole_IsAdmin : Cell<LoRole> { }
 
+    [SqlName("LoRoleAccess")]
     public partial class LoRoleAccess : Row
     {
+        [SqlName("UserId")]
         public int UserId { get; set; }
 
+        [SqlName("UserName")]
         public string UserName { get; set; }
 
+        [SqlName("LoationId")]
         public int? LoationId { get; set; }
 
+        [SqlName("LoationName")]
         public string LoationName { get; set; }
     }
 
@@ -47,16 +59,22 @@ namespace Database.dbo
 
     public partial class LoRoleAccess_LoationName : Cell<LoRoleAccess> { }
 
+    [SqlName("LoRoleLoation")]
     public partial class LoRoleLoation : Row
     {
+        [SqlName("Id")]
         public int Id { get; set; }
 
+        [SqlName("RoleId")]
         public int? RoleId { get; set; }
 
+        [SqlName("UserId")]
         public int? UserId { get; set; }
 
+        [SqlName("LoationId")]
         public int LoationId { get; set; }
 
+        [SqlName("IsActive")]
         public bool IsActive { get; set; }
     }
 
@@ -70,28 +88,40 @@ namespace Database.dbo
 
     public partial class LoRoleLoation_IsActive : Cell<LoRoleLoation> { }
 
+    [SqlName("LoRoleMatrix")]
     public partial class LoRoleMatrix : Row
     {
+        [SqlName("UserId")]
         public int UserId { get; set; }
 
+        [SqlName("UserName")]
         public string UserName { get; set; }
 
+        [SqlName("LoationId")]
         public int LoationId { get; set; }
 
+        [SqlName("LoationName")]
         public string LoationName { get; set; }
 
+        [SqlName("RoleId")]
         public int RoleId { get; set; }
 
+        [SqlName("RoleName")]
         public string RoleName { get; set; }
 
+        [SqlName("IsRole")]
         public bool? IsRole { get; set; }
 
+        [SqlName("IsDirect")]
         public bool? IsDirect { get; set; }
 
+        [SqlName("IsAdmin")]
         public bool? IsAdmin { get; set; }
 
+        [SqlName("IsAdminModule")]
         public bool? IsAdminModule { get; set; }
 
+        [SqlName("IsAccess")]
         public int? IsAccess { get; set; }
     }
 
@@ -117,14 +147,19 @@ namespace Database.dbo
 
     public partial class LoRoleMatrix_IsAccess : Cell<LoRoleMatrix> { }
 
+    [SqlName("LoRoleUser")]
     public partial class LoRoleUser : Row
     {
+        [SqlName("Id")]
         public int Id { get; set; }
 
+        [SqlName("UserId")]
         public int UserId { get; set; }
 
+        [SqlName("RoleId")]
         public int RoleId { get; set; }
 
+        [SqlName("IsActive")]
         public bool IsActive { get; set; }
     }
 
@@ -136,12 +171,16 @@ namespace Database.dbo
 
     public partial class LoRoleUser_IsActive : Cell<LoRoleUser> { }
 
+    [SqlName("SyRole")]
     public partial class SyRole : Row
     {
+        [SqlName("Id")]
         public int Id { get; set; }
 
+        [SqlName("Name")]
         public string Name { get; set; }
 
+        [SqlName("IsAdmin")]
         public bool? IsAdmin { get; set; }
     }
 
@@ -151,16 +190,22 @@ namespace Database.dbo
 
     public partial class SyRole_IsAdmin : Cell<SyRole> { }
 
+    [SqlName("SyRoleAccess")]
     public partial class SyRoleAccess : Row
     {
+        [SqlName("UserId")]
         public int UserId { get; set; }
 
+        [SqlName("UserName")]
         public string UserName { get; set; }
 
+        [SqlName("RoleId")]
         public int? RoleId { get; set; }
 
+        [SqlName("RoleName")]
         public string RoleName { get; set; }
 
+        [SqlName("IsAdmin")]
         public bool? IsAdmin { get; set; }
     }
 
@@ -174,14 +219,19 @@ namespace Database.dbo
 
     public partial class SyRoleAccess_IsAdmin : Cell<SyRoleAccess> { }
 
+    [SqlName("SyRoleUser")]
     public partial class SyRoleUser : Row
     {
+        [SqlName("Id")]
         public int Id { get; set; }
 
+        [SqlName("UserId")]
         public int UserId { get; set; }
 
+        [SqlName("RoleId")]
         public int RoleId { get; set; }
 
+        [SqlName("IsActive")]
         public bool IsActive { get; set; }
     }
 
@@ -193,10 +243,13 @@ namespace Database.dbo
 
     public partial class SyRoleUser_IsActive : Cell<SyRoleUser> { }
 
+    [SqlName("SyUser")]
     public partial class SyUser : Row
     {
+        [SqlName("Id")]
         public int Id { get; set; }
 
+        [SqlName("Name")]
         public string Name { get; set; }
     }
 

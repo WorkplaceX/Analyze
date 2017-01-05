@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Database.dbo;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Application
 {
@@ -156,7 +158,7 @@ namespace Application
                 dataOut.ResponseCount += 1;
             }
             dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
-            dataOut.Name += " - " + DataAccessLayer.Util.Select().Name;
+            dataOut.Name += " - " + DataAccessLayer.Util.Select<SyUser>(1).First().Name;
             dataOut.VersionServer = Util.VersionServer;
             Input input = (Input)dataOut.List[0].List[1].List[1].List[1];
             input.AutoComplete = input.TextNew?.ToUpper();

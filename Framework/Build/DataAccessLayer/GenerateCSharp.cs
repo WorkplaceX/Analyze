@@ -60,6 +60,7 @@
                 {
                     result.AppendLine();
                 }
+                result.AppendLine(string.Format("    [SqlName(\"{0}\")]", item.TableNameCSharp));
                 result.AppendLine(string.Format("    public partial class {0} : Row", item.TableNameCSharp));
                 result.AppendLine("    {");
                 FieldNameProperty(metaCSharp, schemaName, item.TableName, result);
@@ -87,6 +88,7 @@
                     result.AppendLine();
                 }
                 string typeCSharp = Util.SqlTypeToCSharpType(item.Schema.SqlType, item.Schema.IsNullable);
+                result.AppendLine(string.Format("        [SqlName(\"{0}\")]", item.Schema.FieldName));
                 result.AppendLine(string.Format("        public " + typeCSharp + " {0} {{ get; set; }}", item.FieldNameCSharp));
             }
         }
