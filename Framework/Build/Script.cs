@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Build
+﻿namespace Build
 {
+    using System;
+    using System.Data.SqlClient;
+
     public class DescriptionAttribute : Attribute
     {
         public DescriptionAttribute(string text)
@@ -98,10 +95,18 @@ namespace Build
             }
         }
 
-        [Description("Publish to local SQL server")]
-        public static void PublishSqlLocal()
+        [Description("Publish to local SQL server and generate CSharp DTO's")]
+        public static void DataAccessLayerLocal()
         {
-            PublishSql(ConnectionManager.ConnectionString.Local);
+            PublishSql(ConnectionManager.ConnectionStringConfig.Local);
+            Build.DataAccessLayer.Script.Run();
+        }
+
+        [Description("Publish to remote SQL server and generate CSharp DTO's")]
+        public static void DataAccessLayerRemote()
+        {
+            PublishSql(ConnectionManager.ConnectionStringConfig.Remote);
+            Build.DataAccessLayer.Script.Run();
         }
     }
 }

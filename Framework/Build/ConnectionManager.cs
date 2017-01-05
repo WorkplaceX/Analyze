@@ -5,7 +5,7 @@
     using System.Reflection;
     using Newtonsoft.Json;
 
-    public class ConnectionString
+    public class ConnectionStringConfig
     {
         public string Local { get; set; }
 
@@ -14,13 +14,21 @@
 
     public static class ConnectionManager
     {
-        public static ConnectionString ConnectionString
+        public static ConnectionStringConfig ConnectionStringConfig
         {
             get
             {
-                string json = Util.FileRead(ConnectionManager.FolderName + "Server/ConnectionString.json"); // See also .gitignore
-                ConnectionString result = JsonConvert.DeserializeObject<ConnectionString>(json);
+                string json = Util.FileRead(ConnectionManager.FolderName + "Application/ConnectionString.json"); // See also .gitignore
+                ConnectionStringConfig result = JsonConvert.DeserializeObject<ConnectionStringConfig>(json);
                 return result;
+            }
+        }
+
+        public static string ConnectionString
+        {
+            get
+            {
+                return ConnectionStringConfig.Local;
             }
         }
 

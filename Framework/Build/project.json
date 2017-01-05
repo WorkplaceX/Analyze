@@ -5,6 +5,8 @@
   },
 
   "dependencies": {
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.1",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.1"

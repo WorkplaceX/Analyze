@@ -42,7 +42,8 @@
       "wwwroot",
       "Universal",
       "web.config",
-      "indexBundle.html"
+      "indexBundle.html",
+      "ConnectionString.json"
     ]
   },
 

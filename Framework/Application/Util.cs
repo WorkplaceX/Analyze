@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-
-namespace Application
+﻿namespace Application
 {
-    public class Util
+    using Microsoft.EntityFrameworkCore;
+    using Newtonsoft.Json;
+    using System.IO;
+
+    public static class Util
     {
         public static T JsonObjectClone<T>(T data)
         {
@@ -20,6 +18,11 @@ namespace Application
             {
                 return "v0.2 Server";
             }
+        }
+
+        public static string FileRead(string fileName)
+        {
+            return File.ReadAllText(fileName);
         }
     }
 }

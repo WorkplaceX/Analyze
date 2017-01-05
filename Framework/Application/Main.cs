@@ -156,6 +156,7 @@ namespace Application
                 dataOut.ResponseCount += 1;
             }
             dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
+            dataOut.Name += " - " + DataAccessLayer.Util.Select().Name;
             dataOut.VersionServer = Util.VersionServer;
             Input input = (Input)dataOut.List[0].List[1].List[1].List[1];
             input.AutoComplete = input.TextNew?.ToUpper();
