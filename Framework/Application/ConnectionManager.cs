@@ -23,7 +23,7 @@
                 string fileName = folderName;
                 if (!isRunningIIS)
                 {
-                    fileName += "Application/";
+                    fileName += "Server/";
                 }
                 fileName += "ConnectionString.json"; // See also .gitignore
                 string json = Util.FileRead(fileName);

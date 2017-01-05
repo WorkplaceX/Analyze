@@ -18,7 +18,7 @@
         {
             get
             {
-                string json = Util.FileRead(ConnectionManager.FolderName + "Application/ConnectionString.json"); // See also .gitignore
+                string json = Util.FileRead(ConnectionManager.FolderName + "Server/ConnectionString.json"); // See also .gitignore
                 ConnectionStringConfig result = JsonConvert.DeserializeObject<ConnectionStringConfig>(json);
                 return result;
             }
