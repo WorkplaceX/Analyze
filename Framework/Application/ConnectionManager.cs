@@ -36,7 +36,7 @@
         {
             get
             {
-                return ConnectionStringConfig.Remote;
+                return ConnectionStringConfig.Local;
             }
         }
 

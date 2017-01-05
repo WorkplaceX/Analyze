@@ -4,7 +4,8 @@
     {
         public static void Main(string[] args)
         {
-            Util.Log("Build command:");
+            Util.Log("");
+            Util.Log("Build command");
             Util.MethodExecute(typeof(Script));
             // Console.Write(">");
             // Console.ReadLine();

@@ -135,9 +135,36 @@
             Start(workingDirectory, fileName, "run", false, isWait);
         }
 
+        private static bool LogColor(string text)
+        {
+            if (text == "Build command")
+            {
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(text);
+                return true;
+            }
+            string[] textList = text.Split(new string[] { "=" }, StringSplitOptions.None);
+            if (textList.Count() == 2)
+            {
+                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                Console.Write("[" + textList[0] + "]");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write(" = ");
+                Console.WriteLine(textList[1]);
+                return true;
+            }
+            return false;
+        }
+
         public static void Log(string text)
         {
-            Console.WriteLine(text);
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
+            if (!LogColor(text))
+            {
+                Console.WriteLine(text);
+            }
         }
 
         public static string FileRead(string fileName)
