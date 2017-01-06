@@ -9,6 +9,13 @@
 
     public class Util
     {
+        private static IQueryable SelectQuery(Type typeRow)
+        {
+            DbContextMain dbContext = new DbContextMain(typeRow);
+            IQueryable query = (IQueryable)(dbContext.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(typeRow).Invoke(dbContext, null));
+            return query;
+        }
+
         public static object[] Select(Type typeRow, int id)
         {
             DbContextMain dbContext = new DbContextMain(typeof(SyUser));
@@ -16,9 +23,14 @@
             return query.Where("Id = @0", id).ToDynamicArray();
         }
 
-        public static T[] Select<T>(int id)
+        public static object[] Select(Type typeRow)
         {
-            return Select(typeof(T), id).Cast<T>().ToArray();
+            return SelectQuery(typeRow).ToDynamicArray();
+        }
+
+        public static TRow[] Select<TRow>() where TRow : Row
+        {
+            return Select(typeof(TRow)).Cast<TRow>().ToArray();
         }
     }
 }

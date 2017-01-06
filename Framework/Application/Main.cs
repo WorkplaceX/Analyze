@@ -1,10 +1,53 @@
-﻿using Database.dbo;
+﻿using Application;
+using Application.DataAccessLayer;
+using Database.dbo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Application
 {
+    public class Grid : Component
+    {
+        public Grid() : this(null, null) { }
+
+        public Grid(Component owner, string text) 
+            : base(owner, text)
+        {
+
+        }
+
+        public void Load(Type typeRow)
+        {
+            object[] rowList = DataAccessLayer.Util.Select(typeRow);
+            GridCellList = new List<List<Application.GridCell>>();
+            var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
+            foreach (object row in rowList)
+            {
+                var gridCellList = new List<GridCell>();
+                GridCellList.Add(gridCellList);
+                foreach (PropertyInfo propertyInfo in propertyInfoList)
+                {
+                    object value = propertyInfo.GetValue(row);
+                    gridCellList.Add(new Application.GridCell() { FieldName = propertyInfo.Name, Value = value });
+                }
+            }
+        }
+
+        /// <summary>
+        /// (Row, FieldName, GridCell)
+        /// </summary>
+        public List<List<GridCell>> GridCellList;
+    }
+
+    public class GridCell
+    {
+        public string FieldName;
+
+        public object Value;
+    }
+
     public class Data : Component
     {
         public Data() 
@@ -158,7 +201,7 @@ namespace Application
                 dataOut.ResponseCount += 1;
             }
             dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
-            dataOut.Name += " - " + DataAccessLayer.Util.Select<SyUser>(1).First().Name;
+            dataOut.Name += " - " + DataAccessLayer.Util.Select(typeof(SyUser), 1).Cast<SyUser>().First().Name;
             dataOut.VersionServer = Util.VersionServer;
             Input input = (Input)dataOut.List[0].List[1].List[1].List[1];
             input.AutoComplete = input.TextNew?.ToUpper();
@@ -181,6 +224,8 @@ namespace Application
             var rowFooter = new LayoutRow(container, "Footer");
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
+            // var grid = new Grid(cellFooter1, "MyGrid");
+            // grid.Load(typeof(SyUser)); // TODO
             //
             return result;
         }

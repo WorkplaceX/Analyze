@@ -13,6 +13,14 @@
 
     public static class ConnectionManager
     {
+        public static string ConnectionString
+        {
+            get
+            {
+                return ConnectionStringConfig.Local;
+            }
+        }
+
         public static ConnectionStringConfig ConnectionStringConfig
         {
             get
@@ -29,14 +37,6 @@
                 string json = Util.FileRead(fileName);
                 ConnectionStringConfig result = JsonConvert.DeserializeObject<ConnectionStringConfig>(json);
                 return result;
-            }
-        }
-
-        public static string ConnectionString
-        {
-            get
-            {
-                return ConnectionStringConfig.Local;
             }
         }
 
