@@ -57,6 +57,13 @@ namespace UnitTest.Json
         public Dictionary<string, DataWithListItem> List;
     }
 
+    public class DataWithListNested
+    {
+        public List<Dictionary<string, int>> List;
+
+        public List<List<int>> List2;
+    }
+
     public class UnitTest : UnitTestBase
     {
         public void Test01()
@@ -137,6 +144,19 @@ namespace UnitTest.Json
             Util.Assert(data.List["G"].Name == "GG");
             Util.Assert(data.List["G"].GetType() == typeof(DataWithListItem2));
             Util.Assert(data.List["H"] == null);
+        }
+
+        public void Test07()
+        {
+            var data = new Json.DataWithListNested();
+            data.List = new List<Dictionary<string, int>>();
+            data.List.Add(new Dictionary<string, int>());
+            data.List[0]["X"] = 99;
+            data.List2 = new List<List<int>>();
+            data.List2.Add(new List<int>());
+            data.List2[0].Add(88);
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataWithListNested>(json);
         }
     }
 }

@@ -83,45 +83,65 @@
         {
             if (obj != null)
             {
-                foreach (var field in obj.GetType().GetFields())
+                if (obj is IList)
                 {
-                    TypeGroup typeGroup;
-                    Type valueType;
-                    TypeInfo(field.FieldType, out typeGroup, out valueType);
-                    object value = field.GetValue(obj);
-                    switch (typeGroup)
+                    foreach (var item in (IList)obj)
                     {
-                        case TypeGroup.Value:
-                            TypeInfoAdd(value, valueType);
-                            break;
-                        case TypeGroup.Object:
-                            TypeInfoAdd(value, valueType);
-                            SerializePrepare(value);
-                            break;
-                        case TypeGroup.List:
-                            foreach (var item in (IList)value)
+                        SerializePrepare(item);
+                    }
+                }
+                else
+                {
+                    if (obj is IDictionary)
+                    {
+                        foreach (DictionaryEntry item in (IDictionary)obj)
+                        {
+                            SerializePrepare(item.Value);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var field in obj.GetType().GetFields())
+                        {
+                            TypeGroup typeGroup;
+                            Type valueType;
+                            TypeInfo(field.FieldType, out typeGroup, out valueType);
+                            object value = field.GetValue(obj);
+                            switch (typeGroup)
                             {
-                                TypeInfoAdd(item, valueType);
-                                SerializePrepare(item);
+                                case TypeGroup.Value:
+                                    TypeInfoAdd(value, valueType);
+                                    break;
+                                case TypeGroup.Object:
+                                    TypeInfoAdd(value, valueType);
+                                    SerializePrepare(value);
+                                    break;
+                                case TypeGroup.List:
+                                    foreach (var item in (IList)value)
+                                    {
+                                        TypeInfoAdd(item, valueType);
+                                        SerializePrepare(item);
+                                    }
+                                    if (((IList)value).Count == 0)
+                                    {
+                                        // field.SetValue(obj, null); // TODO clone object first.
+                                    }
+                                    break;
+                                case TypeGroup.Dictionary:
+                                    foreach (DictionaryEntry item in (IDictionary)value)
+                                    {
+                                        TypeInfoAdd(item.Value, valueType);
+                                        SerializePrepare(item.Value);
+                                    }
+                                    if (((IDictionary)value).Count == 0)
+                                    {
+                                        // field.SetValue(obj, null); // TODO clone object first.
+                                    }
+                                    break;
+                                default:
+                                    throw new Exception("Type unknown!");
                             }
-                            if (((IList)value).Count == 0)
-                            {
-                                // field.SetValue(obj, null); // TODO clone object first.
-                            }
-                            break;
-                        case TypeGroup.Dictionary:
-                            foreach (DictionaryEntry item in (IDictionary)value)
-                            {
-                                TypeInfoAdd(item.Value, valueType);
-                                SerializePrepare(item.Value);
-                            }
-                            if (((IDictionary)value).Count == 0)
-                            {
-                                // field.SetValue(obj, null); // TODO clone object first.
-                            }
-                            break;
-                        default:
-                            throw new Exception("Type unknown!");
+                        }
                     }
                 }
             }
@@ -174,97 +194,98 @@
             return Convert.ChangeType(value, type);
         }
 
-        private static object DeserializeToken(JToken jToken, Type fieldType, Type rootType)
+        private static Type DeserializeTokenObjectType(JObject jObject, Type fieldType, Type rootType)
         {
-            object result = null;
-            JObject jObject = jToken as JObject;
+            Type result = null;
             if (jObject != null)
             {
-                string objectTypeString = (string)((JValue)jObject.Property("Type")?.Value)?.Value;
-                Type objectType;
-                if (objectTypeString != null)
+                result = fieldType;
+                if (jObject.Property("Type") != null)
                 {
-                    objectType = Type.GetType(rootType.Namespace + "." + objectTypeString + ", " + rootType.GetTypeInfo().Assembly.FullName);
-                }
-                else
-                {
-                    if (fieldType != null)
+                    JValue jValue = jObject.Property("Type").Value as JValue;
+                    string objectTypeString = jValue.Value as string;
+                    if (objectTypeString != null)
                     {
-                        objectType = fieldType;
-                    }
-                    else
-                    {
-                        objectType = rootType;
-                    }
-                }
-                result = Activator.CreateInstance(objectType); // TODO FormatterServices.GetUninitializedObject; RuntimeHelpers.GetUninitializedObject
-                foreach (var item in jObject.Properties())
-                {
-                    FieldInfo fieldInfo = objectType.GetTypeInfo().GetField(item.Name);
-                    if (fieldInfo != null)
-                    {
-                        TypeGroup typeGroup;
-                        Type valueType;
-                        Util.TypeInfo(fieldInfo.FieldType, out typeGroup, out valueType);
-                        if (typeGroup == TypeGroup.Dictionary)
-                        {
-                            var list = (IDictionary)Activator.CreateInstance(fieldInfo.FieldType);
-                            foreach (var keyValue in ((JObject)item.Value))
-                            {
-                                object value = DeserializeToken(keyValue.Value, valueType, rootType);
-                                var valueSet = DeserializeObjectConvert(value, valueType);
-                                list.Add(keyValue.Key, valueSet);
-                            }
-                            fieldInfo.SetValue(result, list);
-                        }
-                        else
-                        {
-                            object value = DeserializeToken(item.Value, valueType, rootType);
-                            if (item.Value is JArray)
-                            {
-                                var list = (IList)Activator.CreateInstance(fieldInfo.FieldType);
-                                foreach (var listItem in (IList)value)
-                                {
-                                    var listItemSet = DeserializeObjectConvert(listItem, valueType);
-                                    list.Add(listItemSet);
-                                }
-                                fieldInfo.SetValue(result, list);
-                            }
-                            else
-                            {
-                                object valueSet = DeserializeObjectConvert(value, fieldInfo.FieldType);
-                                fieldInfo.SetValue(result, valueSet);
-                            }
-                        }
+                        result = Type.GetType(rootType.Namespace + "." + objectTypeString + ", " + rootType.GetTypeInfo().Assembly.FullName);
                     }
                 }
             }
-            else
+            return result;
+        }
+
+        private static object DeserializeToken(JToken jToken, Type fieldType, Type rootType)
+        {
+            object result = null;
+            TypeGroup typeGroup;
+            Type valueType;
+            Util.TypeInfo(fieldType, out typeGroup, out valueType);
+            switch (typeGroup)
             {
-                JValue jValue = jToken as JValue;
-                if (jValue != null)
-                {
-                    object value = jValue.Value;
-                    result = value;
-                }
-                else
-                {
-                    JArray jArray = jToken as JArray;
-                    if (jArray != null)
+                case TypeGroup.Value:
                     {
-                        List<object> resultList = new List<object>();
-                        foreach (var listItem in jArray)
+                        JValue jValue = jToken as JValue;
+                        if (jValue != null)
                         {
-                            object value = DeserializeToken(listItem, fieldType, rootType);
-                            resultList.Add(value);
+                            object value = jValue.Value;
+                            result = DeserializeObjectConvert(value, valueType);
                         }
-                        result = resultList.ToArray();
                     }
-                    else
+                    break;
+                case TypeGroup.Object:
                     {
-                        throw new Exception("Type unknown!");
+                        JObject jObject = jToken as JObject;
+                        Type objectType = DeserializeTokenObjectType(jObject, fieldType, rootType);
+                        if (objectType != null)
+                        {
+                            result = Activator.CreateInstance(objectType);
+                            foreach (var fieldInfo in result.GetType().GetTypeInfo().GetFields())
+                            {
+                                if (jObject != null)
+                                {
+                                    JToken jTokenChild = jObject.Property(fieldInfo.Name).Value;
+                                    Type fieldTypeChild = fieldInfo.FieldType;
+                                    object valueChild = DeserializeToken(jTokenChild, fieldTypeChild, rootType);
+                                    fieldInfo.SetValue(result, valueChild);
+                                }
+                            }
+                        }
                     }
-                }
+                    break;
+                case TypeGroup.List:
+                    {
+                        var list = (IList)Activator.CreateInstance(fieldType);
+                        JArray jArray = jToken as JArray;
+                        if (jArray != null)
+                        {
+                            foreach (var jTokenChild in jArray)
+                            {
+                                Type fieldTypeChild = valueType;
+                                object valueChild = DeserializeToken(jTokenChild, fieldTypeChild, rootType);
+                                list.Add(valueChild);
+                            }
+                        }
+                        result = list;
+                    }
+                    break;
+                case TypeGroup.Dictionary:
+                    {
+                        var list = (IDictionary)Activator.CreateInstance(fieldType);
+                        JObject jObject = jToken as JObject;
+                        if (jObject != null)
+                        {
+                            foreach (var jKeyValue in jObject)
+                            {
+                                Type fieldTypeChild = valueType;
+                                JToken jTokenChild = jKeyValue.Value;
+                                object valueChild = DeserializeToken(jTokenChild, fieldTypeChild, rootType);
+                                list.Add(jKeyValue.Key, valueChild);
+                            }
+                        }
+                        result = list;
+                    }
+                    break;
+                default:
+                    throw new Exception("Type unknown!");
             }
             return result;
         }
@@ -272,7 +293,7 @@
         private static object Deserialize(string json, Type rootType)
         {
             JObject jObject = (JObject)JsonConvert.DeserializeObject(json);
-            return DeserializeToken(jObject, null, rootType);
+            return DeserializeToken(jObject, rootType, rootType);
         }
 
         public static T Deserialize<T>(string json)
