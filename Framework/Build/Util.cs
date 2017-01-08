@@ -47,7 +47,7 @@
             foreach (var methodInfo in Util.MethodList(typeof(Script)))
             {
                 number += 1;
-                string text = number + "=" + methodInfo.Name;
+                string text = string.Format("{0:00}", number) + "=" + methodInfo.Name;
                 DescriptionAttribute description = methodInfo.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
                 if (description != null)
                 {

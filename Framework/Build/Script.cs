@@ -108,5 +108,11 @@
             PublishSql(ConnectionManager.ConnectionStringConfig.Remote);
             Build.DataAccessLayer.Script.Run();
         }
+
+        [Description("Run unit tests")]
+        public static void UnitTest()
+        {
+            Util.DotNetRun(ConnectionManager.FolderName + "UnitTest/");
+        }
     }
 }

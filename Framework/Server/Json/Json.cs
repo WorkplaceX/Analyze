@@ -1,4 +1,4 @@
-﻿namespace Server
+﻿namespace Server.Json
 {
     using Application;
     using Newtonsoft.Json;
@@ -9,7 +9,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public static class Json
+    public static class Util
     {
         private enum TypeGroup { None, Value, Object, List, Dictionary }
 
@@ -127,15 +127,14 @@
             }
         }
 
-        public static string Serialize(object obj)
+        private static string Serialize(object obj, Type rootType)
         {
-            TypeInfoAdd(obj, null);
             SerializePrepare(obj);
             string result = JsonConvert.SerializeObject(obj);
             // TODO Debug
             {
                 string debugSource = JsonConvert.SerializeObject(obj, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
-                object debugObj = Deserialize(result);
+                object debugObj = Deserialize(result, rootType);
                 string debugDest = JsonConvert.SerializeObject(debugObj, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
                 Util.Assert(debugSource == debugDest);
                 SerializePrepare(debugObj);
@@ -143,6 +142,11 @@
             }
             //
             return result;
+        }
+
+        public static string Serialize(object obj)
+        {
+            return Serialize(obj, obj.GetType());
         }
 
         private static object DeserializeObjectConvert(object value, Type type)
@@ -170,7 +174,7 @@
             return Convert.ChangeType(value, type);
         }
 
-        private static object DeserializeToken(JToken jToken, Type fieldType, string namespaceName, Assembly assembly)
+        private static object DeserializeToken(JToken jToken, Type fieldType, Type rootType)
         {
             object result = null;
             JObject jObject = jToken as JObject;
@@ -180,11 +184,18 @@
                 Type objectType;
                 if (objectTypeString != null)
                 {
-                    objectType = Type.GetType(namespaceName + "." + objectTypeString + ", " + assembly.FullName);
+                    objectType = Type.GetType(rootType.Namespace + "." + objectTypeString + ", " + rootType.GetTypeInfo().Assembly.FullName);
                 }
                 else
                 {
-                    objectType = fieldType;
+                    if (fieldType != null)
+                    {
+                        objectType = fieldType;
+                    }
+                    else
+                    {
+                        objectType = rootType;
+                    }
                 }
                 result = Activator.CreateInstance(objectType); // TODO FormatterServices.GetUninitializedObject; RuntimeHelpers.GetUninitializedObject
                 foreach (var item in jObject.Properties())
@@ -194,13 +205,13 @@
                     {
                         TypeGroup typeGroup;
                         Type valueType;
-                        Json.TypeInfo(fieldInfo.FieldType, out typeGroup, out valueType);
+                        Util.TypeInfo(fieldInfo.FieldType, out typeGroup, out valueType);
                         if (typeGroup == TypeGroup.Dictionary)
                         {
                             var list = (IDictionary)Activator.CreateInstance(fieldInfo.FieldType);
                             foreach (var keyValue in ((JObject)item.Value))
                             {
-                                object value = DeserializeToken(keyValue.Value, valueType, namespaceName, assembly);
+                                object value = DeserializeToken(keyValue.Value, valueType, rootType);
                                 var valueSet = DeserializeObjectConvert(value, valueType);
                                 list.Add(keyValue.Key, valueSet);
                             }
@@ -208,7 +219,7 @@
                         }
                         else
                         {
-                            object value = DeserializeToken(item.Value, valueType, namespaceName, assembly);
+                            object value = DeserializeToken(item.Value, valueType, rootType);
                             if (item.Value is JArray)
                             {
                                 var list = (IList)Activator.CreateInstance(fieldInfo.FieldType);
@@ -244,7 +255,7 @@
                         List<object> resultList = new List<object>();
                         foreach (var listItem in jArray)
                         {
-                            object value = DeserializeToken(listItem, fieldType, namespaceName, assembly);
+                            object value = DeserializeToken(listItem, fieldType, rootType);
                             resultList.Add(value);
                         }
                         result = resultList.ToArray();
@@ -258,10 +269,28 @@
             return result;
         }
 
-        public static object Deserialize(string value)
+        private static object Deserialize(string json, Type rootType)
         {
-            JObject jObject = (JObject)JsonConvert.DeserializeObject(value);
-            return DeserializeToken(jObject, null, "Application", typeof(Data).GetTypeInfo().Assembly);
+            JObject jObject = (JObject)JsonConvert.DeserializeObject(json);
+            return DeserializeToken(jObject, null, rootType);
+        }
+
+        public static T Deserialize<T>(string json)
+        {
+            return (T)Deserialize(json, typeof(T));
+        }
+
+        public static void Assert(bool isAssert, string exceptionText)
+        {
+            if (!isAssert)
+            {
+                throw new Exception(exceptionText);
+            }
+        }
+
+        public static void Assert(bool isAssert)
+        {
+            Assert(isAssert, "Assert!");
         }
     }
 }

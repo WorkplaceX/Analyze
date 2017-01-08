@@ -1,13 +1,12 @@
-﻿using Application;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Server
+﻿namespace Server
 {
+    using Application;
+    using Microsoft.AspNetCore.Mvc;
+    using System.Net.Http;
+    using System.Reflection;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public class WebController : Controller
     {
         // const string path = "/web/"; // Run with root debug page.
@@ -29,9 +28,9 @@ namespace Server
             if (HttpContext.Request.Path == path + "data.json")
             {
                 string jsonIn = Util.StreamToString(Request.Body);
-                Data dataIn = (Data)Server.Json.Deserialize(jsonIn);
+                Data dataIn = Server.Json.Util.Deserialize<Data>(jsonIn);
                 Data dataOut = Main.Process(dataIn);
-                string jsonOut = Server.Json.Serialize(dataOut);
+                string jsonOut = Server.Json.Util.Serialize(dataOut);
                 return Content(jsonOut, "application/json");
             }
             // node_modules
@@ -61,7 +60,7 @@ namespace Server
                 string htmlUniversal = null;
                 string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
                 data.IsBrowser = false; // Server side rendering mode.
-                string json = Server.Json.Serialize(data);
+                string json = Server.Json.Util.Serialize(data);
                 htmlUniversal = await Post(url, json, false); // Call Angular Universal server side rendering service.
                 if (htmlUniversal == null)
                 {
@@ -79,7 +78,7 @@ namespace Server
                     result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
                 }
                 data.IsBrowser = true; // Client side rendering mode.
-                string dataJson = Server.Json.Serialize(data);
+                string dataJson = Server.Json.Util.Serialize(data);
                 string resultAssert = result;
                 // Add data to index.html (Client/index.html)
                 {
