@@ -37,7 +37,7 @@ namespace Application
         }
 
         /// <summary>
-        /// (Row, FieldName, GridCell)
+        /// (Row, GridCell)
         /// </summary>
         public List<List<GridCell>> GridCellList;
     }
