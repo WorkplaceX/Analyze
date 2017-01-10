@@ -64,6 +64,11 @@ namespace UnitTest.Json
         public List<List<int>> List2;
     }
 
+    public class DataWithObject
+    {
+        public object Value;
+    }
+
     public class UnitTest : UnitTestBase
     {
         public void Test01()
@@ -101,8 +106,8 @@ namespace UnitTest.Json
             DataWithList data = new Json.DataWithList();
             data.Name = "L";
             data.List = null;
-            // string json = Server.Json.Util.Serialize(data); // TODO throws error
-            // DataWithList data2 = Server.Json.Util.Deserialize<DataWithList>(json); // TODO throws error
+            string json = Server.Json.Util.Serialize(data);
+            DataWithList data2 = Server.Json.Util.Deserialize<DataWithList>(json);
         }
 
         public void Test04()
@@ -157,6 +162,24 @@ namespace UnitTest.Json
             data.List2[0].Add(88);
             string json = Server.Json.Util.Serialize(data);
             var data2 = Server.Json.Util.Deserialize<DataWithListNested>(json);
+        }
+
+        public void Test08()
+        {
+            var data = new DataWithObject();
+            data.Value = "H";
+            // string json = Server.Json.Util.Serialize(data); // TODO throws exception
+            // var data2 = Server.Json.Util.Deserialize<DataWithObject>(json); // TODO throws exception
+            // Util.Assert((string)data2.Value == "H"); // TODO throws exception
+        }
+
+        public void Test09()
+        {
+            var data = new DataWithObject();
+            data.Value = 2.23;
+            // string json = Server.Json.Util.Serialize(data); // TODO throws exception
+            // var data2 = Server.Json.Util.Deserialize<DataWithObject>(json); // TODO throws exception
+            // Util.Assert((double)data2.Value == 2.23); // TODO throws exception
         }
     }
 }

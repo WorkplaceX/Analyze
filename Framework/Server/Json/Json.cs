@@ -11,6 +11,125 @@
 
     public static class Util
     {
+        private class UtilValue
+        {
+            public object Obj;
+
+            public string FieldName;
+
+            public Type FieldType;
+
+            public object Index;
+
+            public object Value;
+        }
+
+        private static List<UtilValue> ValueListGet(object obj)
+        {
+            List<UtilValue> result = new List<UtilValue>();
+            TypeGroup typeGroup;
+            Type valueType;
+            Util.TypeInfo(obj.GetType(), out typeGroup, out valueType);
+            switch (typeGroup)
+            {
+                case TypeGroup.Value:
+                    break;
+                case TypeGroup.Object:
+                    {
+                        foreach (var fieldIndo in obj.GetType().GetTypeInfo().GetFields())
+                        {
+                            object value = fieldIndo.GetValue(obj);
+                            result.Add(new UtilValue() { Obj = obj, FieldName = fieldIndo.Name, FieldType = fieldIndo.FieldType, Index = null, Value = value });
+                        }
+                        break;
+                    }
+                case TypeGroup.List:
+                    {
+                        IList list = (IList)obj;
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            object value = list[i];
+                            result.Add(new UtilValue() { Obj = obj, FieldName = null, FieldType = valueType, Index = i, Value = value });
+                        }
+                        break;
+                    }
+                case TypeGroup.Dictionary:
+                    {
+                        IDictionary list = (IDictionary)obj;
+                        foreach (DictionaryEntry item in list)
+                        {
+                            object value = item.Value;
+                            result.Add(new UtilValue() { Obj = obj, FieldName = null, FieldType = valueType, Index = item.Key, Value = value });
+                        }
+                        break;
+                    }
+                default:
+                    throw new Exception("Type unknown!");
+            }
+            return result;
+        }
+
+        private static void ValueListSet(object obj, List<UtilValue> valueList)
+        {
+            TypeGroup typeGroup;
+            Type valueType;
+            Util.TypeInfo(obj.GetType(), out typeGroup, out valueType);
+            switch (typeGroup)
+            {
+                case TypeGroup.Object:
+                    {
+                        // (FieldName, UtilValue)
+                        Dictionary<string, UtilValue> valueListIndexed = new Dictionary<string, UtilValue>();
+                        foreach (var item in valueList)
+                        {
+                            valueListIndexed.Add(item.FieldName, item);
+                        }
+                        foreach (var fieldIndo in obj.GetType().GetTypeInfo().GetFields())
+                        {
+                            object value = valueListIndexed[fieldIndo.Name].Value;
+                            fieldIndo.SetValue(obj, value);
+                        }
+                        break;
+                    }
+                case TypeGroup.List:
+                    {
+                        // (Index, UtilValue)
+                        Dictionary<int, UtilValue> valueListIndexed = new Dictionary<int, UtilValue>();
+                        foreach (var item in valueList)
+                        {
+                            valueListIndexed.Add((int)item.Index, item);
+                        }
+                        IList list = (IList)obj;
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            object value = valueListIndexed[i].Value;
+                            list[i] = value;
+                        }
+                        break;
+                    }
+                case TypeGroup.Dictionary:
+                    {
+                        // (Key, UtilValue)
+                        Dictionary<object, UtilValue> valueListIndexed = new Dictionary<object, UtilValue>();
+                        foreach (var item in valueList)
+                        {
+                            valueListIndexed.Add(item.Index, item);
+                        }
+                        IDictionary list = (IDictionary)obj;
+                        object[] keyList = new object[list.Count];
+                        list.Keys.CopyTo(keyList, 0);
+                        foreach (var key in keyList)
+                        {
+                            object value = valueListIndexed[key].Value;
+                            list[key] = value;
+                        }
+                        break;
+                    }
+                default:
+                    throw new Exception("Type unknown!");
+            }
+        }
+
         private enum TypeGroup { None, Value, Object, List, Dictionary }
 
         private static void TypeInfo(Type fieldType, out TypeGroup typeGroup, out Type valueType)
@@ -49,116 +168,149 @@
             typeGroup = TypeGroup.None;
         }
 
-        /// <summary>
-        /// Add type information to object if derived from valueType.
-        /// </summary>
-        private static void TypeInfoAdd(object obj, Type valueType)
+        private static void SerializePrepareListReset(UtilValue value, bool isAfter)
         {
-            if (obj != null)
+            TypeGroup typeGroup;
+            Type valueType;
+            Util.TypeInfo(value.FieldType, out typeGroup, out valueType);
+            switch (typeGroup)
             {
-                if (valueType != null && Nullable.GetUnderlyingType(valueType) != null)
-                {
-                    valueType = Nullable.GetUnderlyingType(valueType);
-                }
-                FieldInfo fieldInfo = obj.GetType().GetFields().Where(item => item.Name == "Type").FirstOrDefault();
-                if (obj.GetType() != valueType)
-                {
-                    if (fieldInfo == null)
+                case TypeGroup.Value:
+                    break;
+                case TypeGroup.Object:
+                    break;
+                case TypeGroup.List:
                     {
-                        throw new Exception(string.Format("Derived class does not contain field 'Type'! (Base={0}; Derived={1})", valueType?.Name, obj.GetType().Name));
-                    }
-                    fieldInfo.SetValue(obj, obj.GetType().Name);
-                }
-                else
-                {
-                    if (fieldInfo != null)
-                    {
-                        fieldInfo.SetValue(obj, null);
-                    }
-                }
-            }
-        }
-
-        private static void SerializePrepare(object obj)
-        {
-            if (obj != null)
-            {
-                if (obj is IList)
-                {
-                    foreach (var item in (IList)obj)
-                    {
-                        SerializePrepare(item);
-                    }
-                }
-                else
-                {
-                    if (obj is IDictionary)
-                    {
-                        foreach (DictionaryEntry item in (IDictionary)obj)
+                        var list = (IList)value.Value;
+                        if (isAfter == false)
                         {
-                            SerializePrepare(item.Value);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var field in obj.GetType().GetFields())
-                        {
-                            TypeGroup typeGroup;
-                            Type valueType;
-                            TypeInfo(field.FieldType, out typeGroup, out valueType);
-                            object value = field.GetValue(obj);
-                            switch (typeGroup)
+                            if (list != null && list.Count == 0)
                             {
-                                case TypeGroup.Value:
-                                    TypeInfoAdd(value, valueType);
-                                    break;
-                                case TypeGroup.Object:
-                                    TypeInfoAdd(value, valueType);
-                                    SerializePrepare(value);
-                                    break;
-                                case TypeGroup.List:
-                                    foreach (var item in (IList)value)
-                                    {
-                                        TypeInfoAdd(item, valueType);
-                                        SerializePrepare(item);
-                                    }
-                                    if (((IList)value).Count == 0)
-                                    {
-                                        // field.SetValue(obj, null); // TODO clone object first.
-                                    }
-                                    break;
-                                case TypeGroup.Dictionary:
-                                    foreach (DictionaryEntry item in (IDictionary)value)
-                                    {
-                                        TypeInfoAdd(item.Value, valueType);
-                                        SerializePrepare(item.Value);
-                                    }
-                                    if (((IDictionary)value).Count == 0)
-                                    {
-                                        // field.SetValue(obj, null); // TODO clone object first.
-                                    }
-                                    break;
-                                default:
-                                    throw new Exception("Type unknown!");
+                                value.Value = null;
+                            }
+                        }
+                        else
+                        {
+                            if (list == null)
+                            {
+                                value.Value = Activator.CreateInstance(value.FieldType);
                             }
                         }
                     }
+                    break;
+                case TypeGroup.Dictionary:
+                    {
+                        var list = (IDictionary)value.Value;
+                        if (isAfter == false)
+                        {
+                            if (list != null && list.Count == 0)
+                            {
+                                value.Value = null;
+                            }
+                        }
+                        else
+                        {
+                            if (list == null)
+                            {
+                                value.Value = Activator.CreateInstance(value.FieldType);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    throw new Exception("Type unknown!");
+            }
+        }
+
+        private static void SerializePrepare(object value, Type fieldType, bool isAfter)
+        {
+            if (value != null)
+            {
+                TypeGroup typeGroup;
+                Type valueType;
+                Util.TypeInfo(fieldType, out typeGroup, out valueType);
+                switch (typeGroup)
+                {
+                    case TypeGroup.Value:
+                        {
+                            if (value != null)
+                            {
+                                Type fieldTypeNotNullable = fieldType;
+                                if (Nullable.GetUnderlyingType(fieldTypeNotNullable) != null)
+                                {
+                                    fieldTypeNotNullable = Nullable.GetUnderlyingType(fieldTypeNotNullable);
+                                }
+                                if (value.GetType() != fieldTypeNotNullable)
+                                {
+                                    if (value.GetType() != typeof(string) && value.GetType() != typeof(double))
+                                    {
+                                        throw new Exception("ValueType needs to be string or double!");
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case TypeGroup.Object:
+                        {
+                            bool isSetType = value.GetType() != fieldType;
+                            var valueList = ValueListGet(value);
+                            foreach (UtilValue item in valueList)
+                            {
+                                if (isSetType && item.FieldName == "Type")
+                                {
+                                    isSetType = false;
+                                    item.Value = value.GetType().Name;
+                                }
+                                SerializePrepareListReset(item, isAfter);
+                                SerializePrepare(item.Value, item.FieldType, isAfter);
+                            }
+                            if (isSetType)
+                            {
+                                throw new Exception("Object does not have Type field!");
+                            }
+                            ValueListSet(value, valueList);
+                        }
+                        break;
+                    case TypeGroup.List:
+                        {
+                            var valueList = ValueListGet(value);
+                            foreach (UtilValue item in ValueListGet(value))
+                            {
+                                SerializePrepareListReset(item, isAfter);
+                                SerializePrepare(item.Value, item.FieldType, isAfter);
+                            }
+                            ValueListSet(value, valueList);
+                        }
+                        break;
+                    case TypeGroup.Dictionary:
+                        {
+                            var valueList = ValueListGet(value);
+                            foreach (UtilValue item in ValueListGet(value))
+                            {
+                                SerializePrepareListReset(item, isAfter);
+                                SerializePrepare(item.Value, item.FieldType, isAfter);
+                            }
+                            ValueListSet(value, valueList);
+                        }
+                        break;
+                    default:
+                        throw new Exception("Type unknown!");
                 }
             }
         }
 
         private static string Serialize(object obj, Type rootType)
         {
-            SerializePrepare(obj);
+            SerializePrepare(obj, rootType, false);
             string result = JsonConvert.SerializeObject(obj);
+            SerializePrepare(obj, rootType, true);
             // TODO Debug
             {
                 string debugSource = JsonConvert.SerializeObject(obj, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
                 object debugObj = Deserialize(result, rootType);
+                SerializePrepare(debugObj, rootType, true);
                 string debugDest = JsonConvert.SerializeObject(debugObj, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
                 Util.Assert(debugSource == debugDest);
-                SerializePrepare(debugObj);
-                result = JsonConvert.SerializeObject(debugObj);
             }
             //
             return result;

@@ -224,8 +224,8 @@ namespace Application
             var rowFooter = new LayoutRow(container, "Footer");
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
-            // var grid = new Grid(cellFooter1, "MyGrid");
-            // grid.Load(typeof(SyUser)); // TODO
+            var grid = new Grid(cellFooter1, "MyGrid");
+            // grid.Load(typeof(SyUser)); 
             //
             return result;
         }
