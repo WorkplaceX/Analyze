@@ -222,7 +222,7 @@ export class Label {
 @Component({
   selector: 'Grid',
   template: `
-  <GridRow [data]=item *ngFor="let item of data.GridCellList; trackBy trackBy"></GridRow>
+  <GridRow [grid]=data [data]=item *ngFor="let item of data.GridCellList; trackBy trackBy"></GridRow>
   `
 })
 export class Grid {
@@ -237,16 +237,26 @@ export class Grid {
 @Component({
   selector: 'GridRow',
   template: `
-  <div>
-  <GridCell [data]=item *ngFor="let item of data; trackBy trackBy"></GridCell>
+  <div (mouseover)="data.IsSelect=true" (mouseout)="data.IsSelect=false" [ngClass]="{'select-class':data.IsSelect}">
+  <GridCell [grid]=grid [data]=item *ngFor="let item of data; trackBy trackBy"></GridCell>
   </div>
-  `
+  `,
+  styles: [`
+  .select-class {
+    background-color: lightgray;
+  }
+  `]
 })
 export class GridRow {
+  @Input() grid: any;
   @Input() data: any
 
   trackBy(index: any, item: any) {
     return item.Type;
+  }
+
+  click(){
+    this.data.IsSelect = !this.data.IsSelect;
   }
 }
 
@@ -254,13 +264,23 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div style="display:inline">FieldName={{ data.FieldName }}; Value={{ data.Value }}</div>
-  `
+  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline">FieldName={{ data.FieldName }}; Value={{ data.Value }}; GRID={{ grid.Text }}</div>
+  `,
+  styles: [`
+  .select-class {
+    background-color: rgba(255, 255, 0, 0.7);
+  }
+  `]
 })
 export class GridCell {
   @Input() data: any
+  @Input() grid: any;
 
   trackBy(index: any, item: any) {
     return item.Type;
+  }
+
+  click(){
+    this.data.IsSelect = !this.data.IsSelect;
   }
 }
