@@ -9,6 +9,15 @@
     using System.Linq;
     using System.Reflection;
 
+    public class ExceptionJson : Exception
+    {
+        public ExceptionJson(string message) 
+            : base(message)
+        {
+
+        }
+    }
+
     public static class Util
     {
         private class UtilValue
@@ -255,7 +264,7 @@
                             {
                                 if (!(value.GetType() == typeof(string) || value.GetType() == typeof(double)))
                                 {
-                                    throw new Exception("Type only string or double!");
+                                    throw new ExceptionJson("Type only string or double!");
                                 }
                             }
                         }
@@ -276,7 +285,7 @@
                             }
                             if (isSetType)
                             {
-                                throw new Exception("Object has no Type field!");
+                                throw new ExceptionJson("Object has no Type field!");
                             }
                             ValueListSet(value, valueList);
                         }
@@ -284,7 +293,7 @@
                     case TypeGroup.List:
                         {
                             var valueList = ValueListGet(value);
-                            foreach (UtilValue item in ValueListGet(value))
+                            foreach (UtilValue item in valueList)
                             {
                                 SerializePrepareListReset(item, isAfter);
                                 SerializePrepare(item.Value, item.FieldType, isAfter);
@@ -295,8 +304,12 @@
                     case TypeGroup.Dictionary:
                         {
                             var valueList = ValueListGet(value);
-                            foreach (UtilValue item in ValueListGet(value))
+                            foreach (UtilValue item in valueList)
                             {
+                                if (item.Index.GetType() != typeof(string))
+                                {
+                                    throw new ExceptionJson("Dictionary key needs to be of type string!");
+                                }
                                 SerializePrepareListReset(item, isAfter);
                                 SerializePrepare(item.Value, item.FieldType, isAfter);
                             }
@@ -472,7 +485,7 @@
             return (T)Deserialize(json, typeof(T));
         }
 
-        public static void Assert(bool isAssert, string exceptionText)
+        private static void Assert(bool isAssert, string exceptionText)
         {
             if (!isAssert)
             {
@@ -480,7 +493,7 @@
             }
         }
 
-        public static void Assert(bool isAssert)
+        private static void Assert(bool isAssert)
         {
             Assert(isAssert, "Assert!");
         }

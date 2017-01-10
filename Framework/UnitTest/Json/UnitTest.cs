@@ -215,7 +215,7 @@ namespace UnitTest.Json
             {
                 string json = Server.Json.Util.Serialize(data);
             }
-            catch (Exception exception)
+            catch (Server.Json.ExceptionJson exception)
             {
                 Util.Assert(exception.Message == "Type only string or double!");
             }
@@ -229,7 +229,7 @@ namespace UnitTest.Json
             {
                 string json = Server.Json.Util.Serialize(data);
             }
-            catch (Exception exception)
+            catch (Server.Json.ExceptionJson exception)
             {
                 Util.Assert(exception.Message == "Object has no Type field!");
             }
@@ -266,9 +266,9 @@ namespace UnitTest.Json
             data.List = new List<List<object>>();
             data.List.Add(new List<object>());
             data.List.Add(null);
-            // string json = Server.Json.Util.Serialize(data);
-            // var data2 = Server.Json.Util.Deserialize<DataListNestedNull>(json);
-            // Util.Assert(data2.List[1] != null);
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataListNestedNull>(json);
+            Util.Assert(data2.List[1] != null);
         }
 
         public void Test16()
@@ -277,9 +277,9 @@ namespace UnitTest.Json
             data.List2 = new Dictionary<string, Dictionary<string, int>>();
             data.List2.Add("X", new Dictionary<string, int>());
             data.List2.Add("Y", null);
-            // string json = Server.Json.Util.Serialize(data);
-            // var data2 = Server.Json.Util.Deserialize<DataListNestedNull>(json);
-            // Util.Assert(data2.List2["Y"] != null);
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataListNestedNull>(json);
+            Util.Assert(data2.List2["Y"] != null);
         }
 
         public void Test17()
@@ -291,23 +291,37 @@ namespace UnitTest.Json
             Util.Assert(data2.List2.Count == 0);
         }
 
-        public class DataDictionaryKey
-        {
-            public Dictionary<object, string> List;
-        }
-
         public void Test18()
         {
             var data = new DataDictionaryKey();
-            data.List = new Dictionary<object, string>();
-            data.List[2] = "X";
-            data.List[3.2] = "Y";
-            data.List["R"] = "Z";
+            data.List = new Dictionary<object, object>();
+            data.List["A"] = "X";
+            data.List["D"] = null;
             string json = Server.Json.Util.Serialize(data);
             var data2 = Server.Json.Util.Deserialize<DataDictionaryKey>(json);
-            // Util.Assert(data2.List[2] == "X");
-            // Util.Assert(data2.List[3.2] == "X");
-            Util.Assert(data2.List["R"] == "Z");
+            Util.Assert((string)data2.List["A"] == "X");
+            Util.Assert(data2.List["D"] == null);
+        }
+
+        public void Test19()
+        {
+            var data = new DataDictionaryKey();
+            data.List = new Dictionary<object, object>();
+            data.List["A"] = "X";
+            data.List[8] = null;
+            try
+            {
+                string json = Server.Json.Util.Serialize(data);
+            }
+            catch (Server.Json.ExceptionJson exception)
+            {
+                Util.Assert(exception.Message == "Dictionary key needs to be of type string!");
+            }
+        }
+
+        public class DataDictionaryKey
+        {
+            public Dictionary<object, object> List;
         }
     }
 }
