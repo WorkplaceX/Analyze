@@ -77,6 +77,7 @@ export class AppComponent {
   <ButtonX *ngIf="data.Type=='Button'" [data]=data></ButtonX>
   <InputX *ngIf="data.Type=='Input'" [data]=data></InputX>
   <Label *ngIf="data.Type=='Label'" [data]=data></Label>
+  <Grid *ngIf="data.Type=='Grid'" [data]=data></Grid>
   <!-- <LayoutDebug [data]=data></LayoutDebug> -->
 `
 })
@@ -215,4 +216,51 @@ export class InputX {
 })
 export class Label {
   @Input() data: any
+}
+
+/* Grid */
+@Component({
+  selector: 'Grid',
+  template: `
+  <GridRow [data]=item *ngFor="let item of data.GridCellList; trackBy trackBy"></GridRow>
+  `
+})
+export class Grid {
+  @Input() data: any
+
+  trackBy(index: any, item: any) {
+    return item.Type;
+  }
+}
+
+/* GridRow */
+@Component({
+  selector: 'GridRow',
+  template: `
+  <div>
+  <GridCell [data]=item *ngFor="let item of data; trackBy trackBy"></GridCell>
+  </div>
+  `
+})
+export class GridRow {
+  @Input() data: any
+
+  trackBy(index: any, item: any) {
+    return item.Type;
+  }
+}
+
+/* GridCell */
+@Component({
+  selector: 'GridCell',
+  template: `
+  <div style="display:inline">FieldName={{ data.FieldName }}; Value={{ data.Value }}</div>
+  `
+})
+export class GridCell {
+  @Input() data: any
+
+  trackBy(index: any, item: any) {
+    return item.Type;
+  }
 }
