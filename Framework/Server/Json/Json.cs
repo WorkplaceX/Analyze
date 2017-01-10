@@ -29,7 +29,7 @@
             List<UtilValue> result = new List<UtilValue>();
             TypeGroup typeGroup;
             Type valueType;
-            Util.TypeInfo(obj.GetType(), out typeGroup, out valueType);
+            Util.TypeInfo(obj, obj.GetType(), out typeGroup, out valueType);
             switch (typeGroup)
             {
                 case TypeGroup.Value:
@@ -73,7 +73,7 @@
         {
             TypeGroup typeGroup;
             Type valueType;
-            Util.TypeInfo(obj.GetType(), out typeGroup, out valueType);
+            Util.TypeInfo(obj, obj.GetType(), out typeGroup, out valueType);
             switch (typeGroup)
             {
                 case TypeGroup.Object:
@@ -132,8 +132,26 @@
 
         private enum TypeGroup { None, Value, Object, List, Dictionary }
 
-        private static void TypeInfo(Type fieldType, out TypeGroup typeGroup, out Type valueType)
+        private static void TypeInfo(object value, Type fieldType, out TypeGroup typeGroup, out Type valueType)
         {
+            if (fieldType == typeof(object))
+            {
+                if (value != null)
+                {
+                    if (value.GetType() == typeof(string))
+                    {
+                        typeGroup = TypeGroup.Value;
+                        valueType = typeof(string);
+                        return;
+                    }
+                    if (value.GetType() == typeof(int) || value.GetType() == typeof(double) || value.GetType() == typeof(Int64))
+                    {
+                        typeGroup = TypeGroup.Value;
+                        valueType = typeof(double);
+                        return;
+                    }
+                }
+            }
             if (fieldType.GetTypeInfo().IsValueType)
             {
                 typeGroup = TypeGroup.Value;
@@ -172,7 +190,7 @@
         {
             TypeGroup typeGroup;
             Type valueType;
-            Util.TypeInfo(value.FieldType, out typeGroup, out valueType);
+            Util.TypeInfo(value.Value, value.FieldType, out typeGroup, out valueType);
             switch (typeGroup)
             {
                 case TypeGroup.Value:
@@ -228,24 +246,16 @@
             {
                 TypeGroup typeGroup;
                 Type valueType;
-                Util.TypeInfo(fieldType, out typeGroup, out valueType);
+                Util.TypeInfo(value, fieldType, out typeGroup, out valueType);
                 switch (typeGroup)
                 {
                     case TypeGroup.Value:
                         {
-                            if (value != null)
+                            if (fieldType == typeof(object))
                             {
-                                Type fieldTypeNotNullable = fieldType;
-                                if (Nullable.GetUnderlyingType(fieldTypeNotNullable) != null)
+                                if (!(value.GetType() == typeof(string) || value.GetType() == typeof(double)))
                                 {
-                                    fieldTypeNotNullable = Nullable.GetUnderlyingType(fieldTypeNotNullable);
-                                }
-                                if (value.GetType() != fieldTypeNotNullable)
-                                {
-                                    if (value.GetType() != typeof(string) && value.GetType() != typeof(double))
-                                    {
-                                        throw new Exception("ValueType needs to be string or double!");
-                                    }
+                                    throw new Exception("Type only string or double!");
                                 }
                             }
                         }
@@ -266,7 +276,7 @@
                             }
                             if (isSetType)
                             {
-                                throw new Exception("Object does not have Type field!");
+                                throw new Exception("Object has no Type field!");
                             }
                             ValueListSet(value, valueList);
                         }
@@ -302,9 +312,9 @@
         private static string Serialize(object obj, Type rootType)
         {
             SerializePrepare(obj, rootType, false);
-            string result = JsonConvert.SerializeObject(obj);
+            string result = JsonConvert.SerializeObject(obj, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
             SerializePrepare(obj, rootType, true);
-            // TODO Debug
+            // TODO Disable Debug
             {
                 string debugSource = JsonConvert.SerializeObject(obj, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
                 object debugObj = Deserialize(result, rootType);
@@ -368,19 +378,22 @@
         private static object DeserializeToken(JToken jToken, Type fieldType, Type rootType)
         {
             object result = null;
+            //
+            object value = null;
+            JValue jValue = jToken as JValue;
+            if (jValue != null)
+            {
+                value = jValue.Value;
+            }
+            //
             TypeGroup typeGroup;
             Type valueType;
-            Util.TypeInfo(fieldType, out typeGroup, out valueType);
+            Util.TypeInfo(value, fieldType, out typeGroup, out valueType);
             switch (typeGroup)
             {
                 case TypeGroup.Value:
                     {
-                        JValue jValue = jToken as JValue;
-                        if (jValue != null)
-                        {
-                            object value = jValue.Value;
-                            result = DeserializeObjectConvert(value, valueType);
-                        }
+                        result = DeserializeObjectConvert(value, valueType);
                     }
                     break;
                 case TypeGroup.Object:
@@ -394,10 +407,14 @@
                             {
                                 if (jObject != null)
                                 {
-                                    JToken jTokenChild = jObject.Property(fieldInfo.Name).Value;
-                                    Type fieldTypeChild = fieldInfo.FieldType;
-                                    object valueChild = DeserializeToken(jTokenChild, fieldTypeChild, rootType);
-                                    fieldInfo.SetValue(result, valueChild);
+                                    JProperty jProperty = jObject.Property(fieldInfo.Name);
+                                    if (jProperty != null)
+                                    {
+                                        JToken jTokenChild = jProperty.Value;
+                                        Type fieldTypeChild = fieldInfo.FieldType;
+                                        object valueChild = DeserializeToken(jTokenChild, fieldTypeChild, rootType);
+                                        fieldInfo.SetValue(result, valueChild);
+                                    }
                                 }
                             }
                         }
@@ -445,7 +462,9 @@
         private static object Deserialize(string json, Type rootType)
         {
             JObject jObject = (JObject)JsonConvert.DeserializeObject(json);
-            return DeserializeToken(jObject, rootType, rootType);
+            object result = DeserializeToken(jObject, rootType, rootType);
+            SerializePrepare(result, rootType, true);
+            return result;
         }
 
         public static T Deserialize<T>(string json)

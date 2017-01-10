@@ -69,6 +69,22 @@ namespace UnitTest.Json
         public object Value;
     }
 
+    public class DataListNull
+    {
+        public string Name;
+
+        public List<object> List;
+
+        public Dictionary<string, int> List2;
+    }
+
+    public class DataListNestedNull
+    {
+        public List<List<object>> List;
+
+        public Dictionary<string, Dictionary<string, int>> List2;
+    }
+
     public class UnitTest : UnitTestBase
     {
         public void Test01()
@@ -168,18 +184,130 @@ namespace UnitTest.Json
         {
             var data = new DataWithObject();
             data.Value = "H";
-            // string json = Server.Json.Util.Serialize(data); // TODO throws exception
-            // var data2 = Server.Json.Util.Deserialize<DataWithObject>(json); // TODO throws exception
-            // Util.Assert((string)data2.Value == "H"); // TODO throws exception
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataWithObject>(json);
+            Util.Assert((string)data2.Value == "H");
         }
 
         public void Test09()
         {
             var data = new DataWithObject();
             data.Value = 2.23;
-            // string json = Server.Json.Util.Serialize(data); // TODO throws exception
-            // var data2 = Server.Json.Util.Deserialize<DataWithObject>(json); // TODO throws exception
-            // Util.Assert((double)data2.Value == 2.23); // TODO throws exception
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataWithObject>(json);
+            Util.Assert((double)data2.Value == 2.23);
+        }
+
+        public void Test10()
+        {
+            var data = new DataWithObject();
+            data.Value = (double)2;
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataWithObject>(json);
+            Util.Assert((double)data2.Value == 2);
+        }
+
+        public void Test11()
+        {
+            var data = new DataWithObject();
+            data.Value = (int)2;
+            try
+            {
+                string json = Server.Json.Util.Serialize(data);
+            }
+            catch (Exception exception)
+            {
+                Util.Assert(exception.Message == "Type only string or double!");
+            }
+        }
+
+        public void Test12()
+        {
+            var data = new DataWithObject();
+            data.Value = new DataWithListItem();
+            try
+            {
+                string json = Server.Json.Util.Serialize(data);
+            }
+            catch (Exception exception)
+            {
+                Util.Assert(exception.Message == "Object has no Type field!");
+            }
+        }
+
+        public void Test13()
+        {
+            var data = new DataWithObject();
+            data.Value = new DataWithListItem2() { Name = "M" };
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataWithObject>(json);
+            Util.Assert(data2.Value.GetType() == typeof(DataWithListItem2));
+            Util.Assert(((DataWithListItem2)data2.Value).Name == "M");
+        }
+
+        public void Test14()
+        {
+            var data = new DataListNull();
+            data.Name = "H";
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataListNull>(json);
+            Util.Assert(!json.Contains("List"));
+            Util.Assert(data.List != null);
+            Util.Assert(data.List2 != null);
+            Util.Assert(data2.List != null);
+            Util.Assert(data2.List2 != null);
+            Util.Assert(data.Name == "H");
+            Util.Assert(data2.Name == "H");
+        }
+
+        public void Test15()
+        {
+            var data = new DataListNestedNull();
+            data.List = new List<List<object>>();
+            data.List.Add(new List<object>());
+            data.List.Add(null);
+            // string json = Server.Json.Util.Serialize(data);
+            // var data2 = Server.Json.Util.Deserialize<DataListNestedNull>(json);
+            // Util.Assert(data2.List[1] != null);
+        }
+
+        public void Test16()
+        {
+            var data = new DataListNestedNull();
+            data.List2 = new Dictionary<string, Dictionary<string, int>>();
+            data.List2.Add("X", new Dictionary<string, int>());
+            data.List2.Add("Y", null);
+            // string json = Server.Json.Util.Serialize(data);
+            // var data2 = Server.Json.Util.Deserialize<DataListNestedNull>(json);
+            // Util.Assert(data2.List2["Y"] != null);
+        }
+
+        public void Test17()
+        {
+            var data = new DataListNestedNull();
+            data.List2 = new Dictionary<string, Dictionary<string, int>>();
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataListNestedNull>(json);
+            Util.Assert(data2.List2.Count == 0);
+        }
+
+        public class DataDictionaryKey
+        {
+            public Dictionary<object, string> List;
+        }
+
+        public void Test18()
+        {
+            var data = new DataDictionaryKey();
+            data.List = new Dictionary<object, string>();
+            data.List[2] = "X";
+            data.List[3.2] = "Y";
+            data.List["R"] = "Z";
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataDictionaryKey>(json);
+            // Util.Assert(data2.List[2] == "X");
+            // Util.Assert(data2.List[3.2] == "X");
+            Util.Assert(data2.List["R"] == "Z");
         }
     }
 }

@@ -30,7 +30,8 @@ namespace Application
                 foreach (PropertyInfo propertyInfo in propertyInfoList)
                 {
                     object value = propertyInfo.GetValue(row);
-                    gridCellList.Add(new Application.GridCell() { FieldName = propertyInfo.Name, Value = value });
+                    object valueJson = Util.ValueToJson(value);
+                    gridCellList.Add(new Application.GridCell() { FieldName = propertyInfo.Name, Value = valueJson });
                 }
             }
         }
@@ -225,7 +226,7 @@ namespace Application
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
             var grid = new Grid(cellFooter1, "MyGrid");
-            // grid.Load(typeof(SyUser)); 
+            grid.Load(typeof(SyUser)); 
             //
             return result;
         }
