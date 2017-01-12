@@ -1,17 +1,24 @@
 {
   "version": "1.0.0-*",
-
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": false
+  },
   "dependencies": {
     "Microsoft.EntityFrameworkCore": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.1",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
-    "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1",
-    "System.Linq.Dynamic.Core": "1.0.6.9",
-    "System.Reflection": "4.3.0"
+    "System.Linq.Dynamic.Core": "1.0.6.9"
   },
-
   "frameworks": {
-    "netstandard1.6": {
+    "netcoreapp1.1": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.0"
+        }
+      },
       "imports": "dnxcore50"
     }
   }
