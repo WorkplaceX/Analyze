@@ -9,9 +9,9 @@
     using System.Linq;
     using System.Reflection;
 
-    public class ExceptionJson : Exception
+    public class JsonException : Exception
     {
-        public ExceptionJson(string message) 
+        public JsonException(string message) 
             : base(message)
         {
 
@@ -249,6 +249,18 @@
             }
         }
 
+        private static void SerializePrepareDerivedList(Type type)
+        {
+            if (type.GetTypeInfo().IsGenericType)
+            {
+                Type genericType = type.GetGenericTypeDefinition();
+                if (!(genericType == typeof(List<>) || genericType == typeof(Dictionary<,>)))
+                {
+                    throw new JsonException("No derived list or dictionary for json!");
+                }
+            }
+        }
+
         private static void SerializePrepare(object value, Type fieldType, bool isAfter)
         {
             if (value != null)
@@ -264,13 +276,14 @@
                             {
                                 if (!(value.GetType() == typeof(string) || value.GetType() == typeof(double)))
                                 {
-                                    throw new ExceptionJson("Type only string or double!");
+                                    throw new JsonException("Type only string or double!");
                                 }
                             }
                         }
                         break;
                     case TypeGroup.Object:
                         {
+                            SerializePrepareDerivedList(value.GetType());
                             bool isSetType = value.GetType() != fieldType;
                             var valueList = ValueListGet(value);
                             foreach (UtilValue item in valueList)
@@ -285,13 +298,14 @@
                             }
                             if (isSetType)
                             {
-                                throw new ExceptionJson("Object has no Type field!");
+                                throw new JsonException("Object has no Type field!");
                             }
                             ValueListSet(value, valueList);
                         }
                         break;
                     case TypeGroup.List:
                         {
+                            SerializePrepareDerivedList(value.GetType());
                             var valueList = ValueListGet(value);
                             foreach (UtilValue item in valueList)
                             {
@@ -308,7 +322,7 @@
                             {
                                 if (item.Index.GetType() != typeof(string))
                                 {
-                                    throw new ExceptionJson("Dictionary key needs to be of type string!");
+                                    throw new JsonException("Dictionary key needs to be of type string!");
                                 }
                                 SerializePrepareListReset(item, isAfter);
                                 SerializePrepare(item.Value, item.FieldType, isAfter);

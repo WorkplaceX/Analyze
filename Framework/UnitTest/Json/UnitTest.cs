@@ -215,7 +215,7 @@ namespace UnitTest.Json
             {
                 string json = Server.Json.Util.Serialize(data);
             }
-            catch (Server.Json.ExceptionJson exception)
+            catch (Server.Json.JsonException exception)
             {
                 Util.Assert(exception.Message == "Type only string or double!");
             }
@@ -229,7 +229,7 @@ namespace UnitTest.Json
             {
                 string json = Server.Json.Util.Serialize(data);
             }
-            catch (Server.Json.ExceptionJson exception)
+            catch (Server.Json.JsonException exception)
             {
                 Util.Assert(exception.Message == "Object has no Type field!");
             }
@@ -291,6 +291,11 @@ namespace UnitTest.Json
             Util.Assert(data2.List2.Count == 0);
         }
 
+        public class DataDictionaryKey
+        {
+            public Dictionary<object, object> List;
+        }
+
         public void Test18()
         {
             var data = new DataDictionaryKey();
@@ -313,15 +318,104 @@ namespace UnitTest.Json
             {
                 string json = Server.Json.Util.Serialize(data);
             }
-            catch (Server.Json.ExceptionJson exception)
+            catch (Server.Json.JsonException exception)
             {
                 Util.Assert(exception.Message == "Dictionary key needs to be of type string!");
             }
         }
 
-        public class DataDictionaryKey
+        public class DataDerivedDictionary0
         {
-            public Dictionary<object, object> List;
+            public MyDictionary<string, int> List;
+
+            public int SelectIndex2;
+        }
+
+        public void Test20()
+        {
+            var data = new DataDerivedDictionary0();
+            data.List = new MyDictionary<string, int>();
+            data.List.Add("SelectIndex3", 46);
+            data.List.SelectIndex = 43;
+            data.SelectIndex2 = 44;
+            try
+            {
+                string json = Server.Json.Util.Serialize(data);
+            }
+            catch (Server.Json.JsonException exception)
+            {
+                Util.Assert(exception.Message == "No derived list or dictionary for json!");
+            }
+        }
+
+        public class DataDerivedList
+        {
+            /// <summary>
+            /// (Row, Cell)
+            /// </summary>
+            public List<Row<GridCell>> CellList;
+        }
+
+        public class Row<T> : List<T>
+        {
+            public int SelectIndex;
+        }
+
+        public class GridCell
+        {
+            public object Value;
+        }
+
+        public void Test21()
+        {
+            var data = new DataDerivedList();
+            data.CellList = new List<Json.UnitTest.Row<Json.UnitTest.GridCell>>();
+            var row0 = new Row<GridCell>();
+            row0.SelectIndex = 45;
+            row0.Add(new Json.UnitTest.GridCell() { Value = "V" });
+            row0.Add(null);
+            data.CellList.Add(row0);
+            try
+            {
+                string json = Server.Json.Util.Serialize(data);
+            }
+            catch (Server.Json.JsonException exception)
+            {
+                Util.Assert(exception.Message == "No derived list or dictionary for json!");
+            }
+        }
+
+        public class DataDerivedDictionary
+        {
+            /// <summary>
+            /// (Row, Cell)
+            /// </summary>
+            public List<MyDictionary<string, int>> List;
+        }
+
+        public class MyDictionary<TKey, TValue> : Dictionary<TKey, TValue>
+        {
+            public int SelectIndex;
+        }
+
+        public void Test22()
+        {
+            var data = new DataDerivedDictionary();
+            data.List = new List<Json.UnitTest.MyDictionary<string, int>>();
+            var myList = new MyDictionary<string, int>();
+            myList.SelectIndex = 33;
+            myList.Add("X", 22);
+            data.List.Add(myList);
+            data.List.Add(null);
+            data.List.Add(new Json.UnitTest.MyDictionary<string, int>());
+            try
+            {
+                string json = Server.Json.Util.Serialize(data);
+            }
+            catch (Server.Json.JsonException exception)
+            {
+                Util.Assert(exception.Message == "No derived list or dictionary for json!");
+            }
         }
     }
 }

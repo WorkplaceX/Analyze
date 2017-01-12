@@ -17,7 +17,7 @@
         {
             get
             {
-                return ConnectionStringConfig.Local;
+                return ConnectionStringConfig.Remote;
             }
         }
 
