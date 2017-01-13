@@ -3,7 +3,6 @@
     using Application;
     using Microsoft.AspNetCore.Mvc;
     using System.Net.Http;
-    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -142,5 +141,4 @@
             }
         }
     }
-
 }

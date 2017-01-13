@@ -1,19 +1,23 @@
 # Framework
-Angular 2 with server side rendering and ASP.NET Core
+Bundle to create applications based on Angular 2 with server side rendering, ASP.NET Core and SQL.
 
 ## Install
 * cd Build
 * dotnet restore
 * dotnet start
-* 1=InstallAll
-* 7=Start
+* 01=InstallAll
+* 07=StartServerAndClient
+
+## Build CLI
+Command line interface containing all scripts and tools.
+![alt tag](Build/Doc/CommandLineInterface.png)
 
 ## Visual Studio
 * Open Framework.sln
 * Configure multiple start up projects (Server, UniversalExpress)
 
 ## Folder
-* Build (Build script)
+* Build (Build script with command line interface CLI)
 * Application (Contains .NET Core business logic)
 * Client (Angular 2 client)
 * Server (ASP.NET Core server)

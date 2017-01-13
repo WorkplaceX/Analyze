@@ -135,9 +135,26 @@
             Start(workingDirectory, fileName, "run", false, isWait);
         }
 
+        private static bool LogColorStart(string text)
+        {
+            string textStart = "Start";
+            if (text.StartsWith(textStart))
+            {
+                Console.BackgroundColor = ConsoleColor.DarkGreen;
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write(textStart);
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine(text.Substring(textStart.Length));
+                return true;
+
+            }
+            return false;
+        }
+
         private static bool LogColor(string text)
         {
-            if (text == "Build command")
+            if (text == "Build Command")
             {
                 Console.BackgroundColor = ConsoleColor.Blue;
                 Console.ForegroundColor = ConsoleColor.White;
@@ -151,7 +168,10 @@
                 Console.Write("[" + textList[0] + "]");
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Write(" = ");
-                Console.WriteLine(textList[1]);
+                if (!LogColorStart(textList[1]))
+                {
+                    Console.WriteLine(textList[1]);
+                }
                 return true;
             }
             return false;

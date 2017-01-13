@@ -34,20 +34,26 @@
             Util.DotNetRestore(ConnectionManager.FolderName + "Server/");
             Util.Log("Server>dotnet build");
             Util.DotNetBuild(ConnectionManager.FolderName + "Server/");
-            Gulp();
-        }
-
-        [Description("npm run gulp; Run everytime when Client changes")]
-        public static void Gulp()
-        {
-            Util.Log("Server>npm run gulp");
-            Util.NpmRun(ConnectionManager.FolderName + "Server/", "gulp");
+            RunGulp();
         }
 
         [Description("VS Code")]
         public static void OpenClient()
         {
             Util.OpenCode(ConnectionManager.FolderName + "Client/");
+        }
+
+        [Description("npm run start")]
+        public static void StartClient()
+        {
+            Util.NpmRun(ConnectionManager.FolderName + "Client/", "start");
+        }
+
+        [Description("npm run gulp; Run everytime when Client changes")]
+        public static void RunGulp()
+        {
+            Util.Log("Server>npm run gulp");
+            Util.NpmRun(ConnectionManager.FolderName + "Server/", "gulp");
         }
 
         [Description("VS Code")]
@@ -62,18 +68,18 @@
             Util.OpenCode(ConnectionManager.FolderName + "Universal/");
         }
 
-        [Description("npm run start")]
-        public static void StartClient()
-        {
-            Util.NpmRun(ConnectionManager.FolderName + "Client/", "start");
-        }
-
         [Description("Start Server and UniversalExpress")]
-        public static void Start()
+        public static void StartServerAndClient()
         {
             Util.DotNetRun(ConnectionManager.FolderName + "Server/", false);
             Util.Node(ConnectionManager.FolderName + "UniversalExpress/Universal/", "index.js", false);
             Util.OpenBrowser("http://localhost:5000");
+        }
+
+        [Description("Open Framework.sln")]
+        public static void OpenVisualStudio()
+        {
+            Util.OpenBrowser(ConnectionManager.FolderName + "Framework.sln");
         }
 
         private static void PublishSql(string connectionString)
