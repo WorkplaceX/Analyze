@@ -2,6 +2,233 @@ namespace Database.dbo
 {
     using Application.DataAccessLayer;
 
+    [SqlName("Airport")]
+    public partial class Airport : Row
+    {
+        [SqlName("Id")]
+        public int Id { get; set; }
+
+        [SqlName("Text")]
+        public string Text { get; set; }
+
+        [SqlName("Code")]
+        public string Code { get; set; }
+
+        [SqlName("CountryId")]
+        public int? CountryId { get; set; }
+    }
+
+    public partial class Airport_Id : Cell<Airport> { }
+
+    public partial class Airport_Text : Cell<Airport> { }
+
+    public partial class Airport_Code : Cell<Airport> { }
+
+    public partial class Airport_CountryId : Cell<Airport> { }
+
+    [SqlName("AirportDisplay")]
+    public partial class AirportDisplay : Row
+    {
+        [SqlName("AirportId")]
+        public int AirportId { get; set; }
+
+        [SqlName("AirportText")]
+        public string AirportText { get; set; }
+
+        [SqlName("AirportCode")]
+        public string AirportCode { get; set; }
+
+        [SqlName("CountryId")]
+        public int? CountryId { get; set; }
+
+        [SqlName("CountryText")]
+        public string CountryText { get; set; }
+
+        [SqlName("CountryContinent")]
+        public string CountryContinent { get; set; }
+    }
+
+    public partial class AirportDisplay_AirportId : Cell<AirportDisplay> { }
+
+    public partial class AirportDisplay_AirportText : Cell<AirportDisplay> { }
+
+    public partial class AirportDisplay_AirportCode : Cell<AirportDisplay> { }
+
+    public partial class AirportDisplay_CountryId : Cell<AirportDisplay> { }
+
+    public partial class AirportDisplay_CountryText : Cell<AirportDisplay> { }
+
+    public partial class AirportDisplay_CountryContinent : Cell<AirportDisplay> { }
+
+    [SqlName("Country")]
+    public partial class Country : Row
+    {
+        [SqlName("Id")]
+        public int Id { get; set; }
+
+        [SqlName("Text")]
+        public string Text { get; set; }
+
+        [SqlName("TextShort")]
+        public string TextShort { get; set; }
+
+        [SqlName("Continent")]
+        public string Continent { get; set; }
+    }
+
+    public partial class Country_Id : Cell<Country> { }
+
+    public partial class Country_Text : Cell<Country> { }
+
+    public partial class Country_TextShort : Cell<Country> { }
+
+    public partial class Country_Continent : Cell<Country> { }
+
+    [SqlName("ImportAirport")]
+    public partial class ImportAirport : Row
+    {
+        [SqlName("Text")]
+        public string Text { get; set; }
+
+        [SqlName("Code")]
+        public string Code { get; set; }
+
+        [SqlName("CountryTextShort")]
+        public string CountryTextShort { get; set; }
+    }
+
+    public partial class ImportAirport_Text : Cell<ImportAirport> { }
+
+    public partial class ImportAirport_Code : Cell<ImportAirport> { }
+
+    public partial class ImportAirport_CountryTextShort : Cell<ImportAirport> { }
+
+    [SqlName("ImportCountry")]
+    public partial class ImportCountry : Row
+    {
+        [SqlName("Text")]
+        public string Text { get; set; }
+
+        [SqlName("TextShort")]
+        public string TextShort { get; set; }
+
+        [SqlName("Continent")]
+        public string Continent { get; set; }
+    }
+
+    public partial class ImportCountry_Text : Cell<ImportCountry> { }
+
+    public partial class ImportCountry_TextShort : Cell<ImportCountry> { }
+
+    public partial class ImportCountry_Continent : Cell<ImportCountry> { }
+
+    [SqlName("ImportExcel")]
+    public partial class ImportExcel : Row
+    {
+        [SqlName("Id")]
+        public int Id { get; set; }
+
+        [SqlName("FileNameId")]
+        public int? FileNameId { get; set; }
+
+        [SqlName("SheetNameId")]
+        public int? SheetNameId { get; set; }
+
+        [SqlName("Row")]
+        public int? Row { get; set; }
+
+        [SqlName("ColumnNameId")]
+        public int? ColumnNameId { get; set; }
+
+        [SqlName("ValueNumber")]
+        public double? ValueNumber { get; set; }
+
+        [SqlName("ValueText")]
+        public string ValueText { get; set; }
+    }
+
+    public partial class ImportExcel_Id : Cell<ImportExcel> { }
+
+    public partial class ImportExcel_FileNameId : Cell<ImportExcel> { }
+
+    public partial class ImportExcel_SheetNameId : Cell<ImportExcel> { }
+
+    public partial class ImportExcel_Row : Cell<ImportExcel> { }
+
+    public partial class ImportExcel_ColumnNameId : Cell<ImportExcel> { }
+
+    public partial class ImportExcel_ValueNumber : Cell<ImportExcel> { }
+
+    public partial class ImportExcel_ValueText : Cell<ImportExcel> { }
+
+    [SqlName("ImportExcelDisplay")]
+    public partial class ImportExcelDisplay : Row
+    {
+        [SqlName("ExcelId")]
+        public int ExcelId { get; set; }
+
+        [SqlName("FileNameId")]
+        public int? FileNameId { get; set; }
+
+        [SqlName("FileName")]
+        public string FileName { get; set; }
+
+        [SqlName("SheetNameId")]
+        public int? SheetNameId { get; set; }
+
+        [SqlName("SheetName")]
+        public string SheetName { get; set; }
+
+        [SqlName("Row")]
+        public int? Row { get; set; }
+
+        [SqlName("ColumnNameId")]
+        public int? ColumnNameId { get; set; }
+
+        [SqlName("ColumnName")]
+        public string ColumnName { get; set; }
+
+        [SqlName("ValueNumber")]
+        public double? ValueNumber { get; set; }
+
+        [SqlName("ValueText")]
+        public string ValueText { get; set; }
+    }
+
+    public partial class ImportExcelDisplay_ExcelId : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_FileNameId : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_FileName : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_SheetNameId : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_SheetName : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_Row : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_ColumnNameId : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_ColumnName : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_ValueNumber : Cell<ImportExcelDisplay> { }
+
+    public partial class ImportExcelDisplay_ValueText : Cell<ImportExcelDisplay> { }
+
+    [SqlName("ImportName")]
+    public partial class ImportName : Row
+    {
+        [SqlName("Id")]
+        public int Id { get; set; }
+
+        [SqlName("Name")]
+        public string Name { get; set; }
+    }
+
+    public partial class ImportName_Id : Cell<ImportName> { }
+
+    public partial class ImportName_Name : Cell<ImportName> { }
+
     [SqlName("LoLoation")]
     public partial class LoLoation : Row
     {
@@ -256,4 +483,125 @@ namespace Database.dbo
     public partial class SyUser_Id : Cell<SyUser> { }
 
     public partial class SyUser_Name : Cell<SyUser> { }
+
+    [SqlName("TableName")]
+    public partial class TableName : Row
+    {
+        [SqlName("TableName2")]
+        public string TableName2 { get; set; }
+
+        [SqlName("IsView")]
+        public bool? IsView { get; set; }
+    }
+
+    public partial class TableName_TableName2 : Cell<TableName> { }
+
+    public partial class TableName_IsView : Cell<TableName> { }
+
+    [SqlName("TempExcel")]
+    public partial class TempExcel : Row
+    {
+        [SqlName("Id")]
+        public int Id { get; set; }
+
+        [SqlName("FileNameId")]
+        public int? FileNameId { get; set; }
+
+        [SqlName("SheetNameId")]
+        public int? SheetNameId { get; set; }
+
+        [SqlName("Row")]
+        public int? Row { get; set; }
+
+        [SqlName("ColumnNameId")]
+        public int? ColumnNameId { get; set; }
+
+        [SqlName("ValueNumber")]
+        public double? ValueNumber { get; set; }
+
+        [SqlName("ValueText")]
+        public string ValueText { get; set; }
+    }
+
+    public partial class TempExcel_Id : Cell<TempExcel> { }
+
+    public partial class TempExcel_FileNameId : Cell<TempExcel> { }
+
+    public partial class TempExcel_SheetNameId : Cell<TempExcel> { }
+
+    public partial class TempExcel_Row : Cell<TempExcel> { }
+
+    public partial class TempExcel_ColumnNameId : Cell<TempExcel> { }
+
+    public partial class TempExcel_ValueNumber : Cell<TempExcel> { }
+
+    public partial class TempExcel_ValueText : Cell<TempExcel> { }
+
+    [SqlName("TempExcelDisplay")]
+    public partial class TempExcelDisplay : Row
+    {
+        [SqlName("ExcelId")]
+        public int ExcelId { get; set; }
+
+        [SqlName("FileNameId")]
+        public int? FileNameId { get; set; }
+
+        [SqlName("FileName")]
+        public string FileName { get; set; }
+
+        [SqlName("SheetNameId")]
+        public int? SheetNameId { get; set; }
+
+        [SqlName("SheetName")]
+        public string SheetName { get; set; }
+
+        [SqlName("Row")]
+        public int? Row { get; set; }
+
+        [SqlName("ColumnNameId")]
+        public int? ColumnNameId { get; set; }
+
+        [SqlName("ColumnName")]
+        public string ColumnName { get; set; }
+
+        [SqlName("ValueNumber")]
+        public double? ValueNumber { get; set; }
+
+        [SqlName("ValueText")]
+        public string ValueText { get; set; }
+    }
+
+    public partial class TempExcelDisplay_ExcelId : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_FileNameId : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_FileName : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_SheetNameId : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_SheetName : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_Row : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_ColumnNameId : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_ColumnName : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_ValueNumber : Cell<TempExcelDisplay> { }
+
+    public partial class TempExcelDisplay_ValueText : Cell<TempExcelDisplay> { }
+
+    [SqlName("TempName")]
+    public partial class TempName : Row
+    {
+        [SqlName("Id")]
+        public int Id { get; set; }
+
+        [SqlName("Name")]
+        public string Name { get; set; }
+    }
+
+    public partial class TempName_Id : Cell<TempName> { }
+
+    public partial class TempName_Name : Cell<TempName> { }
 }

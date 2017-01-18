@@ -104,6 +104,7 @@
         [Description("Publish to local SQL server and generate CSharp DTO's")]
         public static void DataAccessLayerLocal()
         {
+            Airport.Script.Run();
             PublishSql(ConnectionManager.ConnectionStringConfig.Local);
             Build.DataAccessLayer.Script.Run();
         }
@@ -111,6 +112,7 @@
         [Description("Publish to remote SQL server and generate CSharp DTO's")]
         public static void DataAccessLayerRemote()
         {
+            Airport.Script.Run();
             PublishSql(ConnectionManager.ConnectionStringConfig.Remote);
             Build.DataAccessLayer.Script.Run();
         }

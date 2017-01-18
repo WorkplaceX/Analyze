@@ -20,6 +20,7 @@ Command line interface containing all scripts and tools.
 * Build (Build script with command line interface CLI)
 * Application (Contains .NET Core business logic)
 * Client (Angular 2 client)
+* Office (ETL to load (*.xlsx) files into database. Not .NET Core!)
 * Server (ASP.NET Core server)
 * Universal (Angular 2 server side rendering)
 * UniversalExpress (Used for debug in Visual Studio. Runs Universal in Express server)
