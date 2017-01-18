@@ -16,7 +16,7 @@ Command line interface containing all scripts and tools.
 * Open Framework.sln
 * Configure multiple start up projects (Server, UniversalExpress)
 
-## Folder
+## Folder Structure
 * Build (Build script with command line interface CLI)
 * Application (Contains .NET Core business logic)
 * Client (Angular 2 client)

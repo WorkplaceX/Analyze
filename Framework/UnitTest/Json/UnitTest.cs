@@ -217,7 +217,7 @@ namespace UnitTest.Json
             }
             catch (Server.Json.JsonException exception)
             {
-                Util.Assert(exception.Message == "Type only string or double!");
+                Util.Assert(exception.Message == "Allowed types: string, double or bool!");
             }
         }
 
@@ -416,6 +416,20 @@ namespace UnitTest.Json
             {
                 Util.Assert(exception.Message == "No derived list or dictionary for json!");
             }
+        }
+
+        public class DataBool
+        {
+            public object H;
+        }
+
+        public void Test23()
+        {
+            var data = new DataBool();
+            data.H = true;
+            string json = Server.Json.Util.Serialize(data);
+            var data2 = Server.Json.Util.Deserialize<DataBool>(json);
+            Util.Assert((bool)data2.H == true);
         }
     }
 }

@@ -159,6 +159,12 @@
                         valueType = typeof(double);
                         return;
                     }
+                    if (value.GetType() == typeof(bool))
+                    {
+                        typeGroup = TypeGroup.Value;
+                        valueType = typeof(bool);
+                        return;
+                    }
                 }
             }
             if (fieldType.GetTypeInfo().IsValueType)
@@ -274,9 +280,9 @@
                         {
                             if (fieldType == typeof(object))
                             {
-                                if (!(value.GetType() == typeof(string) || value.GetType() == typeof(double)))
+                                if (!(value.GetType() == typeof(string) || value.GetType() == typeof(double) || value.GetType() == typeof(bool)))
                                 {
-                                    throw new JsonException("Type only string or double!");
+                                    throw new JsonException("Allowed types: string, double or bool!");
                                 }
                             }
                         }

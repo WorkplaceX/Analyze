@@ -20,7 +20,7 @@ namespace Application
 
         public void Load(Type typeRow)
         {
-            object[] rowList = DataAccessLayer.Util.Select(typeRow);
+            object[] rowList = DataAccessLayer.Util.Select(typeRow, 0, 20);
             GridCellList = new List<List<Application.GridCell>>();
             var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
             foreach (object row in rowList)
@@ -226,7 +226,7 @@ namespace Application
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
             var grid = new Grid(cellFooter1, "MyGrid");
-            grid.Load(typeof(SyUser)); 
+            grid.Load(typeof(LoRoleLoation)); // grid.Load(typeof(SyUser)); 
             //
             return result;
         }
