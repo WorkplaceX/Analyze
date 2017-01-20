@@ -31,6 +31,7 @@
             options.UseSqlServer(Application.ConnectionManager.ConnectionString);
             options.UseModel(builder.Model);
             DbContext dbContext = new DbContext(options.Options);
+            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; // For SQL views. No primary key.
             IQueryable query = (IQueryable)(dbContext.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(typeRow).Invoke(dbContext, null));
             return query;
         }

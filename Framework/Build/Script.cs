@@ -37,6 +37,14 @@
             RunGulp();
         }
 
+        [Description("Start Server and UniversalExpress")]
+        public static void StartServerAndClient()
+        {
+            Util.DotNetRun(ConnectionManager.FolderName + "Server/", false);
+            Util.Node(ConnectionManager.FolderName + "UniversalExpress/Universal/", "index.js", false);
+            Util.OpenBrowser("http://localhost:5000");
+        }
+
         [Description("VS Code")]
         public static void OpenClient()
         {
@@ -68,16 +76,8 @@
             Util.OpenCode(ConnectionManager.FolderName + "Universal/");
         }
 
-        [Description("Start Server and UniversalExpress")]
-        public static void StartServerAndClient()
-        {
-            Util.DotNetRun(ConnectionManager.FolderName + "Server/", false);
-            Util.Node(ConnectionManager.FolderName + "UniversalExpress/Universal/", "index.js", false);
-            Util.OpenBrowser("http://localhost:5000");
-        }
-
         [Description("Open Framework.sln")]
-        public static void OpenVisualStudio()
+        public static void OpenFramework()
         {
             Util.OpenBrowser(ConnectionManager.FolderName + "Framework.sln");
         }
@@ -101,19 +101,19 @@
             }
         }
 
-        [Description("Publish to local SQL server and generate CSharp DTO's")]
-        public static void DataAccessLayerLocal()
+        [Description("Publish to Dev SQL server and generate CSharp DTO's")]
+        public static void PublishSqlDev()
         {
             Airport.Script.Run();
-            PublishSql(ConnectionManager.ConnectionStringConfig.Local);
+            PublishSql(ConnectionManager.ConfigServer.ConnectionStringDev);
             Build.DataAccessLayer.Script.Run();
         }
 
-        [Description("Publish to remote SQL server and generate CSharp DTO's")]
-        public static void DataAccessLayerRemote()
+        [Description("Publish to Prod SQL server and generate CSharp DTO's")]
+        public static void PublishSqlProd()
         {
             Airport.Script.Run();
-            PublishSql(ConnectionManager.ConnectionStringConfig.Remote);
+            PublishSql(ConnectionManager.ConfigServer.ConnectionStringProd);
             Build.DataAccessLayer.Script.Run();
         }
 

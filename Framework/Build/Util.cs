@@ -22,7 +22,7 @@
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                ProcessStartInfo info = new ProcessStartInfo(ConnectionManager.CodeFileName, folderName);
+                ProcessStartInfo info = new ProcessStartInfo(ConnectionManager.VisualStudioCodeFileName, folderName);
                 info.CreateNoWindow = true;
                 Process.Start(info);
             }
@@ -55,6 +55,7 @@
                 }
                 Util.Log(text);
             }
+            ConnectionManagerCheck.Run();
             Console.Write(">");
             string numberText = Console.ReadLine();
             int numberInt = int.Parse(numberText);
@@ -159,6 +160,17 @@
                 Console.BackgroundColor = ConsoleColor.Blue;
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(text);
+                return true;
+            }
+            string error = "Error:";
+            if (text.StartsWith("Error:"))
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(error);
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine(text.Substring(error.Length));
                 return true;
             }
             string[] textList = text.Split(new string[] { "=" }, StringSplitOptions.None);

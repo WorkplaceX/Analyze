@@ -1,4 +1,0 @@
-﻿{
-  "Local": "Data Source=(LocalDB)\\MSSQLLocalDB; Initial Catalog=Database; Integrated Security=True",
-  "Remote": "{ Your ConnectionString }"
-}

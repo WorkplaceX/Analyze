@@ -4,39 +4,21 @@
     using System;
     using System.Reflection;
 
-    public class ConnectionStringConfig
-    {
-        public string Local { get; set; }
-
-        public string Remote { get; set; }
-    }
-
     public static class ConnectionManager
     {
+        public static ConfigServer ConfigServer
+        {
+            get
+            {
+                return ConfigServer.Instance;
+            }
+        }
+
         public static string ConnectionString
         {
             get
             {
-                return ConnectionStringConfig.Local;
-            }
-        }
-
-        public static ConnectionStringConfig ConnectionStringConfig
-        {
-            get
-            {
-                string folderName;
-                bool isRunningIIS;
-                ConnectionManager.FolderName(out folderName, out isRunningIIS);
-                string fileName = folderName;
-                if (!isRunningIIS)
-                {
-                    fileName += "Server/";
-                }
-                fileName += "ConnectionString.json"; // See also .gitignore
-                string json = Util.FileRead(fileName);
-                ConnectionStringConfig result = JsonConvert.DeserializeObject<ConnectionStringConfig>(json);
-                return result;
+                return ConfigServer.ConnectionStringDev;
             }
         }
 
@@ -55,6 +37,60 @@
                 isRunningIIS = true;
             }
             folderName = result;
+        }
+    }
+
+    /// <summary>
+    /// Server config json.
+    /// </summary>
+    public class ConfigServer
+    {
+        public string ConnectionStringDev;
+
+        public string ConnectionStringProd;
+
+        public static string JsonFileName
+        {
+            get
+            {
+                string folderName;
+                bool isRunningIIS;
+                ConnectionManager.FolderName(out folderName, out isRunningIIS);
+                string fileName = folderName;
+                if (!isRunningIIS)
+                {
+                    fileName += "Server/";
+                }
+                fileName += "ConnectionString.json"; // See also .gitignore
+                return fileName;
+            }
+        }
+
+        public static string JsonTxtFileName
+        {
+            get
+            {
+                string folderName;
+                bool isRunningIIS;
+                ConnectionManager.FolderName(out folderName, out isRunningIIS);
+                string fileName = folderName;
+                if (!isRunningIIS)
+                {
+                    fileName += "Server/";
+                }
+                fileName += "ConnectionManager.json.txt"; // See also .gitignore
+                return fileName;
+            }
+        }
+
+        public static ConfigServer Instance
+        {
+            get
+            {
+                string json = Util.FileRead(JsonFileName); // See also .gitignore
+                var result = JsonConvert.DeserializeObject<ConfigServer>(json);
+                return result;
+            }
         }
     }
 }
