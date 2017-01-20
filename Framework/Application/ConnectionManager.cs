@@ -61,7 +61,7 @@
                 {
                     fileName += "Server/";
                 }
-                fileName += "ConnectionString.json"; // See also .gitignore
+                fileName += "ConnectionManager.json"; // See also .gitignore
                 return fileName;
             }
         }
