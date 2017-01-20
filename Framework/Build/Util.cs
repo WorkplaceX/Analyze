@@ -124,6 +124,13 @@
             Start(workingDirectory, fileName, "restore");
         }
 
+        public static void MSBuild(string fileNameCsproj)
+        {
+            string fileName = ConnectionManager.MSBuildFileName;
+            string workingDirectory = ConnectionManager.FolderName;
+            Start(workingDirectory, fileName, fileNameCsproj);
+        }
+
         public static void DotNetBuild(string workingDirectory)
         {
             string fileName = ConnectionManager.DotNetFileName;

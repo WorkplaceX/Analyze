@@ -7,17 +7,27 @@
         /// </summary>
         public static void Run()
         {
-            // SqlCreate
-            string fileName = ConnectionManager.FolderName + "Office/bin/Debug/Office.exe";
-            string command = "SqlCreate";
             string connectionString = ConnectionManager.ConnectionString;
-            string arguments = command + " " + "\"" + connectionString + "\"";
-            Util.Start(null, fileName, arguments);
+            string fileName = ConnectionManager.FolderName + "Office/bin/Debug/Office.exe";
+            // SqlDrop
+            {
+                string command = "SqlDrop";
+                string arguments = command + " " + "\"" + connectionString + "\"";
+                Util.Start(ConnectionManager.FolderName, fileName, arguments);
+            }
+            // SqlCreate
+            {
+                string command = "SqlCreate";
+                string arguments = command + " " + "\"" + connectionString + "\"";
+                Util.Start(ConnectionManager.FolderName, fileName, arguments);
+            }
             // Run
-            command = "Run";
-            string folderName = ConnectionManager.FolderName + "Build/Airport/";
-            arguments = command + " " + "\"" + connectionString + "\"" + " " + "\"" + folderName + "\"";
-            Util.Start(null, fileName, arguments);
+            {
+                string command = "Run";
+                string folderName = ConnectionManager.FolderName + "Build/Airport/";
+                string arguments = command + " " + "\"" + connectionString + "\"" + " " + "\"" + folderName + "\"";
+                Util.Start(ConnectionManager.FolderName, fileName, arguments);
+            }
         }
     }
 }

@@ -84,6 +84,22 @@
             }
         }
 
+        public static string MSBuildFileName
+        {
+            get
+            {
+                string result = "MSBuild.exe";
+                foreach (string fileName in ConfigBuild.MSBuildFileName)
+                {
+                    if (File.Exists(fileName))
+                    {
+                        result = fileName;
+                    }
+                }
+                return result;
+            }
+        }
+
         public static string NodeFileName
         {
             get
@@ -148,6 +164,8 @@
 
         public string[] VisualStudioCodeFileName;
 
+        public string[] MSBuildFileName;
+
         public static string JsonFileName
         {
             get
@@ -207,6 +225,10 @@
             if (!File.Exists(ConnectionManager.VisualStudioCodeFileName))
             {
                 Util.Log(string.Format("Error: File not found! Visual Studio Code. ({0}; {1})", ConnectionManager.VisualStudioCodeFileName, ConfigBuild.JsonFileName));
+            }
+            if (!File.Exists(ConnectionManager.MSBuildFileName))
+            {
+                Util.Log(string.Format("Error: File not found! ({0}; {1})", ConnectionManager.MSBuildFileName, ConfigBuild.JsonFileName));
             }
         }
 

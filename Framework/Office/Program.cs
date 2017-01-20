@@ -11,7 +11,7 @@ namespace Office
         static void Main(string[] args)
         {
             // args = new string[] { "SqlCreate", "Data Source=(LocalDB)\\MSSQLLocalDB; Initial Catalog=Database; Integrated Security=True" };
-            args = new string[] { "Run", "Data Source=(LocalDB)\\MSSQLLocalDB; Initial Catalog=Database; Integrated Security=True", @"C:\Temp\GitHb2\Research\Framework\Build\Airport\" };
+            // args = new string[] { "Run", "Data Source=(LocalDB)\\MSSQLLocalDB; Initial Catalog=Database; Integrated Security=True", @"C:\Temp\GitHb2\Research\Framework\Build\Airport\" };
             if (args.Length == 0)
             {
                 Console.WriteLine("Office load Excel files into database");

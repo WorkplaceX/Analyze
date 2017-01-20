@@ -34,6 +34,8 @@
             Util.DotNetRestore(ConnectionManager.FolderName + "Server/");
             Util.Log("Server>dotnet build");
             Util.DotNetBuild(ConnectionManager.FolderName + "Server/");
+            // Office
+            Util.MSBuild(ConnectionManager.FolderName + "Office/Office.csproj");
             RunGulp();
         }
 
@@ -90,7 +92,7 @@
             foreach (string fileName in fileNameList)
             {
                 string text = Util.FileRead(fileName);
-                var sqlList = text.Split(new string[] { "\r\nGO" }, StringSplitOptions.RemoveEmptyEntries);
+                var sqlList = text.Split(new string[] { "\r\nGO", "\nGO" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string sql in sqlList)
                 {
                     using (SqlCommand command = new SqlCommand(sql, connection))
