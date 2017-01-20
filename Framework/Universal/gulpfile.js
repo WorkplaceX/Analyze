@@ -31,6 +31,8 @@ gulp.task('t3', function() {
 gulp.task('t3.5', function(cb) {
     fs.readFile('../Client/app.module.ts', 'utf8', function(err, source) {
         fs.readFile('./src/+app/app.module.ts', 'utf8', function(err, dest) {
+            source = source.replace(/(\r\n|\n|\r)/gm,"\r\n");
+            dest = dest.replace(/(\r\n|\n|\r)/gm,"\r\n");
             /* GulpFind01 */
             indexBegin = source.indexOf('/* GulpFind01 */');
             if (indexBegin < 0) throw "Not found!";

@@ -160,6 +160,21 @@
             return false;
         }
 
+        private static bool LogColor(string text, string textStartsWith, ConsoleColor color)
+        {
+            if (text.StartsWith(textStartsWith))
+            {
+                Console.BackgroundColor = color;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(textStartsWith);
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine(text.Substring(textStartsWith.Length));
+                return true;
+            }
+            return false;
+        }
+
         private static bool LogColor(string text)
         {
             if (text == "Build Command")
@@ -169,17 +184,8 @@
                 Console.WriteLine(text);
                 return true;
             }
-            string error = "Error:";
-            if (text.StartsWith("Error:"))
-            {
-                Console.BackgroundColor = ConsoleColor.Red;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(error);
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(text.Substring(error.Length));
-                return true;
-            }
+            if (LogColor(text, "Error:", ConsoleColor.Red)) { return true; };
+            if (LogColor(text, "Warning:", ConsoleColor.DarkYellow)) { return true; };
             string[] textList = text.Split(new string[] { "=" }, StringSplitOptions.None);
             if (textList.Count() == 2)
             {

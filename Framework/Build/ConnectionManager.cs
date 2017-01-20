@@ -224,7 +224,7 @@
             }
             if (!File.Exists(ConnectionManager.VisualStudioCodeFileName))
             {
-                Util.Log(string.Format("Error: File not found! Visual Studio Code. ({0}; {1})", ConnectionManager.VisualStudioCodeFileName, ConfigBuild.JsonFileName));
+                Util.Log(string.Format("Warning: File not found! Visual Studio Code. ({0}; {1})", ConnectionManager.VisualStudioCodeFileName, ConfigBuild.JsonFileName));
             }
             if (!File.Exists(ConnectionManager.MSBuildFileName))
             {
