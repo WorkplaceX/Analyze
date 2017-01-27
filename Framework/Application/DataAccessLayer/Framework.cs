@@ -21,9 +21,47 @@
     /// </summary>
     public class Cell
     {
+        /// <summary>
+        /// Constructor for column.
+        /// </summary>
+        internal void Constructor(string tableNameSql, string fieldNameSql)
+        {
+            this.tableName = tableNameSql;
+            this.fieldName = fieldNameSql;
+        }
+
+        /// <summary>
+        /// Constructor for column and cell.
+        /// </summary>
         internal void Constructor(object row)
         {
             this.row = row;
+        }
+
+        private string tableName;
+
+        /// <summary>
+        /// Gets sql TableName.
+        /// </summary>
+        public string TableName
+        {
+            get
+            {
+                return tableName;
+            }
+        }
+
+        private string fieldName;
+
+        /// <summary>
+        /// Gets sql FieldName.
+        /// </summary>
+        public string FieldName
+        {
+            get
+            {
+                return fieldName;
+            }
         }
 
         private object row;
@@ -36,9 +74,29 @@
             }
         }
 
-        protected virtual bool IsReadOnly()
+        protected virtual internal void CellIsReadOnly(ref bool isReadOnly)
         {
-            return false;
+
+        }
+
+        protected virtual internal void ColumnText(ref string text)
+        {
+
+        }
+
+        protected virtual internal void ColumnWidthPercent(ref double widthPercent)
+        {
+
+        }
+
+        protected virtual internal void ColumnIsVisible(ref bool isVisible)
+        {
+
+        }
+
+        protected virtual internal void ColumnIsReadOnly(ref bool isReadOnly)
+        {
+
         }
     }
 
@@ -69,41 +127,13 @@
         public readonly string SqlName;
     }
 
-    public class DbContextMain : DbContext
+    public class TypeCellAttribute : Attribute
     {
-        public DbContextMain(Type[] rowTypeList)
+        public TypeCellAttribute(Type typeCell)
         {
-            this.RowTypeList = rowTypeList;
+            this.TypeCell = typeCell;
         }
 
-        public DbContextMain(Type rowType) 
-            : this(new Type[] { rowType })
-        {
-
-        }
-
-        public readonly Type[] RowTypeList;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(Application.ConnectionManager.ConnectionString);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            foreach (Type rowType in RowTypeList)
-            {
-                var entity = modelBuilder.Entity(rowType);
-                SqlNameAttribute attributeRow = (SqlNameAttribute)rowType.GetTypeInfo().GetCustomAttribute(typeof(SqlNameAttribute));
-                entity.ToTable(attributeRow.SqlName);
-                foreach (PropertyInfo propertyInfo in rowType.GetTypeInfo().GetProperties())
-                {
-                    SqlNameAttribute attributeProperty = (SqlNameAttribute)propertyInfo.GetCustomAttribute(typeof(SqlNameAttribute));
-                    entity.Property(propertyInfo.PropertyType, propertyInfo.Name).HasColumnName(attributeProperty.SqlName);
-                }
-            }
-            //
-            base.OnModelCreating(modelBuilder);
-        }
+        public readonly Type TypeCell;
     }
 }

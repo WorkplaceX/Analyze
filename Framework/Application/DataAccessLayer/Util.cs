@@ -12,6 +12,32 @@
 
     public class Util
     {
+        public static List<Cell> ColumnList(Type typeRow)
+        {
+            List<Cell> result = new List<DataAccessLayer.Cell>();
+            SqlNameAttribute attributeRow = (SqlNameAttribute)typeRow.GetTypeInfo().GetCustomAttribute(typeof(SqlNameAttribute));
+            foreach (PropertyInfo propertyInfo in typeRow.GetTypeInfo().GetProperties())
+            {
+                SqlNameAttribute attributePropertySql = (SqlNameAttribute)propertyInfo.GetCustomAttribute(typeof(SqlNameAttribute));
+                TypeCellAttribute attributePropertyCell = (TypeCellAttribute)propertyInfo.GetCustomAttribute(typeof(TypeCellAttribute));
+                Cell cell = (Cell)Activator.CreateInstance(attributePropertyCell.TypeCell);
+                cell.Constructor(attributeRow.SqlName, attributePropertySql.SqlName);
+                result.Add(cell);
+            }
+            return result;
+        }
+
+        public static List<Cell> CellList(object row)
+        {
+            List<Cell> result = new List<DataAccessLayer.Cell>();
+            result = ColumnList(row.GetType());
+            foreach (Cell cell in result)
+            {
+                cell.Constructor(row);
+            }
+            return result;
+        }
+
         private static IQueryable SelectQuery(Type typeRow)
         {
             var conventionBuilder  = new CoreConventionSetBuilder();
@@ -54,6 +80,7 @@
 
         public static object[] Select(Type typeRow, int pageIndex, int pageRowCount)
         {
+            
             var query = SelectQuery(typeRow).Skip(pageIndex * pageRowCount).Take(pageRowCount);
             object[] result = query.ToDynamicArray().ToArray();
             return result;

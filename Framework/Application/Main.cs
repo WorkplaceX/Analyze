@@ -18,6 +18,40 @@ namespace Application
 
         }
 
+        private void LoadColumnList(Type typeRow)
+        {
+            this.ColumnList = new List<GridColumn>();
+            //
+            var cellList = DataAccessLayer.Util.ColumnList(typeRow);
+            double widthPercentTotal = 0;
+            bool isLast = false;
+            for (int i = 0; i < cellList.Count; i++)
+            {
+                // Text
+                string text = cellList[i].FieldName;
+                cellList[i].ColumnText(ref text);
+                // WidthPercent
+                isLast = i == cellList.Count;
+                double widthPercentAvg = Math.Round(((double)100 - widthPercentTotal) / ((double)cellList.Count - (double)i), 2);
+                double widthPercent = widthPercentAvg;
+                cellList[i].ColumnWidthPercent(ref widthPercent);
+                widthPercent = Math.Round(widthPercent, 2);
+                if (isLast)
+                {
+                    widthPercent = 100 - widthPercentTotal;
+                }
+                else
+                {
+                    if (widthPercentTotal + widthPercent > 100)
+                    {
+                        widthPercent = widthPercentAvg;
+                    }
+                }
+                widthPercentTotal = widthPercentTotal + widthPercent;
+                this.ColumnList.Add(new GridColumn() { FieldName = cellList[i].FieldName, Text = text, WidthPercent = widthPercent });
+            }
+        }
+
         public void Load(Type typeRow)
         {
             object[] rowList = DataAccessLayer.Util.Select(typeRow, 0, 20);
@@ -40,6 +74,8 @@ namespace Application
         /// (Row, GridCell)
         /// </summary>
         public List<List<GridCell>> GridCellList;
+
+        public List<GridColumn> ColumnList;
     }
 
     public class GridCell
@@ -47,6 +83,15 @@ namespace Application
         public string FieldName;
 
         public object Value;
+    }
+
+    public class GridColumn
+    {
+        public string FieldName;
+
+        public string Text;
+
+        public double WidthPercent;
     }
 
     public class Data : Component

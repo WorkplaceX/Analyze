@@ -264,7 +264,7 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline">FieldName={{ data.FieldName }}; Value={{ data.Value }}; GRID={{ grid.Text }}</div>
+  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline">{{ data.Value }}</div>
   `,
   styles: [`
   .select-class {

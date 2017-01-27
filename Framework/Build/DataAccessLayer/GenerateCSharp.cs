@@ -89,6 +89,7 @@
                 }
                 string typeCSharp = Util.SqlTypeToCSharpType(item.Schema.SqlType, item.Schema.IsNullable);
                 result.AppendLine(string.Format("        [SqlName(\"{0}\")]", item.Schema.FieldName));
+                result.AppendLine(string.Format("        [TypeCell(typeof({0}))]", item.TableNameCSharp + "_" + item.FieldNameCSharp));
                 result.AppendLine(string.Format("        public " + typeCSharp + " {0} {{ get; set; }}", item.FieldNameCSharp));
             }
         }

@@ -6,15 +6,19 @@ namespace Database.dbo
     public partial class Airport : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(Airport_Id))]
         public int Id { get; set; }
 
         [SqlName("Text")]
+        [TypeCell(typeof(Airport_Text))]
         public string Text { get; set; }
 
         [SqlName("Code")]
+        [TypeCell(typeof(Airport_Code))]
         public string Code { get; set; }
 
         [SqlName("CountryId")]
+        [TypeCell(typeof(Airport_CountryId))]
         public int? CountryId { get; set; }
     }
 
@@ -30,21 +34,27 @@ namespace Database.dbo
     public partial class AirportDisplay : Row
     {
         [SqlName("AirportId")]
+        [TypeCell(typeof(AirportDisplay_AirportId))]
         public int AirportId { get; set; }
 
         [SqlName("AirportText")]
+        [TypeCell(typeof(AirportDisplay_AirportText))]
         public string AirportText { get; set; }
 
         [SqlName("AirportCode")]
+        [TypeCell(typeof(AirportDisplay_AirportCode))]
         public string AirportCode { get; set; }
 
         [SqlName("CountryId")]
+        [TypeCell(typeof(AirportDisplay_CountryId))]
         public int? CountryId { get; set; }
 
         [SqlName("CountryText")]
+        [TypeCell(typeof(AirportDisplay_CountryText))]
         public string CountryText { get; set; }
 
         [SqlName("CountryContinent")]
+        [TypeCell(typeof(AirportDisplay_CountryContinent))]
         public string CountryContinent { get; set; }
     }
 
@@ -64,15 +74,19 @@ namespace Database.dbo
     public partial class Country : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(Country_Id))]
         public int Id { get; set; }
 
         [SqlName("Text")]
+        [TypeCell(typeof(Country_Text))]
         public string Text { get; set; }
 
         [SqlName("TextShort")]
+        [TypeCell(typeof(Country_TextShort))]
         public string TextShort { get; set; }
 
         [SqlName("Continent")]
+        [TypeCell(typeof(Country_Continent))]
         public string Continent { get; set; }
     }
 
@@ -88,12 +102,15 @@ namespace Database.dbo
     public partial class ImportAirport : Row
     {
         [SqlName("Text")]
+        [TypeCell(typeof(ImportAirport_Text))]
         public string Text { get; set; }
 
         [SqlName("Code")]
+        [TypeCell(typeof(ImportAirport_Code))]
         public string Code { get; set; }
 
         [SqlName("CountryTextShort")]
+        [TypeCell(typeof(ImportAirport_CountryTextShort))]
         public string CountryTextShort { get; set; }
     }
 
@@ -107,12 +124,15 @@ namespace Database.dbo
     public partial class ImportCountry : Row
     {
         [SqlName("Text")]
+        [TypeCell(typeof(ImportCountry_Text))]
         public string Text { get; set; }
 
         [SqlName("TextShort")]
+        [TypeCell(typeof(ImportCountry_TextShort))]
         public string TextShort { get; set; }
 
         [SqlName("Continent")]
+        [TypeCell(typeof(ImportCountry_Continent))]
         public string Continent { get; set; }
     }
 
@@ -126,24 +146,31 @@ namespace Database.dbo
     public partial class ImportExcel : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(ImportExcel_Id))]
         public int Id { get; set; }
 
         [SqlName("FileNameId")]
+        [TypeCell(typeof(ImportExcel_FileNameId))]
         public int? FileNameId { get; set; }
 
         [SqlName("SheetNameId")]
+        [TypeCell(typeof(ImportExcel_SheetNameId))]
         public int? SheetNameId { get; set; }
 
         [SqlName("Row")]
+        [TypeCell(typeof(ImportExcel_Row))]
         public int? Row { get; set; }
 
         [SqlName("ColumnNameId")]
+        [TypeCell(typeof(ImportExcel_ColumnNameId))]
         public int? ColumnNameId { get; set; }
 
         [SqlName("ValueNumber")]
+        [TypeCell(typeof(ImportExcel_ValueNumber))]
         public double? ValueNumber { get; set; }
 
         [SqlName("ValueText")]
+        [TypeCell(typeof(ImportExcel_ValueText))]
         public string ValueText { get; set; }
     }
 
@@ -165,33 +192,43 @@ namespace Database.dbo
     public partial class ImportExcelDisplay : Row
     {
         [SqlName("ExcelId")]
+        [TypeCell(typeof(ImportExcelDisplay_ExcelId))]
         public int ExcelId { get; set; }
 
         [SqlName("FileNameId")]
+        [TypeCell(typeof(ImportExcelDisplay_FileNameId))]
         public int? FileNameId { get; set; }
 
         [SqlName("FileName")]
+        [TypeCell(typeof(ImportExcelDisplay_FileName))]
         public string FileName { get; set; }
 
         [SqlName("SheetNameId")]
+        [TypeCell(typeof(ImportExcelDisplay_SheetNameId))]
         public int? SheetNameId { get; set; }
 
         [SqlName("SheetName")]
+        [TypeCell(typeof(ImportExcelDisplay_SheetName))]
         public string SheetName { get; set; }
 
         [SqlName("Row")]
+        [TypeCell(typeof(ImportExcelDisplay_Row))]
         public int? Row { get; set; }
 
         [SqlName("ColumnNameId")]
+        [TypeCell(typeof(ImportExcelDisplay_ColumnNameId))]
         public int? ColumnNameId { get; set; }
 
         [SqlName("ColumnName")]
+        [TypeCell(typeof(ImportExcelDisplay_ColumnName))]
         public string ColumnName { get; set; }
 
         [SqlName("ValueNumber")]
+        [TypeCell(typeof(ImportExcelDisplay_ValueNumber))]
         public double? ValueNumber { get; set; }
 
         [SqlName("ValueText")]
+        [TypeCell(typeof(ImportExcelDisplay_ValueText))]
         public string ValueText { get; set; }
     }
 
@@ -219,9 +256,11 @@ namespace Database.dbo
     public partial class ImportName : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(ImportName_Id))]
         public int Id { get; set; }
 
         [SqlName("Name")]
+        [TypeCell(typeof(ImportName_Name))]
         public string Name { get; set; }
     }
 
@@ -233,9 +272,11 @@ namespace Database.dbo
     public partial class LoLoation : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(LoLoation_Id))]
         public int Id { get; set; }
 
         [SqlName("Name")]
+        [TypeCell(typeof(LoLoation_Name))]
         public string Name { get; set; }
     }
 
@@ -247,12 +288,15 @@ namespace Database.dbo
     public partial class LoRole : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(LoRole_Id))]
         public int Id { get; set; }
 
         [SqlName("Name")]
+        [TypeCell(typeof(LoRole_Name))]
         public string Name { get; set; }
 
         [SqlName("IsAdmin")]
+        [TypeCell(typeof(LoRole_IsAdmin))]
         public bool IsAdmin { get; set; }
     }
 
@@ -266,15 +310,19 @@ namespace Database.dbo
     public partial class LoRoleAccess : Row
     {
         [SqlName("UserId")]
+        [TypeCell(typeof(LoRoleAccess_UserId))]
         public int UserId { get; set; }
 
         [SqlName("UserName")]
+        [TypeCell(typeof(LoRoleAccess_UserName))]
         public string UserName { get; set; }
 
         [SqlName("LoationId")]
+        [TypeCell(typeof(LoRoleAccess_LoationId))]
         public int? LoationId { get; set; }
 
         [SqlName("LoationName")]
+        [TypeCell(typeof(LoRoleAccess_LoationName))]
         public string LoationName { get; set; }
     }
 
@@ -290,18 +338,23 @@ namespace Database.dbo
     public partial class LoRoleLoation : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(LoRoleLoation_Id))]
         public int Id { get; set; }
 
         [SqlName("RoleId")]
+        [TypeCell(typeof(LoRoleLoation_RoleId))]
         public int? RoleId { get; set; }
 
         [SqlName("UserId")]
+        [TypeCell(typeof(LoRoleLoation_UserId))]
         public int? UserId { get; set; }
 
         [SqlName("LoationId")]
+        [TypeCell(typeof(LoRoleLoation_LoationId))]
         public int LoationId { get; set; }
 
         [SqlName("IsActive")]
+        [TypeCell(typeof(LoRoleLoation_IsActive))]
         public bool IsActive { get; set; }
     }
 
@@ -319,36 +372,47 @@ namespace Database.dbo
     public partial class LoRoleMatrix : Row
     {
         [SqlName("UserId")]
+        [TypeCell(typeof(LoRoleMatrix_UserId))]
         public int UserId { get; set; }
 
         [SqlName("UserName")]
+        [TypeCell(typeof(LoRoleMatrix_UserName))]
         public string UserName { get; set; }
 
         [SqlName("LoationId")]
+        [TypeCell(typeof(LoRoleMatrix_LoationId))]
         public int LoationId { get; set; }
 
         [SqlName("LoationName")]
+        [TypeCell(typeof(LoRoleMatrix_LoationName))]
         public string LoationName { get; set; }
 
         [SqlName("RoleId")]
+        [TypeCell(typeof(LoRoleMatrix_RoleId))]
         public int RoleId { get; set; }
 
         [SqlName("RoleName")]
+        [TypeCell(typeof(LoRoleMatrix_RoleName))]
         public string RoleName { get; set; }
 
         [SqlName("IsRole")]
+        [TypeCell(typeof(LoRoleMatrix_IsRole))]
         public bool? IsRole { get; set; }
 
         [SqlName("IsDirect")]
+        [TypeCell(typeof(LoRoleMatrix_IsDirect))]
         public bool? IsDirect { get; set; }
 
         [SqlName("IsAdmin")]
+        [TypeCell(typeof(LoRoleMatrix_IsAdmin))]
         public bool? IsAdmin { get; set; }
 
         [SqlName("IsAdminModule")]
+        [TypeCell(typeof(LoRoleMatrix_IsAdminModule))]
         public bool? IsAdminModule { get; set; }
 
         [SqlName("IsAccess")]
+        [TypeCell(typeof(LoRoleMatrix_IsAccess))]
         public int? IsAccess { get; set; }
     }
 
@@ -378,15 +442,19 @@ namespace Database.dbo
     public partial class LoRoleUser : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(LoRoleUser_Id))]
         public int Id { get; set; }
 
         [SqlName("UserId")]
+        [TypeCell(typeof(LoRoleUser_UserId))]
         public int UserId { get; set; }
 
         [SqlName("RoleId")]
+        [TypeCell(typeof(LoRoleUser_RoleId))]
         public int RoleId { get; set; }
 
         [SqlName("IsActive")]
+        [TypeCell(typeof(LoRoleUser_IsActive))]
         public bool IsActive { get; set; }
     }
 
@@ -402,12 +470,15 @@ namespace Database.dbo
     public partial class SyRole : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(SyRole_Id))]
         public int Id { get; set; }
 
         [SqlName("Name")]
+        [TypeCell(typeof(SyRole_Name))]
         public string Name { get; set; }
 
         [SqlName("IsAdmin")]
+        [TypeCell(typeof(SyRole_IsAdmin))]
         public bool? IsAdmin { get; set; }
     }
 
@@ -421,18 +492,23 @@ namespace Database.dbo
     public partial class SyRoleAccess : Row
     {
         [SqlName("UserId")]
+        [TypeCell(typeof(SyRoleAccess_UserId))]
         public int UserId { get; set; }
 
         [SqlName("UserName")]
+        [TypeCell(typeof(SyRoleAccess_UserName))]
         public string UserName { get; set; }
 
         [SqlName("RoleId")]
+        [TypeCell(typeof(SyRoleAccess_RoleId))]
         public int? RoleId { get; set; }
 
         [SqlName("RoleName")]
+        [TypeCell(typeof(SyRoleAccess_RoleName))]
         public string RoleName { get; set; }
 
         [SqlName("IsAdmin")]
+        [TypeCell(typeof(SyRoleAccess_IsAdmin))]
         public bool? IsAdmin { get; set; }
     }
 
@@ -450,15 +526,19 @@ namespace Database.dbo
     public partial class SyRoleUser : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(SyRoleUser_Id))]
         public int Id { get; set; }
 
         [SqlName("UserId")]
+        [TypeCell(typeof(SyRoleUser_UserId))]
         public int UserId { get; set; }
 
         [SqlName("RoleId")]
+        [TypeCell(typeof(SyRoleUser_RoleId))]
         public int RoleId { get; set; }
 
         [SqlName("IsActive")]
+        [TypeCell(typeof(SyRoleUser_IsActive))]
         public bool IsActive { get; set; }
     }
 
@@ -474,9 +554,11 @@ namespace Database.dbo
     public partial class SyUser : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(SyUser_Id))]
         public int Id { get; set; }
 
         [SqlName("Name")]
+        [TypeCell(typeof(SyUser_Name))]
         public string Name { get; set; }
     }
 
@@ -488,9 +570,11 @@ namespace Database.dbo
     public partial class TableName : Row
     {
         [SqlName("TableName2")]
+        [TypeCell(typeof(TableName_TableName2))]
         public string TableName2 { get; set; }
 
         [SqlName("IsView")]
+        [TypeCell(typeof(TableName_IsView))]
         public bool? IsView { get; set; }
     }
 
@@ -502,24 +586,31 @@ namespace Database.dbo
     public partial class TempExcel : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(TempExcel_Id))]
         public int Id { get; set; }
 
         [SqlName("FileNameId")]
+        [TypeCell(typeof(TempExcel_FileNameId))]
         public int? FileNameId { get; set; }
 
         [SqlName("SheetNameId")]
+        [TypeCell(typeof(TempExcel_SheetNameId))]
         public int? SheetNameId { get; set; }
 
         [SqlName("Row")]
+        [TypeCell(typeof(TempExcel_Row))]
         public int? Row { get; set; }
 
         [SqlName("ColumnNameId")]
+        [TypeCell(typeof(TempExcel_ColumnNameId))]
         public int? ColumnNameId { get; set; }
 
         [SqlName("ValueNumber")]
+        [TypeCell(typeof(TempExcel_ValueNumber))]
         public double? ValueNumber { get; set; }
 
         [SqlName("ValueText")]
+        [TypeCell(typeof(TempExcel_ValueText))]
         public string ValueText { get; set; }
     }
 
@@ -541,33 +632,43 @@ namespace Database.dbo
     public partial class TempExcelDisplay : Row
     {
         [SqlName("ExcelId")]
+        [TypeCell(typeof(TempExcelDisplay_ExcelId))]
         public int ExcelId { get; set; }
 
         [SqlName("FileNameId")]
+        [TypeCell(typeof(TempExcelDisplay_FileNameId))]
         public int? FileNameId { get; set; }
 
         [SqlName("FileName")]
+        [TypeCell(typeof(TempExcelDisplay_FileName))]
         public string FileName { get; set; }
 
         [SqlName("SheetNameId")]
+        [TypeCell(typeof(TempExcelDisplay_SheetNameId))]
         public int? SheetNameId { get; set; }
 
         [SqlName("SheetName")]
+        [TypeCell(typeof(TempExcelDisplay_SheetName))]
         public string SheetName { get; set; }
 
         [SqlName("Row")]
+        [TypeCell(typeof(TempExcelDisplay_Row))]
         public int? Row { get; set; }
 
         [SqlName("ColumnNameId")]
+        [TypeCell(typeof(TempExcelDisplay_ColumnNameId))]
         public int? ColumnNameId { get; set; }
 
         [SqlName("ColumnName")]
+        [TypeCell(typeof(TempExcelDisplay_ColumnName))]
         public string ColumnName { get; set; }
 
         [SqlName("ValueNumber")]
+        [TypeCell(typeof(TempExcelDisplay_ValueNumber))]
         public double? ValueNumber { get; set; }
 
         [SqlName("ValueText")]
+        [TypeCell(typeof(TempExcelDisplay_ValueText))]
         public string ValueText { get; set; }
     }
 
@@ -595,9 +696,11 @@ namespace Database.dbo
     public partial class TempName : Row
     {
         [SqlName("Id")]
+        [TypeCell(typeof(TempName_Id))]
         public int Id { get; set; }
 
         [SqlName("Name")]
+        [TypeCell(typeof(TempName_Name))]
         public string Name { get; set; }
     }
 
