@@ -18,9 +18,9 @@ namespace Application
 
         }
 
-        private void LoadColumnList(Type typeRow)
+        private List<GridColumn> LoadColumnList(Type typeRow)
         {
-            this.ColumnList = new List<GridColumn>();
+            var result = new List<GridColumn>();
             //
             var cellList = DataAccessLayer.Util.ColumnList(typeRow);
             double widthPercentTotal = 0;
@@ -48,34 +48,47 @@ namespace Application
                     }
                 }
                 widthPercentTotal = widthPercentTotal + widthPercent;
-                this.ColumnList.Add(new GridColumn() { FieldName = cellList[i].FieldName, Text = text, WidthPercent = widthPercent });
+                result.Add(new GridColumn() { FieldName = cellList[i].FieldName, Text = text, WidthPercent = widthPercent });
             }
+            return result;
         }
 
         public void Load(Type typeRow)
         {
+            RowList = new List<GridRow>();
+            ColumnList = LoadColumnList(typeRow);
+            CellList = new Dictionary<string, Dictionary<string, GridCell>>();
+            //
             object[] rowList = DataAccessLayer.Util.Select(typeRow, 0, 20);
-            GridCellList = new List<List<Application.GridCell>>();
             var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
-            foreach (object row in rowList)
+            for (int index = 0; index < rowList.Length; index++)
             {
+                object row = rowList[index];
+                RowList.Add(new GridRow() { Index = index.ToString() });
                 var gridCellList = new List<GridCell>();
-                GridCellList.Add(gridCellList);
                 foreach (PropertyInfo propertyInfo in propertyInfoList)
                 {
+                    string fieldName = propertyInfo.Name;
                     object value = propertyInfo.GetValue(row);
                     object valueJson = Util.ValueToJson(value);
                     gridCellList.Add(new Application.GridCell() { FieldName = propertyInfo.Name, Value = valueJson });
+                    if (!CellList.ContainsKey(fieldName))
+                    {
+                        CellList[fieldName] = new Dictionary<string, GridCell>();
+                    }
+                    CellList[fieldName][index.ToString()] = new GridCell() { V = valueJson };
                 }
             }
         }
 
-        /// <summary>
-        /// (Row, GridCell)
-        /// </summary>
-        public List<List<GridCell>> GridCellList;
+        public List<GridRow> RowList;
 
         public List<GridColumn> ColumnList;
+
+        /// <summary>
+        /// (FieldName, Index, GridCell)
+        /// </summary>
+        public Dictionary<string, Dictionary<string, GridCell>> CellList;
     }
 
     public class GridCell
@@ -83,6 +96,11 @@ namespace Application
         public string FieldName;
 
         public object Value;
+
+        /// <summary>
+        /// Value.
+        /// </summary>
+        public object V;
     }
 
     public class GridColumn
@@ -92,6 +110,11 @@ namespace Application
         public string Text;
 
         public double WidthPercent;
+    }
+
+    public class GridRow
+    {
+        public string Index;
     }
 
     public class Data : Component

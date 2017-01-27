@@ -222,7 +222,10 @@ export class Label {
 @Component({
   selector: 'Grid',
   template: `
-  <GridRow [grid]=data [data]=item *ngFor="let item of data.GridCellList; trackBy trackBy"></GridRow>
+  <div style="white-space: nowrap;">
+  <GridHeader [grid]=data [data]=item *ngFor="let item of data.ColumnList; trackBy trackBy"></GridHeader>
+  </div>
+  <GridRow [grid]=data [data]=item *ngFor="let item of data.RowList; trackBy trackBy"></GridRow>
   `
 })
 export class Grid {
@@ -237,8 +240,8 @@ export class Grid {
 @Component({
   selector: 'GridRow',
   template: `
-  <div (mouseover)="data.IsSelect=true" (mouseout)="data.IsSelect=false" [ngClass]="{'select-class':data.IsSelect}">
-  <GridCell [grid]=grid [data]=item *ngFor="let item of data; trackBy trackBy"></GridCell>
+  <div (mouseover)="data.IsSelect=true" (mouseout)="data.IsSelect=false" [ngClass]="{'select-class':data.IsSelect}" style="white-space: nowrap;">
+  <GridCell [grid]=grid [row]=data [data]=item *ngFor="let item of grid.ColumnList; trackBy trackBy"></GridCell>
   </div>
   `,
   styles: [`
@@ -248,8 +251,8 @@ export class Grid {
   `]
 })
 export class GridRow {
+  @Input() data: any;
   @Input() grid: any;
-  @Input() data: any
 
   trackBy(index: any, item: any) {
     return item.Type;
@@ -264,7 +267,7 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline">{{ data.Value }}</div>
+  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=data.WidthPercent>{{ grid.CellList[data.FieldName][row.Index].V }}</div>
   `,
   styles: [`
   .select-class {
@@ -273,8 +276,35 @@ export class GridRow {
   `]
 })
 export class GridCell {
-  @Input() data: any
+  @Input() data: any; // Column
   @Input() grid: any;
+  @Input() row: any;
+
+  trackBy(index: any, item: any) {
+    return item.Type;
+  }
+
+  click(){
+    this.data.IsSelect = !this.data.IsSelect;
+  }
+}
+
+/* GridHeader */
+@Component({
+  selector: 'GridHeader',
+  template: `
+  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=data.WidthPercent><b>{{ data.Text }}</b></div>
+  `,
+  styles: [`
+  .select-class {
+    background-color: rgba(255, 255, 0, 0.7);
+  }
+  `]
+})
+export class GridHeader {
+  @Input() data: any; // Column
+  @Input() grid: any;
+  @Input() row: any;
 
   trackBy(index: any, item: any) {
     return item.Type;

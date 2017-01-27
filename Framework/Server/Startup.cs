@@ -23,16 +23,21 @@ namespace Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            bool isDebug = false; // Make sure web.config contains: arguments="Server.dll"
+
             loggerFactory.AddConsole();
 
-            if (env.IsDevelopment())
+            if (isDebug)
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseStaticFiles(); // Enable access to files in folder wwwwroot.
 
-            app.UseMvc();
+            if (isDebug == false)
+            {
+                app.UseMvc(); // Enable WebController.
+            }
 
             app.Run(async (context) =>
             {

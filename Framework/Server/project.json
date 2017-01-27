@@ -39,7 +39,7 @@
       "Universal",
       "web.config",
       "indexBundle.html",
-      "ConnectionString.json"
+      "ConnectionManager.json"
     ]
   }
 }
