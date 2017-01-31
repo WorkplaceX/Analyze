@@ -27,9 +27,9 @@
             if (HttpContext.Request.Path == path + "data.json")
             {
                 string jsonIn = Util.StreamToString(Request.Body);
-                Data dataIn = Server.Json.Util.Deserialize<Data>(jsonIn);
+                Data dataIn = Framework.Json.Util.Deserialize<Data>(jsonIn);
                 Data dataOut = Main.Process(dataIn);
-                string jsonOut = Server.Json.Util.Serialize(dataOut);
+                string jsonOut = Framework.Json.Util.Serialize(dataOut);
                 return Content(jsonOut, "application/json");
             }
             // node_modules
@@ -59,7 +59,7 @@
                 string htmlUniversal = null;
                 string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
                 data.IsBrowser = false; // Server side rendering mode.
-                string json = Server.Json.Util.Serialize(data);
+                string json = Framework.Json.Util.Serialize(data);
                 htmlUniversal = await Post(url, json, false); // Call Angular Universal server side rendering service.
                 if (htmlUniversal == null)
                 {
@@ -77,7 +77,7 @@
                     result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
                 }
                 data.IsBrowser = true; // Client side rendering mode.
-                string dataJson = Server.Json.Util.Serialize(data);
+                string dataJson = Framework.Json.Util.Serialize(data);
                 string resultAssert = result;
                 // Add data to index.html (Client/index.html)
                 {

@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "Application": "1.0.0-*",
+    "Framework": "1.0.0-*",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",

@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "Build": "1.0.0-*",
+    "Framework": "1.0.0-*",
     "Server": "1.0.0-*"
   },
   "frameworks": {

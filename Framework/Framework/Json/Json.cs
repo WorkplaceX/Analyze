@@ -1,6 +1,5 @@
-﻿namespace Server.Json
+﻿namespace Framework.Json
 {
-    using Application;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using System;
@@ -11,7 +10,7 @@
 
     public class JsonException : Exception
     {
-        public JsonException(string message) 
+        public JsonException(string message)
             : base(message)
         {
 
