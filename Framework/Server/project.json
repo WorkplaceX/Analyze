@@ -40,7 +40,8 @@
       "Universal",
       "web.config",
       "indexBundle.html",
-      "ConnectionManager.json"
+      "../Framework/Server/ConnectionManager.json",
+      "../Framework/Build/ConnectionManager.json"
     ]
   }
 }

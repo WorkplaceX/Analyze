@@ -1,4 +1,0 @@
-﻿{
-  "ConnectionStringDev": "",
-  "ConnectionStringProd": ""
-}
