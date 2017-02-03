@@ -23,7 +23,7 @@ namespace Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            bool isDebug = false; // Make sure web.config contains: arguments="Server.dll"
+            bool isDebug = false; // If running on IIS make sure web.config contains: arguments="Server.dll" if you get HTTP Error 502.5 - Process Failure
 
             loggerFactory.AddConsole();
 
@@ -41,7 +41,7 @@ namespace Server
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("<html><head><title></title></head><body>Hello World! From fallback. <a href='/Index.html'>Index.html</a></body></html>"); // Fallback if no URL match.
+                await context.Response.WriteAsync("<html><head><title></title></head><body><h1>Debug</h1><a href='/Index.html'>Index.html</a></body></html>"); // Fallback if no URL match.
             });
         }
     }

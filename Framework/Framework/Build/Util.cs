@@ -1,12 +1,25 @@
-﻿namespace Build
+﻿namespace Framework.Build
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
-    using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
-    using System.Linq;
+
+    public class DescriptionAttribute : Attribute
+    {
+        public DescriptionAttribute(string text, double orderBy)
+        {
+            this.Text = text;
+            this.OrderBy = orderBy;
+        }
+
+        public readonly string Text;
+
+        public readonly double OrderBy;
+    }
 
     public static class Util
     {
@@ -18,50 +31,58 @@
             }
         }
 
-        public static void OpenCode(string folderName)
+        public static void OpenVisualStudioCode(string folderName)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                ProcessStartInfo info = new ProcessStartInfo(ConnectionManager.VisualStudioCodeFileName, folderName);
+                ProcessStartInfo info = new ProcessStartInfo(Framework.Build.ConnectionManager.VisualStudioCodeFileName, folderName);
                 info.CreateNoWindow = true;
                 Process.Start(info);
             }
         }
 
-        public static MethodInfo[] MethodList(Type type)
+        public class Method
         {
-            List<MethodInfo> result = new List<MethodInfo>();
-            foreach (var methodInfo in type.GetTypeInfo().GetMethods())
-            {
-                if (methodInfo.DeclaringType == type)
-                {
-                    result.Add(methodInfo);
-                }
-            }
-            return result.ToArray();
+            public MethodInfo MethodInfo { get; set; }
+
+            public DescriptionAttribute Description { get; set; }
         }
 
-        public static void MethodExecute(Type type)
+        public static Method[] MethodList(ScriptBase script)
+        {
+            List<Method> result = new List<Method>();
+            foreach (var methodInfo in script.GetType().GetTypeInfo().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                DescriptionAttribute description = methodInfo.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
+                if (methodInfo.DeclaringType != typeof(object))
+                {
+                    result.Add(new Method() { MethodInfo = methodInfo, Description = description });
+                }
+            }
+            return result.OrderBy(item => item.Description.OrderBy).ToArray();
+        }
+
+        public static void MethodExecute(ScriptBase script)
         {
             int number = 0;
-            foreach (var methodInfo in Util.MethodList(typeof(Script)))
+            foreach (Method method in Util.MethodList(script))
             {
                 number += 1;
-                string text = string.Format("{0:00}", number) + "=" + methodInfo.Name;
-                DescriptionAttribute description = methodInfo.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
+                string text = string.Format("{0:00}", number) + "=" + method.MethodInfo.Name;
+                DescriptionAttribute description = method.Description;
                 if (description != null)
                 {
                     text += " " + "(" + description.Text + ")";
                 }
                 Util.Log(text);
             }
-            ConnectionManagerCheck.Run();
+            Framework.Build.ConnectionManagerCheck.Run();
             Console.Write(">");
             string numberText = Console.ReadLine();
             int numberInt = int.Parse(numberText);
             try
             {
-                Util.MethodList(typeof(Script))[numberInt - 1].Invoke(null, new object[] { });
+                Util.MethodList(script)[numberInt - 1].MethodInfo.Invoke(script, new object[] { });
             }
             catch (Exception exception)
             {
@@ -102,44 +123,44 @@
 
         public static void NpmInstall(string workingDirectory, bool isThrowException = true)
         {
-            string fileName = ConnectionManager.NpmFileName;
+            string fileName = Framework.Build.ConnectionManager.NpmFileName;
             Start(workingDirectory, fileName, "install", isThrowException);
         }
 
         public static void NpmRun(string workingDirectory, string script)
         {
-            string fileName = ConnectionManager.NpmFileName;
+            string fileName = Framework.Build.ConnectionManager.NpmFileName;
             Start(workingDirectory, fileName, "run " + script);
         }
 
         public static void Node(string workingDirectory, string fileName, bool isWait = true)
         {
-            string nodeFileName = ConnectionManager.NodeFileName;
+            string nodeFileName = Framework.Build.ConnectionManager.NodeFileName;
             Start(workingDirectory, nodeFileName, fileName, false, isWait, new KeyValuePair<string, string>("PORT", "1337"));
         }
 
         public static void DotNetRestore(string workingDirectory)
         {
-            string fileName = ConnectionManager.DotNetFileName;
+            string fileName = Framework.Build.ConnectionManager.DotNetFileName;
             Start(workingDirectory, fileName, "restore");
         }
 
         public static void MSBuild(string fileNameCsproj)
         {
-            string fileName = ConnectionManager.MSBuildFileName;
-            string workingDirectory = ConnectionManager.FolderName;
+            string fileName = Framework.Build.ConnectionManager.MSBuildFileName;
+            string workingDirectory = Framework.Util.FolderName;
             Start(workingDirectory, fileName, fileNameCsproj);
         }
 
         public static void DotNetBuild(string workingDirectory)
         {
-            string fileName = ConnectionManager.DotNetFileName;
+            string fileName = Framework.Build.ConnectionManager.DotNetFileName;
             Start(workingDirectory, fileName, "build");
         }
 
         public static void DotNetRun(string workingDirectory, bool isWait = true)
         {
-            string fileName = ConnectionManager.DotNetFileName;
+            string fileName = Framework.Build.ConnectionManager.DotNetFileName;
             Start(workingDirectory, fileName, "run", false, isWait);
         }
 
@@ -212,15 +233,9 @@
             }
         }
 
-        public static string FileRead(string fileName)
+        public static void LogClear()
         {
-            return File.ReadAllText(fileName);
-        }
-
-        public static string[] FileNameList(string folderName)
-        {
-            var result = Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).OrderBy(item => item).ToArray();
-            return result;
+            Console.Clear();
         }
     }
 }

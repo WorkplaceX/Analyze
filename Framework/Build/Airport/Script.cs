@@ -1,4 +1,6 @@
-﻿namespace Build.Airport
+﻿using Framework.Build;
+
+namespace Build.Airport
 {
     public class Script
     {
@@ -7,26 +9,26 @@
         /// </summary>
         public static void Run()
         {
-            string connectionString = ConnectionManager.ConnectionString;
-            string fileName = ConnectionManager.FolderName + "Office/bin/Debug/Office.exe";
+            string connectionString = Framework.Server.ConnectionManager.ConnectionString;
+            string fileName = Framework.Util.FolderName + "Office/bin/Debug/Office.exe";
             // SqlDrop
             {
                 string command = "SqlDrop";
                 string arguments = command + " " + "\"" + connectionString + "\"";
-                Util.Start(ConnectionManager.FolderName, fileName, arguments);
+                Util.Start(Framework.Util.FolderName, fileName, arguments);
             }
             // SqlCreate
             {
                 string command = "SqlCreate";
                 string arguments = command + " " + "\"" + connectionString + "\"";
-                Util.Start(ConnectionManager.FolderName, fileName, arguments);
+                Util.Start(Framework.Util.FolderName, fileName, arguments);
             }
             // Run
             {
                 string command = "Run";
-                string folderName = ConnectionManager.FolderName + "Build/Airport/";
+                string folderName = Framework.Util.FolderName + "Build/Airport/";
                 string arguments = command + " " + "\"" + connectionString + "\"" + " " + "\"" + folderName + "\"";
-                Util.Start(ConnectionManager.FolderName, fileName, arguments);
+                Util.Start(Framework.Util.FolderName, fileName, arguments);
             }
         }
     }

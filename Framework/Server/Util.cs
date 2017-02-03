@@ -6,11 +6,6 @@
 
     public static class Util
     {
-        public static string FileRead(string fileName)
-        {
-            return File.ReadAllText(fileName);
-        }
-
         public static string StreamToString(Stream stream)
         {
             using (var streamReader = new StreamReader(stream))

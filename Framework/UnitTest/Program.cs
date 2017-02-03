@@ -13,7 +13,7 @@ namespace UnitTest
             new UnitTest.Json.UnitTest().Run();
             Console.WriteLine();
             Console.WriteLine("All test successful!");
-            Console.ReadLine();
+            // Console.ReadLine();
         }
     }
 }

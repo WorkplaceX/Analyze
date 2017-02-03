@@ -1,20 +1,19 @@
-﻿namespace Application.DataAccessLayer
+﻿namespace Framework.Server.DataAccessLayer
 {
-    using Database.dbo;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Conventions;
     using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Dynamic.Core;
     using System.Reflection;
 
-    public class Util
+    public static class Util
     {
         public static List<Cell> ColumnList(Type typeRow)
         {
-            List<Cell> result = new List<DataAccessLayer.Cell>();
+            List<Cell> result = new List<Cell>();
             SqlNameAttribute attributeRow = (SqlNameAttribute)typeRow.GetTypeInfo().GetCustomAttribute(typeof(SqlNameAttribute));
             foreach (PropertyInfo propertyInfo in typeRow.GetTypeInfo().GetProperties())
             {
@@ -29,7 +28,7 @@
 
         public static List<Cell> CellList(object row)
         {
-            List<Cell> result = new List<DataAccessLayer.Cell>();
+            List<Cell> result = new List<Cell>();
             result = ColumnList(row.GetType());
             foreach (Cell cell in result)
             {
@@ -40,7 +39,7 @@
 
         private static IQueryable SelectQuery(Type typeRow)
         {
-            var conventionBuilder  = new CoreConventionSetBuilder();
+            var conventionBuilder = new CoreConventionSetBuilder();
             var conventionSet = conventionBuilder.CreateConventionSet();
             var builder = new ModelBuilder(conventionSet);
             {
@@ -54,7 +53,7 @@
                 }
             }
             var options = new DbContextOptionsBuilder<DbContext>();
-            options.UseSqlServer(Application.ConnectionManager.ConnectionString);
+            options.UseSqlServer(Framework.Server.ConnectionManager.ConnectionString);
             options.UseModel(builder.Model);
             DbContext dbContext = new DbContext(options.Options);
             dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; // For SQL views. No primary key.
@@ -80,9 +79,28 @@
 
         public static object[] Select(Type typeRow, int pageIndex, int pageRowCount)
         {
-            
+
             var query = SelectQuery(typeRow).Skip(pageIndex * pageRowCount).Take(pageRowCount);
             object[] result = query.ToDynamicArray().ToArray();
+            return result;
+        }
+
+        public static T JsonObjectClone<T>(T data)
+        {
+            string json = JsonConvert.SerializeObject(data, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
+            return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
+        }
+
+        public static object ValueToJson(object value)
+        {
+            object result = value;
+            if (value != null)
+            {
+                if (value.GetType() == typeof(int))
+                {
+                    result = Convert.ChangeType(value, typeof(double));
+                }
+            }
             return result;
         }
     }

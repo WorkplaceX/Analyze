@@ -1,6 +1,6 @@
 ﻿namespace Server
 {
-    using Application;
+    using Framework.Server.Application;
     using Microsoft.AspNetCore.Mvc;
     using System.Net.Http;
     using System.Text;
@@ -17,7 +17,7 @@
             // Html
             if (HttpContext.Request.Path == path)
             {
-                Data dataOut = Main.Process(null);
+                Data dataOut = new Application.ApplicationX().Process(null);
                 string htmlUniversal = null;
                 string html = IndexHtml(true);
                 htmlUniversal = await HtmlUniversal(html, dataOut, true); // Angular Universal server side rendering.
@@ -28,7 +28,7 @@
             {
                 string jsonIn = Util.StreamToString(Request.Body);
                 Data dataIn = Framework.Server.Json.Util.Deserialize<Data>(jsonIn);
-                Data dataOut = Main.Process(dataIn);
+                Data dataOut = new Application.ApplicationX().Process(dataIn);
                 string jsonOut = Framework.Server.Json.Util.Serialize(dataOut);
                 return Content(jsonOut, "application/json");
             }

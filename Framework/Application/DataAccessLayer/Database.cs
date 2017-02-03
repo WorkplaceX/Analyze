@@ -2,7 +2,7 @@
 {
     public partial class AirportDisplay_AirportId
     {
-        protected internal override void ColumnWidthPercent(ref double widthPercent)
+        protected override void ColumnWidthPercent(ref double widthPercent)
         {
             widthPercent = 8;
         }

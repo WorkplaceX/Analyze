@@ -1,4 +1,4 @@
-﻿namespace Build.DataAccessLayer
+﻿namespace Framework.Build.DataAccessLayer
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -35,7 +35,7 @@
                 }
                 result.AppendLine(string.Format("namespace Database.{0}", item.SchemaNameCSharp));
                 result.AppendLine("{");
-                result.AppendLine("    using Application.DataAccessLayer;");
+                result.AppendLine("    using Framework.Server.DataAccessLayer;");
                 result.AppendLine();
                 TableName(metaCSharp, item.SchemaName, result);
                 result.AppendLine("}");

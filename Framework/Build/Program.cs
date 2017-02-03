@@ -1,14 +1,17 @@
-﻿namespace Build
+﻿using Framework.Build;
+
+namespace Build
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            Util.Log("");
-            Util.Log("Build Command");
-            Util.MethodExecute(typeof(Script));
-            // Console.Write(">");
-            // Console.ReadLine();
+            while (true)
+            {
+                Util.Log("");
+                Util.Log("Build Command");
+                Util.MethodExecute(new Script());
+            }
         }
     }
 }

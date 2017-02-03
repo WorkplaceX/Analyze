@@ -1,9 +1,6 @@
-﻿namespace Application.DataAccessLayer
+﻿namespace Framework.Server.DataAccessLayer
 {
-    using Database.dbo;
-    using Microsoft.EntityFrameworkCore;
     using System;
-    using System.Reflection;
 
     /// <summary>
     /// Base class for every database row.

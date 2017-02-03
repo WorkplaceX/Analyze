@@ -1,18 +1,14 @@
-﻿using Application;
-using Application.DataAccessLayer;
-using Database.dbo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Application
+﻿namespace Framework.Server.Application
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+
     public class Grid : Component
     {
         public Grid() : this(null, null) { }
 
-        public Grid(Component owner, string text) 
+        public Grid(Component owner, string text)
             : base(owner, text)
         {
 
@@ -22,7 +18,7 @@ namespace Application
         {
             var result = new List<GridColumn>();
             //
-            var cellList = DataAccessLayer.Util.ColumnList(typeRow);
+            var cellList = Framework.Server.DataAccessLayer.Util.ColumnList(typeRow);
             double widthPercentTotal = 0;
             bool isLast = false;
             for (int i = 0; i < cellList.Count; i++)
@@ -59,7 +55,7 @@ namespace Application
             ColumnList = LoadColumnList(typeRow);
             CellList = new Dictionary<string, Dictionary<string, GridCell>>();
             //
-            object[] rowList = DataAccessLayer.Util.Select(typeRow, 0, 20);
+            object[] rowList = Framework.Server.DataAccessLayer.Util.Select(typeRow, 0, 20);
             var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
             for (int index = 0; index < rowList.Length; index++)
             {
@@ -70,7 +66,7 @@ namespace Application
                 {
                     string fieldName = propertyInfo.Name;
                     object value = propertyInfo.GetValue(row);
-                    object valueJson = Util.ValueToJson(value);
+                    object valueJson = Framework.Server.DataAccessLayer.Util.ValueToJson(value);
                     gridCellList.Add(new Application.GridCell() { FieldName = propertyInfo.Name, Value = valueJson });
                     if (!CellList.ContainsKey(fieldName))
                     {
@@ -119,7 +115,7 @@ namespace Application
 
     public class Data : Component
     {
-        public Data() 
+        public Data()
             : base(null, "Data")
         {
 
@@ -183,7 +179,7 @@ namespace Application
     {
         public LayoutContainer() : this(null, null) { }
 
-        public LayoutContainer(Component owner, string text) 
+        public LayoutContainer(Component owner, string text)
             : base(owner, text)
         {
 
@@ -194,7 +190,7 @@ namespace Application
     {
         public LayoutRow() : this(null, null) { }
 
-        public LayoutRow(LayoutContainer owner, string text) 
+        public LayoutRow(LayoutContainer owner, string text)
             : base(owner, text)
         {
 
@@ -205,7 +201,7 @@ namespace Application
     {
         public LayoutCell() : this(null, null) { }
 
-        public LayoutCell(LayoutRow owner, string text) 
+        public LayoutCell(LayoutRow owner, string text)
             : base(owner, text)
         {
 
@@ -256,11 +252,11 @@ namespace Application
         }
     }
 
-    public static class Main
+    public class ApplicationBase
     {
-        public static Data Process(Data dataIn)
+        public Data Process(Data dataIn)
         {
-            Data dataOut = Util.JsonObjectClone<Data>(dataIn);
+            Data dataOut = Framework.Server.DataAccessLayer.Util.JsonObjectClone<Data>(dataIn);
             if (dataOut == null || dataOut.Session == Guid.Empty)
             {
                 dataOut = DataCreate();
@@ -270,14 +266,13 @@ namespace Application
                 dataOut.ResponseCount += 1;
             }
             dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
-            dataOut.Name += " - " + DataAccessLayer.Util.Select(typeof(SyUser), 1).Cast<SyUser>().First().Name;
-            dataOut.VersionServer = Util.VersionServer;
+            dataOut.VersionServer = Framework.Util.VersionServer;
             Input input = (Input)dataOut.List[0].List[1].List[1].List[1];
             input.AutoComplete = input.TextNew?.ToUpper();
             return dataOut;
         }
 
-        public static Data DataCreate()
+        protected virtual Data DataCreate()
         {
             Data result = new Data();
             result.Session = Guid.NewGuid();
@@ -293,8 +288,6 @@ namespace Application
             var rowFooter = new LayoutRow(container, "Footer");
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
-            var grid = new Grid(cellFooter1, "MyGrid");
-            grid.Load(typeof(AirportDisplay)); // grid.Load(typeof(SyUser)); 
             //
             return result;
         }
