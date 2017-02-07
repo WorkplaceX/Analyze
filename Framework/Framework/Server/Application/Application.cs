@@ -213,7 +213,7 @@
         /// <summary>
         /// GET not POST data when debugging client. See also file json.json.
         /// </summary>
-        public bool IsDataGet;
+        public bool IsJsonGet;
 
         public string Name;
 

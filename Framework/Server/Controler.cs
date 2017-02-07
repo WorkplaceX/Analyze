@@ -29,15 +29,15 @@
                 string jsonInText = Util.StreamToString(Request.Body);
                 Json jsonIn = Framework.Server.Json.Util.Deserialize<Json>(jsonInText);
                 Json jsonOut = new Application.ApplicationX().Process(jsonIn);
-                jsonOut.IsDataGet = false;
-                string dataOutJson = Framework.Server.Json.Util.Serialize(jsonOut);
+                jsonOut.IsJsonGet = false;
+                string jsonOutText = Framework.Server.Json.Util.Serialize(jsonOut);
                 if (Framework.Server.Config.Instance.IsDebugJson)
                 {
-                    jsonOut.IsDataGet = true;
-                    string dataOutJsonDebug = Framework.Server.Json.Util.Serialize(jsonOut);
-                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/json.json", dataOutJsonDebug);
+                    jsonOut.IsJsonGet = true;
+                    string jsonOutDebug = Framework.Server.Json.Util.Serialize(jsonOut);
+                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/json.json", jsonOutDebug);
                 }
-                return Content(dataOutJson, "application/json");
+                return Content(jsonOutText, "application/json");
             }
             // node_modules
             if (HttpContext.Request.Path.ToString().StartsWith("/node_modules/"))
@@ -84,27 +84,27 @@
                     result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
                 }
                 json.IsBrowser = true; // Client side rendering mode.
-                string dataJson = Framework.Server.Json.Util.Serialize(json);
+                string jsonTextBrowser = Framework.Server.Json.Util.Serialize(json);
                 string resultAssert = result;
-                // Add data to index.html (Client/index.html)
+                // Add json to index.html (Client/index.html)
                 {
                     string scriptFind = "System.import('app').catch(function(err){ console.error(err); });";
-                    string scriptReplace = "var browserData = '" + dataJson + "'; " + scriptFind;
+                    string scriptReplace = "var browserJson = '" + jsonTextBrowser + "'; " + scriptFind;
                     result = result.Replace(scriptFind, scriptReplace);
                 }
-                // Add data to index.html (Server/indexBundle.html)
+                // Add json to index.html (Server/indexBundle.html)
                 {
                     string scriptFind = "function downloadJSAtOnload() {";
-                    string scriptReplace = "var browserData = '" + dataJson + "';\r\n" + scriptFind;
+                    string scriptReplace = "var browserJson = '" + jsonTextBrowser + "';\r\n" + scriptFind;
                     result = result.Replace(scriptFind, scriptReplace);
                 }
-                Util.Assert(resultAssert != result, "Adding browserData failed!");
+                Util.Assert(resultAssert != result, "Adding browserJson failed!");
                 return result;
             }
         }
 
         /// <summary>
-        /// Post json data to url.
+        /// Post to json url.
         /// </summary>
         private async Task<string> Post(string url, string json, bool isEnsureSuccessStatusCode)
         {

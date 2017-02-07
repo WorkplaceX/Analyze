@@ -5,11 +5,11 @@ import * as util from './util';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 
-declare var browserData: any; // Params from browser
+declare var browserJson: any; // Params from browser
 
 export class Data {
     Name: string;
-    IsDataGet: boolean; // GET not POST data when debugging client. See also file json.json
+    IsJsonGet: boolean; // GET not POST data when debugging client. See also file json.json
     VersionClient: string; // Angular client version.
     VersionServer: string; // Angular client version.
     List:any;
@@ -42,13 +42,13 @@ export class DataService {
             this.data = JSON.parse(angularData);
         }
         // Browser data
-        if (typeof browserData !== 'undefined') {
-            this.data = JSON.parse(browserData);
+        if (typeof browserJson !== 'undefined') {
+            this.data = JSON.parse(browserJson);
         }
         //
         this.data.VersionClient = util.versionClient();
         //
-        if (this.data.IsDataGet == true) {
+        if (this.data.IsJsonGet == true) {
             this.update(); // For debug mode.
         }
         if (this.data.IsBrowser == true) {
@@ -58,7 +58,7 @@ export class DataService {
 
     update() {
         this.RequestCount += 1;
-        if (this.data.IsDataGet == true) {
+        if (this.data.IsJsonGet == true) {
             // GET for debug
             this.log += "Send GET; "
             this.http.get('json.json')
