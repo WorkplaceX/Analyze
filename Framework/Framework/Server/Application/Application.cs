@@ -202,16 +202,16 @@
         public string Index;
     }
 
-    public class Data : Component
+    public class Json : Component
     {
-        public Data()
-            : base(null, "Data")
+        public Json()
+            : base(null, "Json")
         {
 
         }
 
         /// <summary>
-        /// GET not POST data when debugging client. See also file data.json.
+        /// GET not POST data when debugging client. See also file json.json.
         /// </summary>
         public bool IsDataGet;
 
@@ -350,27 +350,27 @@
 
     public class ApplicationBase
     {
-        public Data Process(Data dataIn)
+        public Json Process(Json jsonIn)
         {
-            Data dataOut = Framework.Server.DataAccessLayer.Util.JsonObjectClone<Data>(dataIn);
-            if (dataOut == null || dataOut.Session == Guid.Empty)
+            Json jsonOut = Framework.Server.DataAccessLayer.Util.JsonObjectClone<Json>(jsonIn);
+            if (jsonOut == null || jsonOut.Session == Guid.Empty)
             {
-                dataOut = DataCreate();
+                jsonOut = JsonCreate();
             }
             else
             {
-                dataOut.ResponseCount += 1;
+                jsonOut.ResponseCount += 1;
             }
-            dataOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
-            dataOut.VersionServer = Framework.Util.VersionServer;
-            Input input = (Input)dataOut.List[0].List[1].List[1].List[1];
+            jsonOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
+            jsonOut.VersionServer = Framework.Util.VersionServer;
+            Input input = (Input)jsonOut.List[0].List[1].List[1].List[1];
             input.AutoComplete = input.TextNew?.ToUpper();
-            return dataOut;
+            return jsonOut;
         }
 
-        protected virtual Data DataCreate()
+        protected virtual Json JsonCreate()
         {
-            Data result = new Data();
+            Json result = new Json();
             result.Session = Guid.NewGuid();
             //
             var container = new LayoutContainer(result, "Container");

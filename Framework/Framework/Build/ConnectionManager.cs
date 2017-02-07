@@ -161,7 +161,7 @@
 
         private static void IsDebugDataJson()
         {
-            Util.Log(string.Format("IsDebugDataJson={0}", Server.Config.Instance.IsDebugDataJson));
+            Util.Log(string.Format("IsDebugDataJson={0}", Server.Config.Instance.IsDebugJson));
         }
 
         public static void Run()

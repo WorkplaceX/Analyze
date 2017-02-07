@@ -17,25 +17,25 @@
             // Html
             if (HttpContext.Request.Path == path)
             {
-                Data dataOut = new Application.ApplicationX().Process(null);
+                Json jsonOut = new Application.ApplicationX().Process(null);
                 string htmlUniversal = null;
                 string html = IndexHtml(true);
-                htmlUniversal = await HtmlUniversal(html, dataOut, true); // Angular Universal server side rendering.
+                htmlUniversal = await HtmlUniversal(html, jsonOut, true); // Angular Universal server side rendering.
                 return Content(htmlUniversal, "text/html");
             }
-            // Data API
-            if (HttpContext.Request.Path == path + "data.json")
+            // Json API
+            if (HttpContext.Request.Path == path + "json.json")
             {
-                string jsonIn = Util.StreamToString(Request.Body);
-                Data dataIn = Framework.Server.Json.Util.Deserialize<Data>(jsonIn);
-                Data dataOut = new Application.ApplicationX().Process(dataIn);
-                dataOut.IsDataGet = false;
-                string dataOutJson = Framework.Server.Json.Util.Serialize(dataOut);
-                if (Framework.Server.Config.Instance.IsDebugDataJson)
+                string jsonInText = Util.StreamToString(Request.Body);
+                Json jsonIn = Framework.Server.Json.Util.Deserialize<Json>(jsonInText);
+                Json jsonOut = new Application.ApplicationX().Process(jsonIn);
+                jsonOut.IsDataGet = false;
+                string dataOutJson = Framework.Server.Json.Util.Serialize(jsonOut);
+                if (Framework.Server.Config.Instance.IsDebugJson)
                 {
-                    dataOut.IsDataGet = true;
-                    string dataOutJsonDebug = Framework.Server.Json.Util.Serialize(dataOut);
-                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/data.json", dataOutJsonDebug);
+                    jsonOut.IsDataGet = true;
+                    string dataOutJsonDebug = Framework.Server.Json.Util.Serialize(jsonOut);
+                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/json.json", dataOutJsonDebug);
                 }
                 return Content(dataOutJson, "application/json");
             }
@@ -55,7 +55,7 @@
         /// <summary>
         /// Returns server side rendered index.html.
         /// </summary>
-        private async Task<string> HtmlUniversal(string html, Data data, bool isUniversal)
+        private async Task<string> HtmlUniversal(string html, Json json, bool isUniversal)
         {
             if (isUniversal == false)
             {
@@ -65,13 +65,13 @@
             {
                 string htmlUniversal = null;
                 string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
-                data.IsBrowser = false; // Server side rendering mode.
-                string json = Framework.Server.Json.Util.Serialize(data);
-                htmlUniversal = await Post(url, json, false); // Call Angular Universal server side rendering service.
+                json.IsBrowser = false; // Server side rendering mode.
+                string jsonText = Framework.Server.Json.Util.Serialize(json);
+                htmlUniversal = await Post(url, jsonText, false); // Call Angular Universal server side rendering service.
                 if (htmlUniversal == null)
                 {
                     url = "http://localhost:1337/"; // Application not running on IIS. Divert to UniversalExpress when running in Visual Studio.
-                    htmlUniversal = await Post(url, json, true);
+                    htmlUniversal = await Post(url, jsonText, true);
                     Util.Assert(htmlUniversal != "<app></app>"); // Catch java script errors. See UniversalExpress console for errors!
                 }
                 //
@@ -83,8 +83,8 @@
                     string htmlUniversalClean = htmlUniversal.Substring(indexBegin, (indexEnd - indexBegin));
                     result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
                 }
-                data.IsBrowser = true; // Client side rendering mode.
-                string dataJson = Framework.Server.Json.Util.Serialize(data);
+                json.IsBrowser = true; // Client side rendering mode.
+                string dataJson = Framework.Server.Json.Util.Serialize(json);
                 string resultAssert = result;
                 // Add data to index.html (Client/index.html)
                 {

@@ -104,7 +104,7 @@ namespace Framework.Server
             ConnectionStringGetSet(true, value);
         }
 
-        public bool IsDebugDataJson;
+        public bool IsDebugJson;
     }
 
     public static class ConnectionManager

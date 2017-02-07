@@ -95,7 +95,7 @@ namespace Framework.Build
         public void ToggleIsDebugDataJson()
         {
             Server.Config config = Server.Config.Instance;
-            config.IsDebugDataJson = !config.IsDebugDataJson;
+            config.IsDebugJson = !config.IsDebugJson;
             string json = JsonConvert.SerializeObject(config, Formatting.Indented);
             Framework.Util.FileWrite(Server.Config.JsonFileName, json);
             Util.Log(string.Format("File updated. ({0})", Server.Config.JsonFileName));

@@ -5,9 +5,9 @@
 
     public class ApplicationX : ApplicationBase
     {
-        protected override Data DataCreate()
+        protected override Json JsonCreate()
         {
-            Data result = new Data();
+            Json result = new Json();
             result.Session = Guid.NewGuid();
             //
             var container = new LayoutContainer(result, "Container");

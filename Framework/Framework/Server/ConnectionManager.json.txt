@@ -2,5 +2,6 @@
   "ConnectionStringDev": "Data Source=(LocalDB)\\MSSQLLocalDB; Initial Catalog=Database; Integrated Security=True",
   "ConnectionStringTest": "",
   "ConnectionStringProd": "",
-  "ConnectionStringSwitch": "ConnectionStringDev"
+  "ConnectionStringSwitch": "ConnectionStringDev",
+  "IsDebugJson": false
 }
