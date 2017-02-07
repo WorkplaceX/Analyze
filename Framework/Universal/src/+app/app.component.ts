@@ -1,16 +1,16 @@
 import { Component, Input } from '@angular/core';
-import { DataService, Data } from './dataService';
+import { DataService } from './dataService';
 import  * as util from './util';
 
 /* AppComponent */
 @Component({
   selector: 'app',
   template: `
-  <p>data.IsBrowser=({{ dataService.data.IsBrowser }})</p>
+  <p>json.IsBrowser=({{ dataService.json.IsBrowser }})</p>
   <p>RequestCount=({{ dataService.RequestCount }})</p>
-  <p>data.ResponseCount=({{ dataService.data.ResponseCount }})</p>
+  <p>json.ResponseCount=({{ dataService.json.ResponseCount }})</p>
   <p>log=({{ dataService.log }})</p>
-  <Selector [data]=item *ngFor="let item of dataService.data.List; trackBy:fn"></Selector>
+  <Selector [json]=item *ngFor="let item of dataService.json.List; trackBy:fn"></Selector>
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -19,11 +19,11 @@ import  * as util from './util';
     </div>    
     <div class="row">
       <div class="col-sm-4">
-        <p>data.Name=({{ dataService.data.Name }})</p>
-        <p>data.Session=({{ dataService.data.Session }})</p>
-        <p>data.IsBrowser=({{ dataService.data.IsBrowser }})</p>
-        <p>Version=({{ dataService.data.VersionClient + '; ' + dataService.data.VersionServer }})</p>
-        <p>data=({{ jsonText }})</p>
+        <p>json.Name=({{ dataService.json.Name }})</p>
+        <p>json.Session=({{ dataService.json.Session }})</p>
+        <p>json.IsBrowser=({{ dataService.json.IsBrowser }})</p>
+        <p>Version=({{ dataService.json.VersionClient + '; ' + dataService.json.VersionServer }})</p>
+        <p>json=({{ jsonText }})</p>
       </div>
       <div class="col-sm-4">
         Second of three columns
@@ -55,7 +55,7 @@ export class AppComponent {
   }
 
   clickClient(){
-    this.dataService.data.Name += " " + util.currentTime() + ";" 
+    this.dataService.json.Name += " " + util.currentTime() + ";" 
   } 
 
   clickServer(){
@@ -63,7 +63,7 @@ export class AppComponent {
   } 
 
   clickJson() {
-    this.jsonText = JSON.stringify(this.dataService.data);
+    this.jsonText = JSON.stringify(this.dataService.json);
   }
 }
 
@@ -71,18 +71,18 @@ export class AppComponent {
 @Component({
   selector: 'Selector',
   template: `
-  <LayoutContainer *ngIf="data.Type=='LayoutContainer'" [data]=data></LayoutContainer>
-  <LayoutRow *ngIf="data.Type=='LayoutRow'" [data]=data></LayoutRow>
-  <LayoutCell *ngIf="data.Type=='LayoutCell'" [data]=data></LayoutCell>
-  <ButtonX *ngIf="data.Type=='Button'" [data]=data></ButtonX>
-  <InputX *ngIf="data.Type=='Input'" [data]=data></InputX>
-  <Label *ngIf="data.Type=='Label'" [data]=data></Label>
-  <Grid *ngIf="data.Type=='Grid'" [data]=data></Grid>
-  <!-- <LayoutDebug [data]=data></LayoutDebug> -->
+  <LayoutContainer *ngIf="json.Type=='LayoutContainer'" [json]=json></LayoutContainer>
+  <LayoutRow *ngIf="json.Type=='LayoutRow'" [json]=json></LayoutRow>
+  <LayoutCell *ngIf="json.Type=='LayoutCell'" [json]=json></LayoutCell>
+  <ButtonX *ngIf="json.Type=='Button'" [json]=json></ButtonX>
+  <InputX *ngIf="json.Type=='Input'" [json]=json></InputX>
+  <Label *ngIf="json.Type=='Label'" [json]=json></Label>
+  <Grid *ngIf="json.Type=='Grid'" [json]=json></Grid>
+  <!-- <LayoutDebug [json]=json></LayoutDebug> -->
 `
 })
 export class Selector {
-  @Input() data: any
+  @Input() json: any
 }
 
 /* LayoutContainer */
@@ -90,13 +90,13 @@ export class Selector {
   selector: 'LayoutContainer',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
-    Text={{ data.Text }}
-    <Selector [data]=item *ngFor="let item of data.List; trackBy trackBy"></Selector>
+    Text={{ json.Text }}
+    <Selector [json]=item *ngFor="let item of json.List; trackBy trackBy"></Selector>
   </div>  
 `
 })
 export class LayoutContainer {
-  @Input() data: any
+  @Input() json: any
 
   trackBy(index: any, item: any) {
     return item.Type;
@@ -108,30 +108,31 @@ export class LayoutContainer {
   selector: 'LayoutRow',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:red;'>
-    Text={{ data.Text }}
-    <Selector [data]=item *ngFor="let item of data.List; trackBy trackBy"></Selector>
+    Text={{ json.Text }}
+    <Selector [json]=item *ngFor="let item of json.List; trackBy trackBy"></Selector>
   </div>  
 `
 })
 export class LayoutRow {
-  @Input() data: any
+  @Input() json: any
 
   trackBy(index: any, item: any) {
     return item.Type;
   }
 }
 
+/* LayoutCell */
 @Component({
   selector: 'LayoutCell',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:green;'>
-    Text={{ data.Text }}
-    <Selector [data]=item *ngFor="let item of data.List; trackBy trackBy"></Selector>
+    Text={{ json.Text }}
+    <Selector [json]=item *ngFor="let item of json.List; trackBy trackBy"></Selector>
   </div>  
 `
 })
 export class LayoutCell {
-  @Input() data: any
+  @Input() json: any
 
   trackBy(index: any, item: any): any {
     return item.Type;
@@ -143,31 +144,30 @@ export class LayoutCell {
   selector: 'LayoutDebug',
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
-    Text={{ data.Text }}
-    <Selector [data]=item *ngFor="let item of data.List"></Selector>
+    Text={{ json.Text }}
+    <Selector [json]=item *ngFor="let item of json.List"></Selector>
   </div>  
 `
 })
 export class LayoutDebug {
-  @Input() data: any
+  @Input() json: any
 }
 
 /* Button */
 @Component({
   selector: 'ButtonX',
-  template: `<button type="text" class="btn btn-primary" (click)="click()">{{ data.Text }}</button>`
+  template: `<button type="text" class="btn btn-primary" (click)="click()">{{ json.Text }}</button>`
 })
 export class Button {
-  @Input() data: any
-
-  dataService: DataService;
-
   constructor(dataService: DataService){
     this.dataService = dataService;
   }
 
+  @Input() json: any
+  dataService: DataService;
+
   click(){
-    this.data.IsClick = true;
+    this.json.IsClick = true;
     this.dataService.update();
   } 
 }
@@ -178,14 +178,14 @@ export class Button {
   template: `
   <input value="{{text}}" (keyup)="onKey($event)" (focus)="focus(true)" (focusout)="focus(false)" placeholder="Empty" />
   <p>
-    Text={{ data.Text }}<br/>
-    TextNew={{ data.TextNew}}<br/>
-    Focus={{data.IsFocus}}<br/>
-    AutoComplete={{data.AutoComplete}}
+    Text={{ json.Text }}<br/>
+    TextNew={{ json.TextNew}}<br/>
+    Focus={{json.IsFocus}}<br/>
+    AutoComplete={{json.AutoComplete}}
   </p>`
 })
 export class InputX {
-  @Input() data: any
+  @Input() json: any
   dataService: DataService;
   text: string;
   inputFocused: any;
@@ -195,27 +195,27 @@ export class InputX {
   }
 
   ngOnInit() {
-    this.text = this.data.Text;
+    this.text = this.json.Text;
   }  
 
   onKey(event:any) {
     this.text = event.target.value;
-    this.data.TextNew = this.text;
+    this.json.TextNew = this.text;
     this.dataService.update();
   }
 
   focus(isFocus: boolean) {
-    this.data.IsFocus = isFocus;
+    this.json.IsFocus = isFocus;
   }  
 }
 
 /* Label */
 @Component({
   selector: 'Label',
-  template: `{{ data.Text }}`
+  template: `{{ json.Text }}`
 })
 export class Label {
-  @Input() data: any
+  @Input() json: any
 }
 
 /* Grid */
@@ -223,13 +223,13 @@ export class Label {
   selector: 'Grid',
   template: `
   <div style="white-space: nowrap;">
-  <GridHeader [grid]=data [data]=item *ngFor="let item of data.ColumnList; trackBy trackBy"></GridHeader>
+  <GridHeader [grid]=json [json]=item *ngFor="let item of json.ColumnList; trackBy trackBy"></GridHeader>
   </div>
-  <GridRow [grid]=data [data]=item *ngFor="let item of data.RowList; trackBy trackBy"></GridRow>
+  <GridRow [grid]=json [json]=item *ngFor="let item of json.RowList; trackBy trackBy"></GridRow>
   `
 })
 export class Grid {
-  @Input() data: any
+  @Input() json: any
 
   trackBy(index: any, item: any) {
     return item.Type;
@@ -240,8 +240,8 @@ export class Grid {
 @Component({
   selector: 'GridRow',
   template: `
-  <div (mouseover)="data.IsSelect=true" (mouseout)="data.IsSelect=false" [ngClass]="{'select-class':data.IsSelect}" style="white-space: nowrap;">
-  <GridCell [grid]=grid [row]=data [data]=item *ngFor="let item of grid.ColumnList; trackBy trackBy"></GridCell>
+  <div (mouseover)="json.IsSelect=true" (mouseout)="json.IsSelect=false" [ngClass]="{'select-class':json.IsSelect}" style="white-space: nowrap;">
+  <GridCell [grid]=grid [row]=json [json]=item *ngFor="let item of grid.ColumnList; trackBy trackBy"></GridCell>
   </div>
   `,
   styles: [`
@@ -251,7 +251,7 @@ export class Grid {
   `]
 })
 export class GridRow {
-  @Input() data: any;
+  @Input() json: any;
   @Input() grid: any;
 
   trackBy(index: any, item: any) {
@@ -259,7 +259,7 @@ export class GridRow {
   }
 
   click(){
-    this.data.IsSelect = !this.data.IsSelect;
+    this.json.IsSelect = !this.json.IsSelect;
   }
 }
 
@@ -267,7 +267,7 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=data.WidthPercent>{{ grid.CellList[data.FieldName][row.Index].V }}</div>
+  <div (click)="click()" [ngClass]="{'select-class':json.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=json.WidthPercent>{{ grid.CellList[json.FieldName][row.Index].V }}</div>
   `,
   styles: [`
   .select-class {
@@ -276,7 +276,7 @@ export class GridRow {
   `]
 })
 export class GridCell {
-  @Input() data: any; // Column
+  @Input() json: any; // Column
   @Input() grid: any;
   @Input() row: any;
 
@@ -285,7 +285,7 @@ export class GridCell {
   }
 
   click(){
-    this.data.IsSelect = !this.data.IsSelect;
+    this.json.IsSelect = !this.json.IsSelect;
   }
 }
 
@@ -293,7 +293,7 @@ export class GridCell {
 @Component({
   selector: 'GridHeader',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':data.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=data.WidthPercent><b>{{ data.Text }}</b></div>
+  <div (click)="click()" [ngClass]="{'select-class':json.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=json.WidthPercent><b>{{ json.Text }}</b></div>
   `,
   styles: [`
   .select-class {
@@ -302,7 +302,7 @@ export class GridCell {
   `]
 })
 export class GridHeader {
-  @Input() data: any; // Column
+  @Input() json: any; // Column
   @Input() grid: any;
   @Input() row: any;
 
@@ -311,6 +311,6 @@ export class GridHeader {
   }
 
   click(){
-    this.data.IsSelect = !this.data.IsSelect;
+    this.json.IsSelect = !this.json.IsSelect;
   }
 }

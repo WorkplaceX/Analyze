@@ -47,7 +47,7 @@ export const UNIVERSAL_KEY = 'UNIVERSAL_CACHE';
 
     { provide: 'LRU', useFactory: getLRU, deps: [] },
 
-    { provide: 'angularData', useFactory: null },
+    { provide: 'angularJson', useFactory: null },
 
     Meta,
 

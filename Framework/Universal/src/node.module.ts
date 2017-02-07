@@ -102,7 +102,7 @@ export function data(){
 
     Meta,
 
-    { provide: 'angularData', useFactory: data },
+    { provide: 'angularJson', useFactory: data },
     
   ]
 })

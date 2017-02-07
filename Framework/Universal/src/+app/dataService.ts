@@ -7,9 +7,9 @@ import 'rxjs/add/operator/map';
 
 declare var browserJson: any; // Params from browser
 
-export class Data {
+export class Json {
     Name: string;
-    IsJsonGet: boolean; // GET not POST data when debugging client. See also file json.json
+    IsJsonGet: boolean; // GET not POST json when debugging client. See also file json.json
     VersionClient: string; // Angular client version.
     VersionServer: string; // Angular client version.
     List:any;
@@ -22,7 +22,7 @@ export class Data {
 @Injectable()
 export class DataService {
 
-    data: Data;
+    json: Json;
 
     log: string;
 
@@ -30,53 +30,53 @@ export class DataService {
 
     http: Http;
 
-    constructor( @Inject('angularData') angularData: string, http: Http) {
+    constructor( @Inject('angularJson') angularJson: string, http: Http) {
         this.http = http;
         // Default data
-        this.data = new Data();
+        this.json = new Json();
         this.log = "";
         this.RequestCount = 0;
-        this.data.Name = "dataService.ts=" + util.currentTime();
-        // Angular universal data
-        if (angularData != null) {
-            this.data = JSON.parse(angularData);
+        this.json.Name = "dataService.ts=" + util.currentTime();
+        // Angular universal json
+        if (angularJson != null) {
+            this.json = JSON.parse(angularJson);
         }
-        // Browser data
+        // Browser json
         if (typeof browserJson !== 'undefined') {
-            this.data = JSON.parse(browserJson);
+            this.json = JSON.parse(browserJson);
         }
         //
-        this.data.VersionClient = util.versionClient();
+        this.json.VersionClient = util.versionClient();
         //
-        if (this.data.IsJsonGet == true) {
+        if (this.json.IsJsonGet == true) {
             this.update(); // For debug mode.
         }
-        if (this.data.IsBrowser == true) {
+        if (this.json.IsBrowser == true) {
             this.update();
         }
     }
 
     update() {
         this.RequestCount += 1;
-        if (this.data.IsJsonGet == true) {
+        if (this.json.IsJsonGet == true) {
             // GET for debug
             this.log += "Send GET; "
             this.http.get('json.json')
             .map(res => res)
             .subscribe(
-                body => this.data = <Data>(body.json()),
+                body => this.json = <Json>(body.json()),
                 err => this.log += err + "; ",
                 () => this.log += "Receive; "
             );
         } else {
             // POST
             this.log += "Send POST; ";
-            this.http.post('json.json', JSON.stringify(this.data))
+            this.http.post('json.json', JSON.stringify(this.json))
             .map(res => res)
             .subscribe(
                 body => { 
-                    var dataReceive: Data = <Data>(body.json());
-                    this.data = dataReceive;
+                    var jsonReceive: Json = <Json>(body.json());
+                    this.json = jsonReceive;
                 },
                 err => this.log += err + "; ",
                 () => this.log += "Receive; "

@@ -10,7 +10,7 @@ import { HttpModule } from '@angular/http';
 /* GulpFind02 */ declarations: [AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug, Button, InputX, Label, Grid, GridRow, GridCell, GridHeader],
   bootstrap: [AppComponent],
   providers: [
-    { provide: 'angularData', useValue: JSON.stringify({ Name: "app.module.ts=" + util.currentTime() }) },
+    { provide: 'angularJson', useValue: JSON.stringify({ Name: "app.module.ts=" + util.currentTime() }) },
   ]
 })
 export class AppModule { }

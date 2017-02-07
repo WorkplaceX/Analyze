@@ -211,7 +211,7 @@
         }
 
         /// <summary>
-        /// GET not POST data when debugging client. See also file json.json.
+        /// GET not POST json when debugging client. See also file json.json.
         /// </summary>
         public bool IsJsonGet;
 
