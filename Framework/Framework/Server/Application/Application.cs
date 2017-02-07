@@ -6,83 +6,15 @@
 
     public class Grid : Component
     {
-        public Grid() : this(null, null) { }
+        public Grid() { }
 
-        public Grid(Component owner, string text)
+        public Grid(Component owner, string text, Type typeRow)
             : base(owner, text)
         {
-
+            this.TableName = DataAccessLayer.Util.TableName(typeRow);
         }
 
-        private List<GridColumn> LoadColumnList(Type typeRow)
-        {
-            var result = new List<GridColumn>();
-            //
-            var cellList = Framework.Server.DataAccessLayer.Util.ColumnList(typeRow);
-            double widthPercentTotal = 0;
-            bool isLast = false;
-            for (int i = 0; i < cellList.Count; i++)
-            {
-                // Text
-                string text = cellList[i].FieldName;
-                cellList[i].ColumnText(ref text);
-                // WidthPercent
-                isLast = i == cellList.Count;
-                double widthPercentAvg = Math.Round(((double)100 - widthPercentTotal) / ((double)cellList.Count - (double)i), 2);
-                double widthPercent = widthPercentAvg;
-                cellList[i].ColumnWidthPercent(ref widthPercent);
-                widthPercent = Math.Round(widthPercent, 2);
-                if (isLast)
-                {
-                    widthPercent = 100 - widthPercentTotal;
-                }
-                else
-                {
-                    if (widthPercentTotal + widthPercent > 100)
-                    {
-                        widthPercent = widthPercentAvg;
-                    }
-                }
-                widthPercentTotal = widthPercentTotal + widthPercent;
-                result.Add(new GridColumn() { FieldName = cellList[i].FieldName, Text = text, WidthPercent = widthPercent });
-            }
-            return result;
-        }
-
-        public void Load(Type typeRow)
-        {
-            RowList = new List<GridRow>();
-            ColumnList = LoadColumnList(typeRow);
-            CellList = new Dictionary<string, Dictionary<string, GridCell>>();
-            //
-            object[] rowList = Framework.Server.DataAccessLayer.Util.Select(typeRow, 0, 20);
-            var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
-            for (int index = 0; index < rowList.Length; index++)
-            {
-                object row = rowList[index];
-                RowList.Add(new GridRow() { Index = index.ToString() });
-                foreach (PropertyInfo propertyInfo in propertyInfoList)
-                {
-                    string fieldName = propertyInfo.Name;
-                    object value = propertyInfo.GetValue(row);
-                    object valueJson = Framework.Server.DataAccessLayer.Util.ValueToJson(value);
-                    if (!CellList.ContainsKey(fieldName))
-                    {
-                        CellList[fieldName] = new Dictionary<string, GridCell>();
-                    }
-                    CellList[fieldName][index.ToString()] = new GridCell() { V = valueJson };
-                }
-            }
-        }
-
-        public List<GridRow> RowList;
-
-        public List<GridColumn> ColumnList;
-
-        /// <summary>
-        /// (FieldName, Index, GridCell)
-        /// </summary>
-        public Dictionary<string, Dictionary<string, GridCell>> CellList;
+        public string TableName;
     }
 
     public class GridData

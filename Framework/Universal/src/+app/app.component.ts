@@ -223,12 +223,17 @@ export class Label {
   selector: 'Grid',
   template: `
   <div style="white-space: nowrap;">
-  <GridHeader [grid]=json [json]=item *ngFor="let item of json.ColumnList; trackBy trackBy"></GridHeader>
+  <GridHeader [json]=item *ngFor="let item of dataService.json.GridData.ColumnList[json.TableName]; trackBy trackBy"></GridHeader>
   </div>
-  <GridRow [grid]=json [json]=item *ngFor="let item of json.RowList; trackBy trackBy"></GridRow>
+  <GridRow [jsonGridData]=dataService.json.GridData [jsonGrid]=json [json]=item *ngFor="let item of dataService.json.GridData.RowList[json.TableName]; trackBy trackBy"></GridRow>
   `
 })
 export class Grid {
+  constructor(dataService: DataService){
+    this.dataService = dataService;
+  }
+
+  dataService: DataService;
   @Input() json: any
 
   trackBy(index: any, item: any) {
@@ -241,7 +246,7 @@ export class Grid {
   selector: 'GridRow',
   template: `
   <div (mouseover)="json.IsSelect=true" (mouseout)="json.IsSelect=false" [ngClass]="{'select-class':json.IsSelect}" style="white-space: nowrap;">
-  <GridCell [grid]=grid [row]=json [json]=item *ngFor="let item of grid.ColumnList; trackBy trackBy"></GridCell>
+  <GridCell [jsonGrid]=jsonGrid [jsonGridData]=jsonGridData [jsonRow]=json [json]=item *ngFor="let item of jsonGridData.ColumnList[jsonGrid.TableName]; trackBy trackBy"></GridCell>
   </div>
   `,
   styles: [`
@@ -252,7 +257,8 @@ export class Grid {
 })
 export class GridRow {
   @Input() json: any;
-  @Input() grid: any;
+  @Input() jsonGrid: any;
+  @Input() jsonGridData: any;
 
   trackBy(index: any, item: any) {
     return item.Type;
@@ -267,7 +273,7 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':json.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=json.WidthPercent>{{ grid.CellList[json.FieldName][row.Index].V }}</div>
+  <div (click)="click()" [ngClass]="{'select-class':json.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=json.WidthPercent>{{ jsonGridData.CellList[jsonGrid.TableName][json.FieldName][jsonRow.Index].V }}</div>
   `,
   styles: [`
   .select-class {
@@ -276,9 +282,10 @@ export class GridRow {
   `]
 })
 export class GridCell {
-  @Input() json: any; // Column
-  @Input() grid: any;
-  @Input() row: any;
+  @Input() json: any; // Column // Used for FieldName
+  @Input() jsonRow: any; // Used for Index
+  @Input() jsonGrid: any; // Used for TableName
+  @Input() jsonGridData: any; // Used for Value
 
   trackBy(index: any, item: any) {
     return item.Type;
@@ -303,8 +310,6 @@ export class GridCell {
 })
 export class GridHeader {
   @Input() json: any; // Column
-  @Input() grid: any;
-  @Input() row: any;
 
   trackBy(index: any, item: any) {
     return item.Type;

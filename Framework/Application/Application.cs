@@ -21,8 +21,7 @@
             var rowFooter = new LayoutRow(container, "Footer");
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
-            var grid = new Grid(cellFooter1, "Grid");
-            grid.Load(typeof(Database.dbo.AirportDisplay));
+            var grid = new Grid(cellFooter1, "Grid", typeof(Database.dbo.AirportDisplay));
             //
             var gridData = new GridData();
             gridData.Load(typeof(Database.dbo.AirportDisplay));

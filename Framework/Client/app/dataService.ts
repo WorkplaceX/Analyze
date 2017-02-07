@@ -17,6 +17,7 @@ export class Json {
     Session:string;
     RequestLog: string;
     ResponseCount: number;
+    GridData: any;
 }
 
 @Injectable()
