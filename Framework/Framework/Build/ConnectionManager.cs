@@ -159,10 +159,16 @@
             }
         }
 
+        private static void IsDebugDataJson()
+        {
+            Util.Log(string.Format("IsDebugDataJson={0}", Server.Config.Instance.IsDebugDataJson));
+        }
+
         public static void Run()
         {
             ConnectionStringCheck();
             FileNameCheck();
+            IsDebugDataJson();
         }
     }
 }

@@ -9,7 +9,7 @@ declare var browserData: any; // Params from browser
 
 export class Data {
     Name: string;
-    IsDataGet: boolean; // GET not POST when debugging client. See also file data.json
+    IsDataGet: boolean; // GET not POST data when debugging client. See also file data.json
     VersionClient: string; // Angular client version.
     VersionServer: string; // Angular client version.
     List:any;

@@ -29,8 +29,15 @@
                 string jsonIn = Util.StreamToString(Request.Body);
                 Data dataIn = Framework.Server.Json.Util.Deserialize<Data>(jsonIn);
                 Data dataOut = new Application.ApplicationX().Process(dataIn);
-                string jsonOut = Framework.Server.Json.Util.Serialize(dataOut);
-                return Content(jsonOut, "application/json");
+                dataOut.IsDataGet = false;
+                string dataOutJson = Framework.Server.Json.Util.Serialize(dataOut);
+                if (Framework.Server.Config.Instance.IsDebugDataJson)
+                {
+                    dataOut.IsDataGet = true;
+                    string dataOutJsonDebug = Framework.Server.Json.Util.Serialize(dataOut);
+                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/data.json", dataOutJsonDebug);
+                }
+                return Content(dataOutJson, "application/json");
             }
             // node_modules
             if (HttpContext.Request.Path.ToString().StartsWith("/node_modules/"))

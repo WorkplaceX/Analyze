@@ -11,6 +11,12 @@
 
     public static class Util
     {
+        public static string TableName(Type typeRow)
+        {
+            SqlNameAttribute attributeRow = (SqlNameAttribute)typeRow.GetTypeInfo().GetCustomAttribute(typeof(SqlNameAttribute));
+            return attributeRow.SqlName;
+        }
+
         public static List<Cell> ColumnList(Type typeRow)
         {
             List<Cell> result = new List<Cell>();

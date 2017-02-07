@@ -91,6 +91,16 @@ namespace Framework.Build
             Util.OpenBrowser(Framework.Util.FolderName + "Application.sln");
         }
 
+        [Description("Toggle IsDebugDataJson flag", 8)]
+        public void ToggleIsDebugDataJson()
+        {
+            Server.Config config = Server.Config.Instance;
+            config.IsDebugDataJson = !config.IsDebugDataJson;
+            string json = JsonConvert.SerializeObject(config, Formatting.Indented);
+            Framework.Util.FileWrite(Server.Config.JsonFileName, json);
+            Util.Log(string.Format("File updated. ({0})", Server.Config.JsonFileName));
+        }
+
         private void RunSql(string connectionString)
         {
             SqlConnection connection = new SqlConnection(connectionString);

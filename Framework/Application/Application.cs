@@ -24,6 +24,10 @@
             var grid = new Grid(cellFooter1, "Grid");
             grid.Load(typeof(Database.dbo.AirportDisplay));
             //
+            var gridData = new GridData();
+            gridData.Load(typeof(Database.dbo.AirportDisplay));
+            result.GridData = gridData;
+            //
             return result;
         }
     }

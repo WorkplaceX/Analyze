@@ -208,7 +208,7 @@
             if (LogColor(text, "Error:", ConsoleColor.Red)) { return true; };
             if (LogColor(text, "Warning:", ConsoleColor.DarkYellow)) { return true; };
             string[] textList = text.Split(new string[] { "=" }, StringSplitOptions.None);
-            if (textList.Count() == 2)
+            if (textList.Count() == 2 && (textList[0].FirstOrDefault() >= '0' && textList[0].FirstOrDefault() <= '9'))
             {
                 Console.BackgroundColor = ConsoleColor.DarkYellow;
                 Console.Write("[" + textList[0] + "]");

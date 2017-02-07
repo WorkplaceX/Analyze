@@ -61,13 +61,11 @@
             {
                 object row = rowList[index];
                 RowList.Add(new GridRow() { Index = index.ToString() });
-                var gridCellList = new List<GridCell>();
                 foreach (PropertyInfo propertyInfo in propertyInfoList)
                 {
                     string fieldName = propertyInfo.Name;
                     object value = propertyInfo.GetValue(row);
                     object valueJson = Framework.Server.DataAccessLayer.Util.ValueToJson(value);
-                    gridCellList.Add(new Application.GridCell() { FieldName = propertyInfo.Name, Value = valueJson });
                     if (!CellList.ContainsKey(fieldName))
                     {
                         CellList[fieldName] = new Dictionary<string, GridCell>();
@@ -87,12 +85,103 @@
         public Dictionary<string, Dictionary<string, GridCell>> CellList;
     }
 
+    public class GridData
+    {
+        private List<GridColumn> LoadColumnList(Type typeRow)
+        {
+            var result = new List<GridColumn>();
+            //
+            var cellList = Framework.Server.DataAccessLayer.Util.ColumnList(typeRow);
+            double widthPercentTotal = 0;
+            bool isLast = false;
+            for (int i = 0; i < cellList.Count; i++)
+            {
+                // Text
+                string text = cellList[i].FieldName;
+                cellList[i].ColumnText(ref text);
+                // WidthPercent
+                isLast = i == cellList.Count;
+                double widthPercentAvg = Math.Round(((double)100 - widthPercentTotal) / ((double)cellList.Count - (double)i), 2);
+                double widthPercent = widthPercentAvg;
+                cellList[i].ColumnWidthPercent(ref widthPercent);
+                widthPercent = Math.Round(widthPercent, 2);
+                if (isLast)
+                {
+                    widthPercent = 100 - widthPercentTotal;
+                }
+                else
+                {
+                    if (widthPercentTotal + widthPercent > 100)
+                    {
+                        widthPercent = widthPercentAvg;
+                    }
+                }
+                widthPercentTotal = widthPercentTotal + widthPercent;
+                result.Add(new GridColumn() { FieldName = cellList[i].FieldName, Text = text, WidthPercent = widthPercent });
+            }
+            return result;
+        }
+
+        public void Load(Type typeRow)
+        {
+            string tableName = DataAccessLayer.Util.TableName(typeRow);
+            // Row
+            if (RowList == null)
+            {
+                RowList = new Dictionary<string, List<Application.GridRow>>();
+            }
+            RowList[tableName] = new List<GridRow>();
+            // Column
+            if (ColumnList == null)
+            {
+                ColumnList = new Dictionary<string, List<Application.GridColumn>>();
+            }
+            ColumnList[tableName] = LoadColumnList(typeRow);
+            // Cell
+            if (CellList == null)
+            {
+                CellList = new Dictionary<string, Dictionary<string, Dictionary<string, Application.GridCell>>>();
+            }
+            CellList[tableName] = new Dictionary<string, Dictionary<string, Application.GridCell>>();
+            //
+            object[] rowList = Framework.Server.DataAccessLayer.Util.Select(typeRow, 0, 20);
+            var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
+            for (int index = 0; index < rowList.Length; index++)
+            {
+                object row = rowList[index];
+                RowList[tableName].Add(new GridRow() { Index = index.ToString() });
+                foreach (PropertyInfo propertyInfo in propertyInfoList)
+                {
+                    string fieldName = propertyInfo.Name;
+                    object value = propertyInfo.GetValue(row);
+                    object valueJson = Framework.Server.DataAccessLayer.Util.ValueToJson(value);
+                    if (!CellList[tableName].ContainsKey(fieldName))
+                    {
+                        CellList[tableName][fieldName] = new Dictionary<string, GridCell>();
+                    }
+                    CellList[tableName][fieldName][index.ToString()] = new GridCell() { V = valueJson };
+                }
+            }
+        }
+
+        /// <summary>
+        /// (TableName, GridRow)
+        /// </summary>
+        public Dictionary<string, List<GridRow>> RowList;
+
+        /// <summary>
+        /// (TableName, GridColumn)
+        /// </summary>
+        public Dictionary<string, List<GridColumn>> ColumnList;
+
+        /// <summary>
+        /// (TableName, FieldName, Index(Filter, 0..99, Total), GridCell)
+        /// </summary>
+        public Dictionary<string, Dictionary<string, Dictionary<string, GridCell>>> CellList;
+    }
+
     public class GridCell
     {
-        public string FieldName;
-
-        public object Value;
-
         /// <summary>
         /// Value.
         /// </summary>
@@ -121,6 +210,11 @@
 
         }
 
+        /// <summary>
+        /// GET not POST data when debugging client. See also file data.json.
+        /// </summary>
+        public bool IsDataGet;
+
         public string Name;
 
         public Guid Session;
@@ -132,6 +226,8 @@
         public string VersionClient;
 
         public int ResponseCount;
+
+        public GridData GridData;
     }
 
     public class Component
