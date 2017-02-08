@@ -25,6 +25,7 @@
             //
             var gridData = new GridData();
             gridData.Load(typeof(Database.dbo.AirportDisplay));
+            gridData.Load(typeof(Database.dbo.Country));
             result.GridData = gridData;
             //
             return result;

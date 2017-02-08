@@ -157,6 +157,8 @@
 
         public string VersionClient;
 
+        public int RequestCount; // Set by client.
+
         public int ResponseCount;
 
         public GridData GridData;

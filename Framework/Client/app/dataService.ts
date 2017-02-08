@@ -16,6 +16,7 @@ export class Json {
     IsBrowser:any;
     Session:string;
     RequestLog: string;
+    RequestCount: number;
     ResponseCount: number;
     GridData: any;
 }
@@ -59,6 +60,7 @@ export class DataService {
 
     update() {
         this.RequestCount += 1;
+        this.json.RequestCount = this.RequestCount;
         if (this.json.IsJsonGet == true) {
             // GET for debug
             this.log += "Send GET; "
@@ -77,7 +79,9 @@ export class DataService {
             .subscribe(
                 body => { 
                     var jsonReceive: Json = <Json>(body.json());
-                    this.json = jsonReceive;
+                    if (this.json.RequestCount == jsonReceive.RequestCount) {
+                        this.json = jsonReceive;
+                    }
                 },
                 err => this.log += err + "; ",
                 () => this.log += "Receive; "

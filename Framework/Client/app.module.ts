@@ -4,9 +4,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import * as util from './app/util';
 import { HttpModule } from '@angular/http';
+import { FormsModule }   from '@angular/forms';
 
 @NgModule({
-  imports: [NgbModule.forRoot(), BrowserModule, HttpModule],
+  imports: [NgbModule.forRoot(), BrowserModule, HttpModule, FormsModule],
 /* GulpFind02 */ declarations: [AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug, Button, InputX, Label, Grid, GridRow, GridCell, GridHeader],
   bootstrap: [AppComponent],
   providers: [
