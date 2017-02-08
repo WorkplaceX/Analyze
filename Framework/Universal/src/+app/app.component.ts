@@ -176,7 +176,7 @@ export class Button {
 @Component({
   selector: 'InputX',
   template: `
-  <input value="{{text}}" (keyup)="onKey($event)" (focus)="focus(true)" (focusout)="focus(false)" placeholder="Empty" />
+  <input type="text" class="form-control" [(ngModel)]="text" (ngModelChange)="onChange()" (focus)="focus(true)" (focusout)="focus(false)" placeholder="Empty"/>
   <p>
     Text={{ json.Text }}<br/>
     TextNew={{ json.TextNew}}<br/>
@@ -197,6 +197,11 @@ export class InputX {
   ngOnInit() {
     this.text = this.json.Text;
   }  
+
+  onChange() {
+    this.json.TextNew = this.text;
+    this.dataService.update();
+  }
 
   onKey(event:any) {
     this.text = event.target.value;
@@ -222,6 +227,7 @@ export class Label {
 @Component({
   selector: 'Grid',
   template: `
+  <input type="text" class="form-control" [(ngModel)]="json.TableName"/>
   <div style="white-space: nowrap;">
   <GridHeader [json]=item *ngFor="let item of dataService.json.GridData.ColumnList[json.TableName]; trackBy trackBy"></GridHeader>
   </div>
