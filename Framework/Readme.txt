@@ -7,6 +7,7 @@ ToDo
 -node.module.ts line 76; dataService.ts line 27; pass json object directly. Not stringify and then parse again!
 -https://varvy.com/pagespeed/defer-loading-javascript.html [Done]
 -Transport data object on first request.
+-https://scotch.io/tutorials/all-the-ways-to-add-css-to-angular-2-components (Font)
 
 Tools
 -https://developer.microsoft.com/en-us/microsoft-edge/tools/screenshots/

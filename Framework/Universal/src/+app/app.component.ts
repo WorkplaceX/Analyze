@@ -145,7 +145,7 @@ export class LayoutCell {
   template: `
   <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
     Text={{ json.Text }}
-    <Selector [json]=item *ngFor="let item of json.List"></Selector>
+    <Selector [json]=item *ngFor="let item of json.List; trackBy trackBy"></Selector>
   </div>  
 `
 })
@@ -279,7 +279,11 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':json.IsSelect}" style="display:inline-block; overflow: hidden;" [style.width.%]=json.WidthPercent>{{ jsonGridData.CellList[jsonGrid.TableName][json.FieldName][jsonRow.Index].V }}</div>
+  <div (click)="click()" [ngClass]="{'select-class':json.IsSelect}" style="display:inline-block; position:relative;" [style.width.%]=json.WidthPercent>
+  <div style='margin-right:30px;text-overflow: ellipsis; overflow:hidden;'>
+  {{ jsonGridData.CellList[jsonGrid.TableName][json.FieldName][jsonRow.Index].V }}
+  <img src='ArrowDown.png' style="width:12px;height:12px;top:8px;position:absolute;right:7px;"/>
+  </div>
   `,
   styles: [`
   .select-class {
