@@ -3,7 +3,7 @@ ToDo
 -Component.Parent
 -SQL Select async
 -IIS connect to LocalDb [Done]
--Special characters in data.
+-Special characters in data. [Done]
 -node.module.ts line 76; dataService.ts line 27; pass json object directly. Not stringify and then parse again!
 -https://varvy.com/pagespeed/defer-loading-javascript.html [Done]
 -Transport data object on first request.

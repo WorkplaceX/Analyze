@@ -76,7 +76,7 @@
             }
             CellList[tableName] = new Dictionary<string, Dictionary<string, Application.GridCell>>();
             //
-            object[] rowList = Framework.Server.DataAccessLayer.Util.Select(typeRow, 0, 20);
+            object[] rowList = Framework.Server.DataAccessLayer.Util.Select(typeRow, 0, 15);
             var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
             for (int index = 0; index < rowList.Length; index++)
             {

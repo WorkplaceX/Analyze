@@ -45,7 +45,11 @@ export class DataService {
         }
         // Browser json
         if (typeof browserJson !== 'undefined') {
-            this.json = JSON.parse(browserJson);
+            if (browserJson instanceof Object){
+                this.json = browserJson;
+            } else {
+                this.json = JSON.parse(browserJson);
+            }
         }
         //
         this.json.VersionClient = util.versionClient();

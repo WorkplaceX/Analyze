@@ -89,13 +89,13 @@
                 // Add json to index.html (Client/index.html)
                 {
                     string scriptFind = "System.import('app').catch(function(err){ console.error(err); });";
-                    string scriptReplace = "var browserJson = '" + jsonTextBrowser + "'; " + scriptFind;
+                    string scriptReplace = "var browserJson = " + jsonTextBrowser + "; " + scriptFind;
                     result = result.Replace(scriptFind, scriptReplace);
                 }
                 // Add json to index.html (Server/indexBundle.html)
                 {
                     string scriptFind = "function downloadJSAtOnload() {";
-                    string scriptReplace = "var browserJson = '" + jsonTextBrowser + "';\r\n" + scriptFind;
+                    string scriptReplace = "var browserJson = " + jsonTextBrowser + ";\r\n" + scriptFind;
                     result = result.Replace(scriptFind, scriptReplace);
                 }
                 Util.Assert(resultAssert != result, "Adding browserJson failed!");
