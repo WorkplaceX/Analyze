@@ -151,6 +151,10 @@ export class LayoutCell {
 })
 export class LayoutDebug {
   @Input() json: any
+
+  trackBy(index: any, item: any): any {
+    return item.Type;
+  }
 }
 
 /* Button */
