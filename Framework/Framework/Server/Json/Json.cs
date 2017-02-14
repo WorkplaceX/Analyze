@@ -344,7 +344,7 @@
         private static string Serialize(object obj, Type rootType)
         {
             SerializePrepare(obj, rootType, false);
-            string result = JsonConvert.SerializeObject(obj, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
+            string result = JsonConvert.SerializeObject(obj, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore });
             SerializePrepare(obj, rootType, true);
             // TODO Disable Debug
             {

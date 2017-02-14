@@ -17,25 +17,25 @@
             // Html
             if (HttpContext.Request.Path == path)
             {
-                Json jsonOut = new Application.ApplicationX().Process(null);
+                JsonApplication jsonApplicationOut = new Application.ApplicationX().Process(null);
                 string htmlUniversal = null;
                 string html = IndexHtml(true);
-                htmlUniversal = await HtmlUniversal(html, jsonOut, true); // Angular Universal server side rendering.
+                htmlUniversal = await HtmlUniversal(html, jsonApplicationOut, true); // Angular Universal server side rendering.
                 return Content(htmlUniversal, "text/html");
             }
             // Json API
-            if (HttpContext.Request.Path == path + "json.json")
+            if (HttpContext.Request.Path == path + "Application.json")
             {
                 string jsonInText = Util.StreamToString(Request.Body);
-                Json jsonIn = Framework.Server.Json.Util.Deserialize<Json>(jsonInText);
-                Json jsonOut = new Application.ApplicationX().Process(jsonIn);
-                jsonOut.IsJsonGet = false;
-                string jsonOutText = Framework.Server.Json.Util.Serialize(jsonOut);
+                JsonApplication jsonApplicationIn = Framework.Server.Json.Util.Deserialize<JsonApplication>(jsonInText);
+                JsonApplication jsonApplicationOut = new Application.ApplicationX().Process(jsonApplicationIn);
+                jsonApplicationOut.IsJsonGet = false;
+                string jsonOutText = Framework.Server.Json.Util.Serialize(jsonApplicationOut);
                 if (Framework.Server.Config.Instance.IsDebugJson)
                 {
-                    jsonOut.IsJsonGet = true;
-                    string jsonOutDebug = Framework.Server.Json.Util.Serialize(jsonOut);
-                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/json.json", jsonOutDebug);
+                    jsonApplicationOut.IsJsonGet = true;
+                    string jsonOutDebug = Framework.Server.Json.Util.Serialize(jsonApplicationOut);
+                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/Application.json", jsonOutDebug);
                 }
                 return Content(jsonOutText, "application/json");
             }
@@ -55,7 +55,7 @@
         /// <summary>
         /// Returns server side rendered index.html.
         /// </summary>
-        private async Task<string> HtmlUniversal(string html, Json json, bool isUniversal)
+        private async Task<string> HtmlUniversal(string html, JsonApplication jsonApplication, bool isUniversal)
         {
             if (isUniversal == false)
             {
@@ -65,8 +65,8 @@
             {
                 string htmlUniversal = null;
                 string url = "http://" + Request.Host.ToUriComponent() + "/Universal/index.js";
-                json.IsBrowser = false; // Server side rendering mode.
-                string jsonText = Framework.Server.Json.Util.Serialize(json);
+                jsonApplication.IsBrowser = false; // Server side rendering mode.
+                string jsonText = Framework.Server.Json.Util.Serialize(jsonApplication);
                 htmlUniversal = await Post(url, jsonText, false); // Call Angular Universal server side rendering service.
                 if (htmlUniversal == null)
                 {
@@ -83,8 +83,8 @@
                     string htmlUniversalClean = htmlUniversal.Substring(indexBegin, (indexEnd - indexBegin));
                     result = html.Replace("<app>Loading AppComponent content here ...</app>", htmlUniversalClean);
                 }
-                json.IsBrowser = true; // Client side rendering mode.
-                string jsonTextBrowser = Framework.Server.Json.Util.Serialize(json);
+                jsonApplication.IsBrowser = true; // Client side rendering mode.
+                string jsonTextBrowser = Framework.Server.Json.Util.Serialize(jsonApplication);
                 string resultAssert = result;
                 // Add json to index.html (Client/index.html)
                 {

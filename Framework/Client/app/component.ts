@@ -78,6 +78,7 @@ export class AppComponent {
   <InputX *ngIf="json.Type=='Input'" [json]=json></InputX>
   <Label *ngIf="json.Type=='Label'" [json]=json></Label>
   <Grid *ngIf="json.Type=='Grid'" [json]=json></Grid>
+  <GridField *ngIf="json.Type=='GridField'" [json]=json></GridField>
   <!-- <LayoutDebug [json]=json></LayoutDebug> -->
 `
 })
@@ -231,11 +232,10 @@ export class Label {
 @Component({
   selector: 'Grid',
   template: `
-  <input type="text" class="form-control" [(ngModel)]="json.TableName"/>
   <div style="white-space: nowrap;">
-  <GridHeader [json]=item *ngFor="let item of dataService.json.GridData.ColumnList[json.TableName]; trackBy trackBy"></GridHeader>
+  <GridHeader [json]=item *ngFor="let item of dataService.json.GridData.ColumnList[json.GridName]; trackBy trackBy"></GridHeader>
   </div>
-  <GridRow [jsonGridData]=dataService.json.GridData [jsonGrid]=json [json]=item *ngFor="let item of dataService.json.GridData.RowList[json.TableName]; trackBy trackBy"></GridRow>
+  <GridRow [jsonGridData]=dataService.json.GridData [jsonGrid]=json [json]=item *ngFor="let item of dataService.json.GridData.RowList[json.GridName]; trackBy trackBy"></GridRow>
   `
 })
 export class Grid {
@@ -255,13 +255,19 @@ export class Grid {
 @Component({
   selector: 'GridRow',
   template: `
-  <div (mouseover)="json.IsSelect=true" (mouseout)="json.IsSelect=false" [ngClass]="{'select-class':json.IsSelect}" style="white-space: nowrap;">
-  <GridCell [jsonGrid]=jsonGrid [jsonGridData]=jsonGridData [jsonRow]=json [json]=item *ngFor="let item of jsonGridData.ColumnList[jsonGrid.TableName]; trackBy trackBy"></GridCell>
+  <div (click)="click()" (mouseover)="mouseOver()" (mouseout)="mouseOut()" [ngClass]="{'select-class1':json.IsSelect==1, 'select-class2':json.IsSelect==2, 'select-class3':json.IsSelect==3}" style="white-space: nowrap;">
+  <GridCell [jsonGrid]=jsonGrid [jsonGridData]=jsonGridData [jsonRow]=json [json]=item *ngFor="let item of jsonGridData.ColumnList[jsonGrid.GridName]; trackBy trackBy"></GridCell>
   </div>
   `,
   styles: [`
-  .select-class {
-    background-color: lightgray;
+  .select-class1 {
+    background-color: rgba(255, 255, 0, 0.5);
+  }
+  .select-class2 {
+    background-color: rgba(255, 255, 0, 0.2);
+  }
+  .select-class3 {
+    background-color: rgba(255, 255, 0, 0.7);
   }
   `]
 })
@@ -269,13 +275,27 @@ export class GridRow {
   @Input() json: any;
   @Input() jsonGrid: any;
   @Input() jsonGridData: any;
+  dataService: DataService;
+
+  constructor(dataService: DataService){
+    this.dataService = dataService;
+  }
+  
+  mouseOver(){
+    this.json.IsSelect = this.json.IsSelect | 2;
+  }
+
+  mouseOut(){
+    this.json.IsSelect = this.json.IsSelect & 1;
+  }
 
   trackBy(index: any, item: any) {
     return item.Type;
   }
 
   click(){
-    this.json.IsSelect = !this.json.IsSelect;
+    this.json.IsClick = true;
+    this.dataService.update();
   }
 }
 
@@ -283,30 +303,36 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':json.IsSelect}" style="display:inline-block; position:relative;" [style.width.%]=json.WidthPercent>
+  <div (click)="click()" [ngClass]="{'select-class':jsonGridData.CellList[jsonGrid.GridName][json.FieldName][jsonRow.Index].IsSelect}" style="display:inline-block; position:relative;" [style.width.%]=json.WidthPercent>
   <div style='margin-right:30px;text-overflow: ellipsis; overflow:hidden;'>
-  {{ jsonGridData.CellList[jsonGrid.TableName][json.FieldName][jsonRow.Index].V }}
+  {{ jsonGridData.CellList[jsonGrid.GridName][json.FieldName][jsonRow.Index].V }}
   <img src='ArrowDown.png' style="width:12px;height:12px;top:8px;position:absolute;right:7px;"/>
   </div>
   `,
   styles: [`
   .select-class {
-    background-color: rgba(255, 255, 0, 0.7);
+    border:solid 2px blue;
   }
   `]
 })
 export class GridCell {
   @Input() json: any; // Column // Used for FieldName
   @Input() jsonRow: any; // Used for Index
-  @Input() jsonGrid: any; // Used for TableName
+  @Input() jsonGrid: any; // Used for GridName
   @Input() jsonGridData: any; // Used for Value
+  dataService: DataService;
+
+  constructor(dataService: DataService){
+    this.dataService = dataService;
+  }
 
   trackBy(index: any, item: any) {
     return item.Type;
   }
 
   click(){
-    this.json.IsSelect = !this.json.IsSelect;
+    this.jsonGridData.CellList[this.jsonGrid.GridName][this.json.FieldName][this.jsonRow.Index].IsClick = true;
+    this.dataService.update();
   }
 }
 
@@ -331,5 +357,34 @@ export class GridHeader {
 
   click(){
     this.json.IsSelect = !this.json.IsSelect;
+  }
+}
+
+/* GridField */
+@Component({
+  selector: 'GridField',
+  template: `
+  HELLO FIELD {{gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V}}
+  <input type="text" class="form-control" [(ngModel)]="gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V" placeholder="Empty"/>
+  `
+})
+export class GridField {
+  constructor(dataService: DataService){
+    this.dataService = dataService;
+  }
+
+  dataService: DataService;
+  @Input() json: any;
+
+  gridData(){
+    if (this.dataService.json.GridData.FocusGridName != null){
+      return this.dataService.json.GridData;
+    } else {
+      return null;
+    }
+  }
+
+  trackBy(index: any, item: any) {
+    return item.Type;
   }
 }

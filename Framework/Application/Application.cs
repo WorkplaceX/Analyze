@@ -5,9 +5,9 @@
 
     public class ApplicationX : ApplicationBase
     {
-        protected override Json JsonCreate()
+        protected override JsonApplication JsonApplicationCreate()
         {
-            Json result = new Json();
+            JsonApplication result = new JsonApplication();
             result.Session = Guid.NewGuid();
             //
             var container = new LayoutContainer(result, "Container");
@@ -21,11 +21,17 @@
             var rowFooter = new LayoutRow(container, "Footer");
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
-            var grid = new Grid(cellFooter1, "Grid", typeof(Database.dbo.AirportDisplay));
+            new GridField(cellFooter1, "Field");
+            var grid = new Grid(cellFooter1, "Grid", "Master");
             //
             var gridData = new GridData();
-            gridData.Load(typeof(Database.dbo.AirportDisplay));
-            gridData.Load(typeof(Database.dbo.Country));
+            gridData.Load("Master", typeof(Database.dbo.AirportDisplay));
+            if (gridData.FocusGridName == null)
+            {
+                //gridData.FocusGridName = "Master";
+                //gridData.FocusFieldName = "AirportCode";
+                //gridData.FocusIndex = "2";
+            }
             result.GridData = gridData;
             //
             return result;

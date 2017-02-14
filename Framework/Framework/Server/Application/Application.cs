@@ -3,18 +3,30 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Linq;
 
-    public class Grid : Component
+    public class Grid : JsonComponent
     {
         public Grid() { }
 
-        public Grid(Component owner, string text, Type typeRow)
+        public Grid(JsonComponent owner, string text, string gridName)
             : base(owner, text)
         {
-            this.TableName = DataAccessLayer.Util.TableName(typeRow);
+            this.GridName = gridName;
         }
 
-        public string TableName;
+        public string GridName;
+    }
+
+    public class GridField : JsonComponent
+    {
+        public GridField() { }
+
+        public GridField(JsonComponent owner, string text)
+            : base(owner, text)
+        {
+
+        }
     }
 
     public class GridData
@@ -54,62 +66,76 @@
             return result;
         }
 
-        public void Load(Type typeRow)
+        public void Load(string gridName, Type typeRow)
         {
-            string tableName = DataAccessLayer.Util.TableName(typeRow);
             // Row
             if (RowList == null)
             {
                 RowList = new Dictionary<string, List<Application.GridRow>>();
             }
-            RowList[tableName] = new List<GridRow>();
+            RowList[gridName] = new List<GridRow>();
             // Column
             if (ColumnList == null)
             {
                 ColumnList = new Dictionary<string, List<Application.GridColumn>>();
             }
-            ColumnList[tableName] = LoadColumnList(typeRow);
+            ColumnList[gridName] = LoadColumnList(typeRow);
             // Cell
             if (CellList == null)
             {
                 CellList = new Dictionary<string, Dictionary<string, Dictionary<string, Application.GridCell>>>();
             }
-            CellList[tableName] = new Dictionary<string, Dictionary<string, Application.GridCell>>();
+            CellList[gridName] = new Dictionary<string, Dictionary<string, Application.GridCell>>();
             //
             object[] rowList = Framework.Server.DataAccessLayer.Util.Select(typeRow, 0, 15);
             var propertyInfoList = typeRow.GetTypeInfo().GetProperties();
             for (int index = 0; index < rowList.Length; index++)
             {
                 object row = rowList[index];
-                RowList[tableName].Add(new GridRow() { Index = index.ToString() });
+                RowList[gridName].Add(new GridRow() { Index = index.ToString() });
                 foreach (PropertyInfo propertyInfo in propertyInfoList)
                 {
                     string fieldName = propertyInfo.Name;
                     object value = propertyInfo.GetValue(row);
                     object valueJson = Framework.Server.DataAccessLayer.Util.ValueToJson(value);
-                    if (!CellList[tableName].ContainsKey(fieldName))
+                    if (!CellList[gridName].ContainsKey(fieldName))
                     {
-                        CellList[tableName][fieldName] = new Dictionary<string, GridCell>();
+                        CellList[gridName][fieldName] = new Dictionary<string, GridCell>();
                     }
-                    CellList[tableName][fieldName][index.ToString()] = new GridCell() { V = valueJson };
+                    CellList[gridName][fieldName][index.ToString()] = new GridCell() { V = valueJson };
                 }
             }
         }
 
         /// <summary>
-        /// (TableName, GridRow)
+        /// (GridName, GridRow)
         /// </summary>
         public Dictionary<string, List<GridRow>> RowList;
 
         /// <summary>
-        /// (TableName, GridColumn)
+        /// (GridName, GridColumn)
         /// </summary>
         public Dictionary<string, List<GridColumn>> ColumnList;
 
         /// <summary>
-        /// (TableName, FieldName, Index(Filter, 0..99, Total), GridCell)
+        /// (GridName, FieldName, Index(Filter, 0..99, Total), GridCell)
         /// </summary>
         public Dictionary<string, Dictionary<string, Dictionary<string, GridCell>>> CellList;
+
+        /// <summary>
+        /// Focused grid cell.
+        /// </summary>
+        public string FocusGridName;
+
+        /// <summary>
+        /// Focused grid cell.
+        /// </summary>
+        public string FocusIndex;
+
+        /// <summary>
+        /// Focused grid cell.
+        /// </summary>
+        public string FocusFieldName;
     }
 
     public class GridCell
@@ -118,6 +144,10 @@
         /// Value.
         /// </summary>
         public object V;
+
+        public bool IsSelect;
+
+        public bool IsClick;
     }
 
     public class GridColumn
@@ -132,11 +162,35 @@
     public class GridRow
     {
         public string Index;
+
+        public bool IsClick;
+
+        /// <summary>
+        /// Bitwise (01=Select; 10=MouseOver; 11=Select and MouseOver).
+        /// </summary>
+        public int IsSelect;
+
+        public bool IsSelectGet()
+        {
+            return (IsSelect & 1) == 1;
+        }
+
+        public void IsSelectSet(bool value)
+        {
+            if (value)
+            {
+                IsSelect = IsSelect | 1;
+            }
+            else
+            {
+                IsSelect = IsSelect & 2;
+            }
+        }
     }
 
-    public class Json : Component
+    public class JsonApplication : JsonComponent
     {
-        public Json()
+        public JsonApplication()
             : base(null, "Json")
         {
 
@@ -164,16 +218,16 @@
         public GridData GridData;
     }
 
-    public class Component
+    public class JsonComponent
     {
-        public Component() : this(null, null) { }
+        public JsonComponent() : this(null, null) { }
 
-        public Component(Component owner, string text)
+        public JsonComponent(JsonComponent owner, string text)
         {
             Constructor(owner, text);
         }
 
-        private void Constructor(Component owner, string text)
+        private void Constructor(JsonComponent owner, string text)
         {
             this.Type = GetType().Name;
             this.Text = text;
@@ -181,7 +235,7 @@
             {
                 if (owner.List == null)
                 {
-                    owner.List = new List<Component>();
+                    owner.List = new List<JsonComponent>();
                 }
                 int count = 0;
                 foreach (var item in owner.List)
@@ -202,21 +256,44 @@
 
         public string Text;
 
-        public List<Component> List = new List<Component>();
+        public List<JsonComponent> List = new List<JsonComponent>();
+
+
+        private void ListAll(List<JsonComponent> result)
+        {
+            result.AddRange(List);
+            foreach (var item in List)
+            {
+                item.ListAll(result);
+            }
+        }
+
+        public List<JsonComponent> ListAll()
+        {
+            List<JsonComponent> result = new List<JsonComponent>();
+            ListAll(result);
+            return result;
+        }
+
+        public List<T> ListAll<T>() where T : JsonComponent
+        {
+            List<JsonComponent> result = ListAll();
+            return result.OfType<T>().ToList();
+        }
     }
 
-    public class LayoutContainer : Component
+    public class LayoutContainer : JsonComponent
     {
         public LayoutContainer() : this(null, null) { }
 
-        public LayoutContainer(Component owner, string text)
+        public LayoutContainer(JsonComponent owner, string text)
             : base(owner, text)
         {
 
         }
     }
 
-    public class LayoutRow : Component
+    public class LayoutRow : JsonComponent
     {
         public LayoutRow() : this(null, null) { }
 
@@ -227,7 +304,7 @@
         }
     }
 
-    public class LayoutCell : Component
+    public class LayoutCell : JsonComponent
     {
         public LayoutCell() : this(null, null) { }
 
@@ -238,11 +315,11 @@
         }
     }
 
-    public class Button : Component
+    public class Button : JsonComponent
     {
         public Button() : this(null, null) { }
 
-        public Button(Component owner, string text)
+        public Button(JsonComponent owner, string text)
             : base(owner, text)
         {
             if (IsClick)
@@ -254,11 +331,11 @@
         public bool IsClick;
     }
 
-    public class Input : Component
+    public class Input : JsonComponent
     {
         public Input() : this(null, null) { }
 
-        public Input(Component owner, string text)
+        public Input(JsonComponent owner, string text)
             : base(owner, text)
         {
 
@@ -271,11 +348,11 @@
         public string AutoComplete;
     }
 
-    public class Label : Component
+    public class Label : JsonComponent
     {
         public Label() : this(null, null) { }
 
-        public Label(Component owner, string text)
+        public Label(JsonComponent owner, string text)
             : base(owner, text)
         {
 
@@ -284,27 +361,91 @@
 
     public class ApplicationBase
     {
-        public Json Process(Json jsonIn)
+        private void ProcessGridSelectRowClear(JsonApplication jsonApplicationOut)
         {
-            Json jsonOut = Framework.Server.DataAccessLayer.Util.JsonObjectClone<Json>(jsonIn);
-            if (jsonOut == null || jsonOut.Session == Guid.Empty)
+            foreach (string gridName in jsonApplicationOut.GridData.RowList.Keys)
             {
-                jsonOut = JsonCreate();
+                foreach (GridRow gridRow in jsonApplicationOut.GridData.RowList[gridName])
+                {
+                    gridRow.IsSelectSet(false);
+                }
+            }
+        }
+
+        private void ProcessGridSelectCellClear(JsonApplication jsonApplicationOut)
+        {
+            GridData gridData = jsonApplicationOut.GridData;
+            foreach (string gridName in gridData.RowList.Keys)
+            {
+                foreach (GridRow gridRow in gridData.RowList[gridName])
+                {
+                    foreach (var gridColumn in gridData.ColumnList[gridName])
+                    {
+                        GridCell gridCell = gridData.CellList[gridName][gridColumn.FieldName][gridRow.Index];
+                        gridCell.IsSelect = false;
+                    }
+                }
+            }
+        }
+
+        private void ProcessGridSelectCell(JsonApplication jsonApplicationOut, string gridName, string index, string fieldName)
+        {
+            GridData gridData = jsonApplicationOut.GridData;
+            gridData.FocusGridName = gridName;
+            gridData.FocusIndex = index;
+            gridData.FocusFieldName = fieldName;
+            ProcessGridSelectCellClear(jsonApplicationOut);
+            gridData.CellList[gridName][fieldName][index].IsSelect = true;
+        }
+
+        private void ProcessGridSelect(JsonApplication jsonApplicationOut)
+        {
+            GridData gridData = jsonApplicationOut.GridData;
+            foreach (string gridName in gridData.RowList.Keys)
+            {
+                foreach (GridRow gridRow in gridData.RowList[gridName])
+                {
+                    if (gridRow.IsClick)
+                    {
+                        gridRow.IsClick = false;
+                        ProcessGridSelectRowClear(jsonApplicationOut);
+                        gridRow.IsSelectSet(true);
+                    }
+                    foreach (var gridColumn in gridData.ColumnList[gridName])
+                    {
+                        GridCell gridCell = gridData.CellList[gridName][gridColumn.FieldName][gridRow.Index];
+                        if (gridCell.IsClick == true)
+                        {
+                            gridCell.IsClick = false;
+                            ProcessGridSelectCell(jsonApplicationOut, gridName, gridRow.Index, gridColumn.FieldName);
+                        }
+                    }
+                }
+            }
+        }
+
+        public JsonApplication Process(JsonApplication jsonApplicationIn)
+        {
+            JsonApplication jsonApplicationOut = Framework.Server.DataAccessLayer.Util.JsonObjectClone<JsonApplication>(jsonApplicationIn);
+            if (jsonApplicationOut == null || jsonApplicationOut.Session == Guid.Empty)
+            {
+                jsonApplicationOut = JsonApplicationCreate();
             }
             else
             {
-                jsonOut.ResponseCount += 1;
+                jsonApplicationOut.ResponseCount += 1;
             }
-            jsonOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
-            jsonOut.VersionServer = Framework.Util.VersionServer;
-            Input input = (Input)jsonOut.List[0].List[1].List[1].List[1];
+            ProcessGridSelect(jsonApplicationOut);
+            jsonApplicationOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
+            jsonApplicationOut.VersionServer = Framework.Util.VersionServer;
+            Input input = (Input)jsonApplicationOut.List[0].List[1].List[1].List[1];
             input.AutoComplete = input.TextNew?.ToUpper();
-            return jsonOut;
+            return jsonApplicationOut;
         }
 
-        protected virtual Json JsonCreate()
+        protected virtual JsonApplication JsonApplicationCreate()
         {
-            Json result = new Json();
+            JsonApplication result = new JsonApplication();
             result.Session = Guid.NewGuid();
             //
             var container = new LayoutContainer(result, "Container");

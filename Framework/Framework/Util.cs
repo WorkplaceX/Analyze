@@ -43,7 +43,10 @@
 
         public static void FileWrite(string fileName, string value)
         {
-            File.WriteAllText(fileName, value);
+            lock (typeof(object))
+            {
+                File.WriteAllText(fileName, value);
+            }
         }
 
         public static string[] FileNameList(string folderName)
