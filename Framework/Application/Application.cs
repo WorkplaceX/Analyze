@@ -10,6 +10,7 @@
             JsonApplication result = new JsonApplication();
             result.Session = Guid.NewGuid();
             //
+            new GridKeyboard(result, "GridKeyboard");
             var container = new LayoutContainer(result, "Container");
             var rowHeader = new LayoutRow(container, "Header");
             var cellHeader1 = new LayoutCell(rowHeader, "HeaderCell1");

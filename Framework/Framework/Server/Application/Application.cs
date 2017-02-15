@@ -18,6 +18,20 @@
         public string GridName;
     }
 
+    /// <summary>
+    /// Grid keyboard handler (Singleton).
+    /// </summary>
+    public class GridKeyboard : JsonComponent
+    {
+        public GridKeyboard() { }
+
+        public GridKeyboard(JsonComponent owner, string text)
+            : base(owner, text)
+        {
+
+        }
+    }
+
     public class GridField : JsonComponent
     {
         public GridField() { }
@@ -438,7 +452,7 @@
             ProcessGridSelect(jsonApplicationOut);
             jsonApplicationOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
             jsonApplicationOut.VersionServer = Framework.Util.VersionServer;
-            Input input = (Input)jsonApplicationOut.List[0].List[1].List[1].List[1];
+            Input input = (Input)jsonApplicationOut.List[1].List[1].List[1].List[1];
             input.AutoComplete = input.TextNew?.ToUpper();
             return jsonApplicationOut;
         }

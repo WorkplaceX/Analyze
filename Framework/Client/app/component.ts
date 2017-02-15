@@ -79,6 +79,7 @@ export class AppComponent {
   <Label *ngIf="json.Type=='Label'" [json]=json></Label>
   <Grid *ngIf="json.Type=='Grid'" [json]=json></Grid>
   <GridField *ngIf="json.Type=='GridField'" [json]=json></GridField>
+  <GridKeyboard *ngIf="json.Type=='GridKeyboard'" [json]=json></GridKeyboard>
   <!-- <LayoutDebug [json]=json></LayoutDebug> -->
 `
 })
@@ -308,6 +309,7 @@ export class GridRow {
   {{ jsonGridData.CellList[jsonGrid.GridName][json.FieldName][jsonRow.Index].V }}
   <img src='ArrowDown.png' style="width:12px;height:12px;top:8px;position:absolute;right:7px;"/>
   </div>
+  <GridFieldInstance [dataService]=dataService [gridName]=jsonGrid.GridName [fieldName]=json.FieldName [index]=jsonRow.Index></GridFieldInstance>
   `,
   styles: [`
   .select-class {
@@ -366,15 +368,18 @@ export class GridHeader {
   template: `
   HELLO FIELD {{gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V}}
   <input type="text" class="form-control" [(ngModel)]="gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V" placeholder="Empty"/>
+  <GridFieldInstance [dataService]=dataService [gridName]=dataService.json.GridData.FocusGridName [fieldName]="fieldName" [index]=dataService.json.GridData.FocusIndex></GridFieldInstance>
   `
 })
 export class GridField {
   constructor(dataService: DataService){
     this.dataService = dataService;
+    this.fieldName = "AirportText";
   }
 
   dataService: DataService;
   @Input() json: any;
+  fieldName: any;
 
   gridData(){
     if (this.dataService.json.GridData.FocusGridName != null){
@@ -386,5 +391,113 @@ export class GridField {
 
   trackBy(index: any, item: any) {
     return item.Type;
+  }
+}
+
+/* GridFieldInstance */
+@Component({
+  selector: 'GridFieldInstance',
+  template: `
+  {{x}}
+  <input type="text" class="form-control" [(ngModel)]="gridData()?.CellList[gridName][fieldName][index].V" placeholder="Empty"/>
+  `
+})
+export class GridFieldInstance {
+  @Input() dataService: DataService;
+  @Input() gridName: any;
+  @Input() fieldName: any;
+  @Input() index: any;
+  x: any;
+
+  gridData(){
+    if (this.gridName != null){
+      return this.dataService.json.GridData;
+    } else {
+      return null;
+    }
+  }
+}
+
+/* GridKeyboard */
+@Component({
+  selector: 'GridKeyboard',
+  template: `
+  {{x}}
+  `,
+  host: {
+    '(document:keydown)': '_keydown($event)',
+  }
+})
+export class GridKeyboard {
+  constructor(dataService: DataService){
+    this.dataService = dataService;
+    this.x = "";
+  }
+  @Input() json: any;
+  dataService: DataService;
+  x: string;
+
+  public _keydown(event: KeyboardEvent) {
+    this.x = this.x + event.keyCode;
+    var gridData: any = this.dataService.json.GridData;
+    if (gridData.FocusGridName != null){
+      if (event.keyCode == 40 || event.keyCode == 38){
+        var rowList = gridData.RowList[gridData.FocusGridName];
+        var rowCurrent: string = gridData.FocusIndex;
+        var rowPrevious: string;
+        var rowNext: string;
+        if (rowCurrent != null){
+          /* RowPrevious */
+          for (let index in rowList){
+            if (index == rowCurrent){
+              if (rowPrevious == null){
+                rowPrevious = rowCurrent;
+              }
+              break;
+            }
+            rowPrevious = index;
+          }
+          /* RowNext */
+          for (let index in rowList){
+            if (rowNext != null){
+              rowNext = index;
+              break;
+            }
+            if (index == rowCurrent){
+              rowNext = index;
+            }
+          }
+          if (event.keyCode == 38){
+            rowCurrent = rowPrevious;
+          }
+          if (event.keyCode == 40){
+            rowCurrent = rowNext;
+          }
+          /* Update Row.IsSelect */
+          for (let index in rowList){
+            if (rowList[index].Index == rowCurrent){
+              rowList[index].IsSelect = 1;
+            } else {
+              rowList[index].IsSelect = 0;
+            }
+          }
+          /* Update Cell.IsSelect */
+          var columList = gridData.ColumnList[gridData.FocusGridName];
+          var cellList = gridData.CellList[gridData.FocusGridName];
+          for (let indexColumn in columList){
+            let fieldName: string = columList[indexColumn].FieldName;
+            cellList[fieldName][gridData.FocusIndex].IsSelect = false;
+          }
+          for (let indexColumn in columList){
+            let fieldName: string = columList[indexColumn].FieldName;
+            if (fieldName == gridData.FocusFieldName){
+              cellList[fieldName][rowCurrent].IsSelect = true;
+            }
+          }
+          gridData.FocusIndex = rowCurrent;
+        }
+        event.preventDefault();
+      }
+    }
   }
 }
