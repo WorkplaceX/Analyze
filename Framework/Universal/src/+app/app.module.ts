@@ -7,11 +7,11 @@ import { TodoModule } from './+todo/todo.module';
 
 import { SharedModule } from './shared/shared.module';
 
-/* GulpFind01 */ import { AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug, Button, InputX, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridFieldInstance, GridKeyboard } from './app.component';
+/* GulpFind01 */ import { AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug, Button, InputX, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridFieldInstance, GridKeyboard, FocusDirective } from './app.component';
 
 
 @NgModule({
-/* GulpFind02 */ declarations: [AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug, Button, InputX, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridFieldInstance, GridKeyboard],
+/* GulpFind02 */ declarations: [AppComponent, Selector, LayoutContainer, LayoutRow, LayoutCell, LayoutDebug, Button, InputX, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridFieldInstance, GridKeyboard, FocusDirective],
   imports: [
     SharedModule
   ]

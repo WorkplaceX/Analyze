@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Directive, ElementRef, Inject } from '@angular/core';
 import { DataService } from './dataService';
 import  * as util from './util';
 
@@ -80,6 +81,7 @@ export class AppComponent {
   <Grid *ngIf="json.Type=='Grid'" [json]=json></Grid>
   <GridField *ngIf="json.Type=='GridField'" [json]=json></GridField>
   <GridKeyboard *ngIf="json.Type=='GridKeyboard'" [json]=json></GridKeyboard>
+  <GridFieldInstance *ngIf="json.Type=='GridFieldInstance'" [json]=json></GridFieldInstance>
   <!-- <LayoutDebug [json]=json></LayoutDebug> -->
 `
 })
@@ -304,12 +306,12 @@ export class GridRow {
 @Component({
   selector: 'GridCell',
   template: `
-  <div (click)="click()" [ngClass]="{'select-class':jsonGridData.CellList[jsonGrid.GridName][json.FieldName][jsonRow.Index].IsSelect}" style="display:inline-block; position:relative;" [style.width.%]=json.WidthPercent>
+  <div (click)="click($event)" [ngClass]="{'select-class':jsonGridData.CellList[jsonGrid.GridName][json.FieldName][jsonRow.Index].IsSelect}" style="display:inline-block; position:relative;" [style.width.%]=json.WidthPercent>
   <div style='margin-right:30px;text-overflow: ellipsis; overflow:hidden;'>
   {{ jsonGridData.CellList[jsonGrid.GridName][json.FieldName][jsonRow.Index].V }}
   <img src='ArrowDown.png' style="width:12px;height:12px;top:8px;position:absolute;right:7px;"/>
   </div>
-  <GridFieldInstance [dataService]=dataService [gridName]=jsonGrid.GridName [fieldName]=json.FieldName [index]=jsonRow.Index></GridFieldInstance>
+  <GridFieldInstance [gridName]=jsonGrid.GridName [fieldName]=json.FieldName [index]=jsonRow.Index></GridFieldInstance>
   `,
   styles: [`
   .select-class {
@@ -332,9 +334,11 @@ export class GridCell {
     return item.Type;
   }
 
-  click(){
+  click(event: MouseEvent){
     this.jsonGridData.CellList[this.jsonGrid.GridName][this.json.FieldName][this.jsonRow.Index].IsClick = true;
+    this.jsonRow.IsClick = true;
     this.dataService.update();
+    event.stopPropagation();
   }
 }
 
@@ -368,7 +372,7 @@ export class GridHeader {
   template: `
   HELLO FIELD {{gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V}}
   <input type="text" class="form-control" [(ngModel)]="gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V" placeholder="Empty"/>
-  <GridFieldInstance [dataService]=dataService [gridName]=dataService.json.GridData.FocusGridName [fieldName]="fieldName" [index]=dataService.json.GridData.FocusIndex></GridFieldInstance>
+  <GridFieldInstance [gridName]=dataService.json.GridData.FocusGridName [fieldName]="fieldName" [index]=dataService.json.GridData.FocusIndex></GridFieldInstance>
   `
 })
 export class GridField {
@@ -394,28 +398,74 @@ export class GridField {
   }
 }
 
+@Directive({
+    selector: '[focus]'
+})
+export class FocusDirective {
+    @Input()
+    focus:boolean;
+    constructor(@Inject(ElementRef) private element: ElementRef) {}
+    public ngOnChanges(v: any) {
+      if (v.focus.currentValue == true){
+        if (this.element.nativeElement.focus != null) { // Universal rendering
+          this.element.nativeElement.focus();
+        }
+      }
+    }
+}
+
 /* GridFieldInstance */
 @Component({
   selector: 'GridFieldInstance',
   template: `
-  {{x}}
-  <input type="text" class="form-control" [(ngModel)]="gridData()?.CellList[gridName][fieldName][index].V" placeholder="Empty"/>
+  <input type="text" class="form-control" [(ngModel)]="gridCell().V" [focus]="dataService.json.GridData.FocusIndex==index && dataService.json.GridData.FocusFieldName == fieldName" placeholder="Empty"/>
   `
 })
 export class GridFieldInstance {
-  @Input() dataService: DataService;
+  constructor(dataService: DataService){
+    this.dataService = dataService;
+  }
+
+  gridCell() {
+    let result : any = null;
+    let gridData: any = this.dataService.json.GridData;
+    let gridName: string = gridData.FocusGridName;
+    let fieldName: string = gridData.FocusFieldName;
+    let index: string = gridData.FocusIndex;
+    if (this.json != null) {
+      if (this.json.GridName != null) {
+        gridName = this.json.GridName;
+      }
+      if (this.json.FieldName != null) {
+        fieldName = this.json.FieldName;
+      }
+      if (this.json.Index != null) {
+        fieldName = this.json.Index;
+      }
+    } else {
+      if (this.gridName != null){
+        gridName = this.gridName;
+      }
+      if (this.fieldName != null){
+        fieldName = this.fieldName;
+      }
+      if (this.index != null){
+        index = this.index;
+      }
+    }
+    if (gridName != null) {
+      result = gridData.CellList[gridName][fieldName][index];
+    }
+    if (result == null)
+      result = {};
+    return result;
+  }
+
+  dataService: DataService;
   @Input() gridName: any;
   @Input() fieldName: any;
   @Input() index: any;
-  x: any;
-
-  gridData(){
-    if (this.gridName != null){
-      return this.dataService.json.GridData;
-    } else {
-      return null;
-    }
-  }
+  @Input() json: any;
 }
 
 /* GridKeyboard */
@@ -437,65 +487,80 @@ export class GridKeyboard {
   dataService: DataService;
   x: string;
 
-  public _keydown(event: KeyboardEvent) {
-    this.x = this.x + event.keyCode;
-    var gridData: any = this.dataService.json.GridData;
-    if (gridData.FocusGridName != null){
-      if (event.keyCode == 40 || event.keyCode == 38){
-        var rowList = gridData.RowList[gridData.FocusGridName];
-        var rowCurrent: string = gridData.FocusIndex;
-        var rowPrevious: string;
-        var rowNext: string;
-        if (rowCurrent != null){
-          /* RowPrevious */
-          for (let index in rowList){
-            if (index == rowCurrent){
-              if (rowPrevious == null){
-                rowPrevious = rowCurrent;
-              }
-              break;
-            }
-            rowPrevious = index;
-          }
-          /* RowNext */
-          for (let index in rowList){
-            if (rowNext != null){
-              rowNext = index;
-              break;
-            }
-            if (index == rowCurrent){
-              rowNext = index;
-            }
-          }
-          if (event.keyCode == 38){
-            rowCurrent = rowPrevious;
-          }
-          if (event.keyCode == 40){
-            rowCurrent = rowNext;
-          }
-          /* Update Row.IsSelect */
-          for (let index in rowList){
-            if (rowList[index].Index == rowCurrent){
-              rowList[index].IsSelect = 1;
-            } else {
-              rowList[index].IsSelect = 0;
-            }
-          }
-          /* Update Cell.IsSelect */
-          var columList = gridData.ColumnList[gridData.FocusGridName];
-          var cellList = gridData.CellList[gridData.FocusGridName];
-          for (let indexColumn in columList){
-            let fieldName: string = columList[indexColumn].FieldName;
-            cellList[fieldName][gridData.FocusIndex].IsSelect = false;
-          }
-          for (let indexColumn in columList){
-            let fieldName: string = columList[indexColumn].FieldName;
-            if (fieldName == gridData.FocusFieldName){
-              cellList[fieldName][rowCurrent].IsSelect = true;
-            }
-          }
-          gridData.FocusIndex = rowCurrent;
+  next(list: any, current: string, propertyName: string){
+    let result : any = {}; // Returns First, Last, Next, Previous
+    // First, Last
+    for (let key in list){
+      if (result.First == null)
+        result.First = list[key][propertyName];
+      result.Last = list[key][propertyName];
+    }
+    // Previous, Next
+    for (let key in list) {
+      if (result.Current != null && result.Next == null) 
+        result.Next = list[key][propertyName];
+      if (list[key][propertyName] == current) 
+        result.Current = list[key][propertyName];
+      if (result.Current == null) {
+        result.Previous = list[key][propertyName];
+      }
+    }
+    if (result.Current == null) {
+      result.Previous = result.First;
+      result.Next = result.Last;
+    }
+    if (result.Previous == null) {
+      result.Previous = result.Current;
+    }
+    if (result.Next == null) {
+      result.Next = result.Current;
+    }
+    return result;
+  }
+
+  select() {
+    let gridData: any = this.dataService.json.GridData;
+    // GridName
+    for (let keyGridLoad in gridData.GridLoadList) {
+      let gridName = gridData.GridLoadList[keyGridLoad].GridName;
+      // FieldName
+      for (let keyColumn in gridData.ColumnList[gridName]) {
+        let fieldName = gridData.ColumnList[gridName][keyColumn].FieldName;
+        // Index
+        for (let keyRow in gridData.RowList[gridName]) {
+          let index = gridData.RowList[gridName][keyRow].Index;
+          gridData.CellList[gridName][fieldName][index].IsSelect = gridData.FocusGridName == gridName && gridData.FocusFieldName == fieldName && gridData.FocusIndex == index;
         }
+      }
+    }
+    return;
+  }
+
+  public _keydown(event: KeyboardEvent) {
+    var gridData: any = this.dataService.json.GridData;
+    if (gridData.FocusGridName != null) {
+      // Tab
+      if (event.keyCode == 9 && event.shiftKey == false) { 
+        gridData.FocusFieldName = this.next(gridData.ColumnList[gridData.FocusGridName], gridData.FocusFieldName, "FieldName").Next;
+        this.select();
+        event.preventDefault();
+      }
+      // Tab back
+      if (event.keyCode == 9 && event.shiftKey == true) {
+        gridData.FocusFieldName = this.next(gridData.ColumnList[gridData.FocusGridName], gridData.FocusFieldName, "FieldName").Previous;
+        this.select();
+        event.preventDefault();
+      }
+      // Up
+      if (event.keyCode == 38) {
+        gridData.FocusIndex = this.next(gridData.RowList[gridData.FocusGridName], gridData.FocusIndex, "Index").Previous;
+        this.select();
+        event.preventDefault();
+      }
+      // Down
+      if (event.keyCode == 40) {
+        gridData.FocusIndex = this.next(gridData.RowList[gridData.FocusGridName], gridData.FocusIndex, "Index").Next;
+        this.select();
         event.preventDefault();
       }
     }

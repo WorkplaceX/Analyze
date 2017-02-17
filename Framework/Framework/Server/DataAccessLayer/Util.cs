@@ -85,7 +85,6 @@
 
         public static object[] Select(Type typeRow, int pageIndex, int pageRowCount)
         {
-
             var query = SelectQuery(typeRow).Skip(pageIndex * pageRowCount).Take(pageRowCount);
             object[] result = query.ToDynamicArray().ToArray();
             return result;

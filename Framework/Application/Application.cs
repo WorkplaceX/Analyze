@@ -23,6 +23,7 @@
             var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
             var button = new Button(cellFooter1, "Hello");
             new GridField(cellFooter1, "Field");
+            new GridFieldInstance(cellFooter1, "Field", "Master", "AirportCode", null);
             var grid = new Grid(cellFooter1, "Grid", "Master");
             //
             var gridData = new GridData();

@@ -1,6 +1,9 @@
 ToDo
+-Rename GridCell.IsSelect to IsFocus
+-Focused field based on expression not on GridCell.IsSelect. Same for Row.IsSelect. Be aware of trippel select state with mouse over.
+-https://brockallen.com/2016/09/24/process-start-for-urls-on-net-core/ (Open Browser)
 -https://unpkg.com/@angular/core@2.1.2/bundles/core.umd.js
--Component.Parent
+-JsonComponent.Parent
 -SQL Select async
 -IIS connect to LocalDb [Done]
 -Special characters in data. [Done]

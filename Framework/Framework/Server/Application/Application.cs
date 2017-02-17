@@ -43,6 +43,25 @@
         }
     }
 
+    public class GridFieldInstance : JsonComponent
+    {
+        public GridFieldInstance() { }
+
+        public GridFieldInstance(JsonComponent owner, string text, string gridName, string fieldName, string gridIndex)
+            : base(owner, text)
+        {
+            this.GridName = gridName;
+            this.FieldName = fieldName;
+            this.GridIndex = gridIndex;
+        }
+
+        public string GridName;
+
+        public string FieldName;
+
+        public string GridIndex;
+    }
+
     public class GridData
     {
         private List<GridColumn> LoadColumnList(Type typeRow)
@@ -82,6 +101,11 @@
 
         public void Load(string gridName, Type typeRow)
         {
+            if (GridLoadList == null)
+            {
+                GridLoadList = new Dictionary<string, Application.GridLoad>();
+            }
+            GridLoadList[gridName] = new Application.GridLoad() { GridName = gridName };
             // Row
             if (RowList == null)
             {
@@ -120,6 +144,11 @@
                 }
             }
         }
+
+        /// <summary>
+        /// (GridName, GridLoad) List of all loaded data grids.
+        /// </summary>
+        public Dictionary<string, GridLoad> GridLoadList;
 
         /// <summary>
         /// (GridName, GridRow)
@@ -200,6 +229,11 @@
                 IsSelect = IsSelect & 2;
             }
         }
+    }
+
+    public class GridLoad
+    {
+        public string GridName;
     }
 
     public class JsonApplication : JsonComponent
