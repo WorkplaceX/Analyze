@@ -32,17 +32,6 @@
         }
     }
 
-    public class GridField : JsonComponent
-    {
-        public GridField() { }
-
-        public GridField(JsonComponent owner, string text)
-            : base(owner, text)
-        {
-
-        }
-    }
-
     public class GridFieldInstance : JsonComponent
     {
         public GridFieldInstance() { }

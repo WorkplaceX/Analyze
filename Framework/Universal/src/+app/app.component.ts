@@ -79,9 +79,8 @@ export class AppComponent {
   <InputX *ngIf="json.Type=='Input'" [json]=json></InputX>
   <Label *ngIf="json.Type=='Label'" [json]=json></Label>
   <Grid *ngIf="json.Type=='Grid'" [json]=json></Grid>
-  <GridField *ngIf="json.Type=='GridField'" [json]=json></GridField>
   <GridKeyboard *ngIf="json.Type=='GridKeyboard'" [json]=json></GridKeyboard>
-  <GridFieldInstance *ngIf="json.Type=='GridFieldInstance'" [json]=json></GridFieldInstance>
+  <GridField *ngIf="json.Type=='GridField'" [json]=json></GridField>
   <!-- <LayoutDebug [json]=json></LayoutDebug> -->
 `
 })
@@ -311,7 +310,7 @@ export class GridRow {
   {{ jsonGridData.CellList[jsonGrid.GridName][json.FieldName][jsonRow.Index].V }}
   <img src='ArrowDown.png' style="width:12px;height:12px;top:8px;position:absolute;right:7px;"/>
   </div>
-  <GridFieldInstance [gridName]=jsonGrid.GridName [fieldName]=json.FieldName [index]=jsonRow.Index></GridFieldInstance>
+  <GridField [gridName]=jsonGrid.GridName [fieldName]=json.FieldName [index]=jsonRow.Index></GridField>
   `,
   styles: [`
   .select-class {
@@ -366,38 +365,6 @@ export class GridHeader {
   }
 }
 
-/* GridField */
-@Component({
-  selector: 'GridField',
-  template: `
-  HELLO FIELD {{gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V}}
-  <input type="text" class="form-control" [(ngModel)]="gridData()?.CellList[gridData().FocusGridName][gridData().FocusFieldName][gridData().FocusIndex].V" placeholder="Empty"/>
-  <GridFieldInstance [gridName]=dataService.json.GridData.FocusGridName [fieldName]="fieldName" [index]=dataService.json.GridData.FocusIndex></GridFieldInstance>
-  `
-})
-export class GridField {
-  constructor(dataService: DataService){
-    this.dataService = dataService;
-    this.fieldName = "AirportText";
-  }
-
-  dataService: DataService;
-  @Input() json: any;
-  fieldName: any;
-
-  gridData(){
-    if (this.dataService.json.GridData.FocusGridName != null){
-      return this.dataService.json.GridData;
-    } else {
-      return null;
-    }
-  }
-
-  trackBy(index: any, item: any) {
-    return item.Type;
-  }
-}
-
 @Directive({
     selector: '[focus]'
 })
@@ -414,14 +381,14 @@ export class FocusDirective {
     }
 }
 
-/* GridFieldInstance */
+/* GridField */
 @Component({
-  selector: 'GridFieldInstance',
+  selector: 'GridField',
   template: `
   <input type="text" class="form-control" [(ngModel)]="gridCell().V" [focus]="dataService.json.GridData.FocusIndex==index && dataService.json.GridData.FocusFieldName == fieldName" placeholder="Empty"/>
   `
 })
-export class GridFieldInstance {
+export class GridField {
   constructor(dataService: DataService){
     this.dataService = dataService;
   }
