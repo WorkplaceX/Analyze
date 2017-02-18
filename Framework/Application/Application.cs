@@ -14,25 +14,19 @@
             var container = new LayoutContainer(result, "Container");
             var rowHeader = new LayoutRow(container, "Header");
             var cellHeader1 = new LayoutCell(rowHeader, "HeaderCell1");
+            new GridField(cellHeader1, "Field", null, null, null);
             var rowContent = new LayoutRow(container, "Content");
             var cellContent1 = new LayoutCell(rowContent, "ContentCell1");
+            new Grid(cellContent1, "Master", "Master");
             var cellContent2 = new LayoutCell(rowContent, "ContentCell2");
-            new Label(cellContent2, "Enter text");
-            new Input(cellContent2, "MyTest");
+            new Grid(cellContent2, "Detail", "Detail");
             var rowFooter = new LayoutRow(container, "Footer");
-            var cellFooter1 = new LayoutCell(rowFooter, "FooterCell1");
-            var button = new Button(cellFooter1, "Hello");
-            new GridFieldInstance(cellFooter1, "Field", "Master", "AirportCode", null);
-            var grid = new Grid(cellFooter1, "Grid", "Master");
+            var cellFooter = new LayoutCell(rowFooter, "FooterCell1");
+            var button = new Button(cellFooter, "Hello");
             //
             var gridData = new GridData();
-            gridData.Load("Master", typeof(Database.dbo.AirportDisplay));
-            if (gridData.FocusGridName == null)
-            {
-                //gridData.FocusGridName = "Master";
-                //gridData.FocusFieldName = "AirportCode";
-                //gridData.FocusIndex = "2";
-            }
+            gridData.Load("Master", typeof(Database.dbo.TableName));
+            gridData.Load("Detail", typeof(Database.dbo.AirportDisplay));
             result.GridData = gridData;
             //
             return result;

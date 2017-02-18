@@ -32,11 +32,11 @@
         }
     }
 
-    public class GridFieldInstance : JsonComponent
+    public class GridField : JsonComponent
     {
-        public GridFieldInstance() { }
+        public GridField() { }
 
-        public GridFieldInstance(JsonComponent owner, string text, string gridName, string fieldName, string gridIndex)
+        public GridField(JsonComponent owner, string text, string gridName, string fieldName, string gridIndex)
             : base(owner, text)
         {
             this.GridName = gridName;
@@ -475,8 +475,6 @@
             ProcessGridSelect(jsonApplicationOut);
             jsonApplicationOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
             jsonApplicationOut.VersionServer = Framework.Util.VersionServer;
-            Input input = (Input)jsonApplicationOut.List[1].List[1].List[1].List[1];
-            input.AutoComplete = input.TextNew?.ToUpper();
             return jsonApplicationOut;
         }
 

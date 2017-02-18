@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Directive, ElementRef, Inject } from '@angular/core';
+import { Directive, ElementRef, Inject, Renderer } from '@angular/core';
 import { DataService } from './dataService';
 import  * as util from './util';
 
@@ -92,7 +92,7 @@ export class Selector {
 @Component({
   selector: 'LayoutContainer',
   template: `
-  <div style='border:1px solid; padding:2px; margin:2px; background-color:yellow;'>
+  <div style='background-color:yellow;' class='container' removeSelector>
     Text={{ json.Text }}
     <Selector [json]=item *ngFor="let item of json.List; trackBy trackBy"></Selector>
   </div>  
@@ -110,8 +110,7 @@ export class LayoutContainer {
 @Component({
   selector: 'LayoutRow',
   template: `
-  <div style='border:1px solid; padding:2px; margin:2px; background-color:red;'>
-    Text={{ json.Text }}
+  <div style='background-color:red;' class='row' removeSelector>
     <Selector [json]=item *ngFor="let item of json.List; trackBy trackBy"></Selector>
   </div>  
 `
@@ -128,8 +127,10 @@ export class LayoutRow {
 @Component({
   selector: 'LayoutCell',
   template: `
-  <div style='border:1px solid; padding:2px; margin:2px; background-color:green;'>
+  <div style='background-color:green;' [class.col-sm-6]='true' removeSelector>
+    <p>
     Text={{ json.Text }}
+    </p>
     <Selector [json]=item *ngFor="let item of json.List; trackBy trackBy"></Selector>
   </div>  
 `
@@ -378,6 +379,19 @@ export class FocusDirective {
           this.element.nativeElement.focus();
         }
       }
+    }
+}
+
+@Directive({
+    selector: '[removeSelector]'
+})
+export class RemoveSelectorDirective {
+    constructor(private el: ElementRef, private renderer: Renderer) {
+    }
+
+    //wait for the component to render completely
+    ngOnInit() {
+      this.renderer.attachViewAfter(this.el.nativeElement.parentNode.parentNode, [this.el.nativeElement]);
     }
 }
 
