@@ -438,13 +438,13 @@
         private void ProcessGridSelect(JsonApplication jsonApplicationOut)
         {
             GridData gridData = jsonApplicationOut.GridData;
-            foreach (string gridName in gridData.RowList.Keys)
+            foreach (GridLoad gridLoad in gridData.GridLoadList.Values)
             {
+                string gridName = gridLoad.GridName;
                 foreach (GridRow gridRow in gridData.RowList[gridName])
                 {
                     if (gridRow.IsClick)
                     {
-                        gridRow.IsClick = false;
                         ProcessGridSelectRowClear(jsonApplicationOut);
                         gridRow.IsSelectSet(true);
                     }
@@ -453,12 +453,34 @@
                         GridCell gridCell = gridData.CellList[gridName][gridColumn.FieldName][gridRow.Index];
                         if (gridCell.IsClick == true)
                         {
-                            gridCell.IsClick = false;
                             ProcessGridSelectCell(jsonApplicationOut, gridName, gridRow.Index, gridColumn.FieldName);
                         }
                     }
                 }
             }
+        }
+
+        private void ProcessGridIsClickReset(JsonApplication jsonApplicationOut)
+        {
+            GridData gridData = jsonApplicationOut.GridData;
+            foreach (GridLoad gridLoad in gridData.GridLoadList.Values)
+            {
+                string gridName = gridLoad.GridName;
+                foreach (GridRow gridRow in gridData.RowList[gridName])
+                {
+                    gridRow.IsClick = false;
+                    foreach (var gridColumn in gridData.ColumnList[gridName])
+                    {
+                        GridCell gridCell = gridData.CellList[gridName][gridColumn.FieldName][gridRow.Index];
+                        gridCell.IsClick = false;
+                    }
+                }
+            }
+        }
+
+        protected virtual void ProcessGridIsClick(JsonApplication jsonApplicationOut)
+        {
+
         }
 
         public JsonApplication Process(JsonApplication jsonApplicationIn)
@@ -473,6 +495,8 @@
                 jsonApplicationOut.ResponseCount += 1;
             }
             ProcessGridSelect(jsonApplicationOut);
+            ProcessGridIsClick(jsonApplicationOut);
+            ProcessGridIsClickReset(jsonApplicationOut);
             jsonApplicationOut.Name = ".NET Core=" + DateTime.Now.ToString("HH:mm:ss.fff");
             jsonApplicationOut.VersionServer = Framework.Util.VersionServer;
             return jsonApplicationOut;

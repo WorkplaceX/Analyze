@@ -1,4 +1,5 @@
 ToDo
+-Include SchemaName into TableName
 -Rename GridCell.IsSelect to IsFocus
 -Focused field based on expression not on GridCell.IsSelect. Same for Row.IsSelect. Be aware of trippel select state with mouse over.
 -https://brockallen.com/2016/09/24/process-start-for-urls-on-net-core/ (Open Browser)

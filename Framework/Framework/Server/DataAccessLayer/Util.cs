@@ -11,10 +11,38 @@
 
     public static class Util
     {
-        public static string TableName(Type typeRow)
+        public static string TableNameFromTypeRow(Type typeRow)
         {
             SqlNameAttribute attributeRow = (SqlNameAttribute)typeRow.GetTypeInfo().GetCustomAttribute(typeof(SqlNameAttribute));
             return attributeRow.SqlName;
+        }
+
+        public static string TypeRowToName(Type typeRow)
+        {
+            return typeRow.Name;
+        }
+
+        public static Type TypeRowFromName(string typeName)
+        {
+            typeName = "Database" + "." + typeName;
+            Type result = Type.GetType(typeName);
+            return result;
+        }
+
+        public static Type TypeRowFromTableName(string tableName, Type typeInAssembly)
+        {
+            foreach (Type type in typeInAssembly.GetTypeInfo().Assembly.GetTypes())
+            {
+                if (type.GetTypeInfo().IsSubclassOf(typeof(Row)))
+                {
+                    Type typeRow = type;
+                    if (Util.TableNameFromTypeRow(typeRow) == tableName)
+                    {
+                        return typeRow;
+                    }
+                }
+            }
+            throw new Exception(string.Format("Type not found! ({0})", tableName));
         }
 
         public static List<Cell> ColumnList(Type typeRow)

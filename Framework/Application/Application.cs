@@ -31,5 +31,19 @@
             //
             return result;
         }
+
+        protected override void ProcessGridIsClick(JsonApplication jsonApplicationOut)
+        {
+            foreach (GridRow gridRow in jsonApplicationOut.GridData.RowList["Master"])
+            {
+                if (gridRow.IsClick)
+                {
+                    string tableName = jsonApplicationOut.GridData.CellList["Master"]["TableName2"][gridRow.Index].V as string;
+                    tableName = tableName.Substring(tableName.IndexOf(".") + 1);
+                    Type typeRow = Framework.Server.DataAccessLayer.Util.TypeRowFromTableName(tableName, typeof(ApplicationX));
+                    jsonApplicationOut.GridData.Load("Detail", typeRow);
+                }
+            }
+        }
     }
 }
