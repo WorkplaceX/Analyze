@@ -63,7 +63,7 @@
             for (int i = 0; i < cellList.Count; i++)
             {
                 // Text
-                string text = cellList[i].FieldName;
+                string text = cellList[i].FieldNameSql;
                 cellList[i].ColumnText(ref text);
                 // WidthPercent
                 isLast = i == cellList.Count;
@@ -83,7 +83,7 @@
                     }
                 }
                 widthPercentTotal = widthPercentTotal + widthPercent;
-                result.Add(new GridColumn() { FieldName = cellList[i].FieldName, Text = text, WidthPercent = widthPercent });
+                result.Add(new GridColumn() { FieldName = cellList[i].FieldNameSql, Text = text, WidthPercent = widthPercent });
             }
             return result;
         }

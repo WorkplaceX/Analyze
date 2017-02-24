@@ -54,7 +54,7 @@
                 SqlNameAttribute attributePropertySql = (SqlNameAttribute)propertyInfo.GetCustomAttribute(typeof(SqlNameAttribute));
                 TypeCellAttribute attributePropertyCell = (TypeCellAttribute)propertyInfo.GetCustomAttribute(typeof(TypeCellAttribute));
                 Cell cell = (Cell)Activator.CreateInstance(attributePropertyCell.TypeCell);
-                cell.Constructor(attributeRow.SqlName, attributePropertySql.SqlName);
+                cell.Constructor(attributeRow.SqlName, attributePropertySql.SqlName, propertyInfo.Name);
                 result.Add(cell);
             }
             return result;

@@ -21,10 +21,11 @@
         /// <summary>
         /// Constructor for column.
         /// </summary>
-        internal void Constructor(string tableNameSql, string fieldNameSql)
+        internal void Constructor(string tableNameSql, string fieldNameSql, string fieldNameCSharp)
         {
-            this.tableName = tableNameSql;
-            this.fieldName = fieldNameSql;
+            this.tableNameSql = tableNameSql;
+            this.fieldNameSql = fieldNameSql;
+            this.fieldNameCSharp = fieldNameCSharp;
         }
 
         /// <summary>
@@ -35,7 +36,7 @@
             this.row = row;
         }
 
-        private string tableName;
+        private string tableNameSql;
 
         /// <summary>
         /// Gets sql TableName.
@@ -44,20 +45,33 @@
         {
             get
             {
-                return tableName;
+                return tableNameSql;
             }
         }
 
-        private string fieldName;
+        private string fieldNameSql;
 
         /// <summary>
         /// Gets sql FieldName.
         /// </summary>
-        public string FieldName
+        public string FieldNameSql
         {
             get
             {
-                return fieldName;
+                return fieldNameSql;
+            }
+        }
+
+        private string fieldNameCSharp;
+
+        /// <summary>
+        /// Gets sql FieldName.
+        /// </summary>
+        public string FieldNameCSharp
+        {
+            get
+            {
+                return fieldNameCSharp;
             }
         }
 

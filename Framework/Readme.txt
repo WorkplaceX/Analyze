@@ -1,4 +1,5 @@
 ToDo
+-Rename Cell.V to Cell.T (Text)
 -Include SchemaName into TableName
 -Rename GridCell.IsSelect to IsFocus
 -Focused field based on expression not on GridCell.IsSelect. Same for Row.IsSelect. Be aware of trippel select state with mouse over.
