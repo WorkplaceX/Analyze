@@ -88,13 +88,33 @@
             return result;
         }
 
+        public DataAccessLayer.Row[] LoadFromJson(string gridName, Type typeInAssembly)
+        {
+            string typeRowName = GridLoadList[gridName].TypeRowName;
+            Type typeRow = DataAccessLayer.Util.TypeRowFromName(typeRowName, typeInAssembly);
+            List<DataAccessLayer.Row> result = new List<DataAccessLayer.Row>();
+            foreach (GridRow row in RowList[gridName])
+            {
+                DataAccessLayer.Row resultRow = (DataAccessLayer.Row) Activator.CreateInstance(typeRow);
+                result.Add(resultRow);
+                foreach (var column in ColumnList[gridName])
+                {
+                    string text = (string)CellList[gridName][column.FieldName][row.Index].V;
+                    PropertyInfo propertyInfo = typeRow.GetProperty(column.FieldName);
+                    object value = DataAccessLayer.Util.ValueFromText(text, propertyInfo.PropertyType);
+                    propertyInfo.SetValue(resultRow, value);
+                }
+            }
+            return result.ToArray();
+        }
+
         public void Load(string gridName, Type typeRow)
         {
             if (GridLoadList == null)
             {
                 GridLoadList = new Dictionary<string, Application.GridLoad>();
             }
-            GridLoadList[gridName] = new Application.GridLoad() { GridName = gridName };
+            GridLoadList[gridName] = new Application.GridLoad() { GridName = gridName, TypeRowName = DataAccessLayer.Util.TypeRowToName(typeRow) };
             // Row
             if (RowList == null)
             {
@@ -124,7 +144,7 @@
                 {
                     string fieldName = propertyInfo.Name;
                     object value = propertyInfo.GetValue(row);
-                    object valueJson = Framework.Server.DataAccessLayer.Util.ValueToJson(value);
+                    object valueJson = DataAccessLayer.Util.ValueToText(value); // Framework.Server.DataAccessLayer.Util.ValueToJson(value);
                     if (!CellList[gridName].ContainsKey(fieldName))
                     {
                         CellList[gridName][fieldName] = new Dictionary<string, GridCell>();
@@ -223,6 +243,8 @@
     public class GridLoad
     {
         public string GridName;
+
+        public string TypeRowName;
     }
 
     public class JsonApplication : JsonComponent

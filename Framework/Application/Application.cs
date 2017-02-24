@@ -2,6 +2,8 @@
 {
     using Framework.Server.Application;
     using System;
+    using System.Linq;
+    using System.Collections.Generic;
 
     public class ApplicationX : ApplicationBase
     {
@@ -38,7 +40,9 @@
             {
                 if (gridRow.IsClick)
                 {
-                    string tableName = jsonApplicationOut.GridData.CellList["Master"]["TableName2"][gridRow.Index].V as string;
+                    var list = jsonApplicationOut.GridData.LoadFromJson("Master", typeof(ApplicationX)).Cast<Database.dbo.TableName>();
+                    string tableName = list.ElementAt(int.Parse(gridRow.Index)).TableName2;
+                    // string tableName = jsonApplicationOut.GridData.CellList["Master"]["TableName2"][gridRow.Index].V as string;
                     tableName = tableName.Substring(tableName.IndexOf(".") + 1);
                     Type typeRow = Framework.Server.DataAccessLayer.Util.TypeRowFromTableName(tableName, typeof(ApplicationX));
                     jsonApplicationOut.GridData.Load("Detail", typeRow);

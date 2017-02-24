@@ -22,10 +22,14 @@
             return typeRow.Name;
         }
 
-        public static Type TypeRowFromName(string typeName)
+        public static Type TypeRowFromName(string typeRowName, Type typeInAssembly)
         {
-            typeName = "Database" + "." + typeName;
-            Type result = Type.GetType(typeName);
+            typeRowName = "Database.dbo." + typeRowName;
+            Type result = typeInAssembly.GetTypeInfo().Assembly.GetType(typeRowName);
+            if (result == null)
+            {
+                throw new Exception("Type not found!");
+            }
             return result;
         }
 
@@ -135,6 +139,25 @@
                 }
             }
             return result;
+        }
+
+        public static string ValueToText(object value)
+        {
+            string result = null;
+            if (value != null)
+            {
+                result = value.ToString();
+            }
+            return result;
+        }
+
+        public static object ValueFromText(string text, Type type)
+        {
+            if (Nullable.GetUnderlyingType(type) != null)
+            {
+                type = Nullable.GetUnderlyingType(type);
+            }
+            return Convert.ChangeType(text, type);
         }
     }
 }
