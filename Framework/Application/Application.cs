@@ -27,8 +27,9 @@
             var button = new Button(cellFooter, "Hello");
             //
             var gridData = new GridData();
-            gridData.Load("Master", typeof(Database.dbo.TableName));
-            gridData.Load("Detail", typeof(Database.dbo.AirportDisplay));
+            gridData.LoadToJsonGrid("Master", typeof(Database.dbo.TableName));
+            gridData.ColumnList["Master"].Where(item => item.FieldName == "TableName2").First().IsUpdate = true;
+            gridData.LoadToJsonGrid("Detail", typeof(Database.dbo.AirportDisplay));
             result.GridData = gridData;
             //
             return result;
@@ -45,7 +46,7 @@
                     // string tableName = jsonApplicationOut.GridData.CellList["Master"]["TableName2"][gridRow.Index].V as string;
                     tableName = tableName.Substring(tableName.IndexOf(".") + 1);
                     Type typeRow = Framework.Server.DataAccessLayer.Util.TypeRowFromTableName(tableName, typeof(ApplicationX));
-                    jsonApplicationOut.GridData.Load("Detail", typeRow);
+                    jsonApplicationOut.GridData.LoadToJsonGrid("Detail", typeRow);
                 }
             }
         }

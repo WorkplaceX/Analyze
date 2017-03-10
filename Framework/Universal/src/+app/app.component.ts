@@ -399,7 +399,7 @@ export class RemoveSelectorDirective {
 @Component({
   selector: 'GridField',
   template: `
-  <input type="text" class="form-control" [(ngModel)]="gridCell().V" [focus]="dataService.json.GridData.FocusIndex==index && dataService.json.GridData.FocusFieldName == fieldName" placeholder="Empty"/>
+  <input type="text" class="form-control" [(ngModel)]="gridCell().V" (ngModelChange)="onChange()" (focus)="focus(true)" (focusout)="focus(false)" [focus]="dataService.json.GridData.FocusIndex==index && dataService.json.GridData.FocusFieldName == fieldName" placeholder="Empty" />
   `
 })
 export class GridField {
@@ -407,8 +407,13 @@ export class GridField {
     this.dataService = dataService;
   }
 
-  gridCell() {
-    let result : any = null;
+  dataService: DataService;
+  @Input() gridName: any;
+  @Input() fieldName: any;
+  @Input() index: any;
+  @Input() json: any;
+
+  point() {
     let gridData: any = this.dataService.json.GridData;
     let gridName: string = gridData.FocusGridName;
     let fieldName: string = gridData.FocusFieldName;
@@ -434,19 +439,41 @@ export class GridField {
         index = this.index;
       }
     }
-    if (gridName != null) {
-      result = gridData.CellList[gridName][fieldName][index];
+    return { gridData: gridData, gridName: gridName, fieldName: fieldName, index: index }; // GridName can be null if no focus is set.
+  }
+
+  gridCell() {
+    let result : any = null;
+    let point = this.point();
+    if (point.gridName != null) { 
+      result = point.gridData.CellList[point.gridName][point.fieldName][point.index]; // GridName can be null if no focus is set.
     }
-    if (result == null)
+    if (result == null) {
       result = {};
+    }
     return result;
   }
 
-  dataService: DataService;
-  @Input() gridName: any;
-  @Input() fieldName: any;
-  @Input() index: any;
-  @Input() json: any;
+  onChange() {
+    let isUpdate = false;
+    let point = this.point();
+    if (point.gridName != null) { 
+      // GridName can be null if no focus is set.
+      for (let column of point.gridData.ColumnList[point.gridName]) {
+        if (column.FieldName == point.fieldName) {
+          isUpdate = column.IsUpdate;
+          break;
+        }
+      }
+    }
+    if (isUpdate == true) {
+      this.dataService.update();
+    }
+  }
+
+  focus(isFocus: boolean) {
+    this.json.IsFocus = isFocus;
+  }  
 }
 
 /* GridKeyboard */

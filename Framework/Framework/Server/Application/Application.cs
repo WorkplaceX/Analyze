@@ -19,7 +19,7 @@
     }
 
     /// <summary>
-    /// Grid keyboard handler (Singleton).
+    /// Grid keyboard handler (Singleton). Manages grid navigation. For example arrow up, down and tab.
     /// </summary>
     public class GridKeyboard : JsonComponent
     {
@@ -53,7 +53,7 @@
 
     public class GridData
     {
-        private List<GridColumn> LoadColumnList(Type typeRow)
+        private List<GridColumn> LoadToJsonColumnList(Type typeRow)
         {
             var result = new List<GridColumn>();
             //
@@ -108,7 +108,7 @@
             return result.ToArray();
         }
 
-        public void Load(string gridName, Type typeRow)
+        public void LoadToJsonGrid(string gridName, Type typeRow)
         {
             if (GridLoadList == null)
             {
@@ -126,7 +126,7 @@
             {
                 ColumnList = new Dictionary<string, List<Application.GridColumn>>();
             }
-            ColumnList[gridName] = LoadColumnList(typeRow);
+            ColumnList[gridName] = LoadToJsonColumnList(typeRow);
             // Cell
             if (CellList == null)
             {
@@ -209,6 +209,11 @@
         public string Text;
 
         public double WidthPercent;
+
+        /// <summary>
+        /// Gets or sets IsUpdate. If true, postback to server is done after every key stroke. Used for example for Typeahead.
+        /// </summary>
+        public bool IsUpdate;
     }
 
     public class GridRow
