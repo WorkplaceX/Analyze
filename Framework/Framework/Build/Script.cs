@@ -6,6 +6,31 @@ namespace Framework.Build
 {
     public abstract class ScriptBase
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
+        public ScriptBase(string[] args)
+        {
+            this.args = args;
+        }
+
+        private readonly string[] args;
+
+        /// <summary>
+        /// Returns command line argument.
+        /// </summary>
+        /// <param name="index">Command line argument index.</param>
+        public string ArgGet(int index)
+        {
+            string result = null;
+            if (index >= 0 && index < args.Length)
+            {
+                result = args[index];
+            }
+            return result;
+        }
+
         [Description("Enter ConnectionString for ConnectionManager.json", 0.5)]
         public void ConnectionString()
         {
@@ -13,7 +38,11 @@ namespace Framework.Build
             string connectionString = Server.ConnectionManager.ConnectionString;
             Util.Log(string.Format("{0}={1}", connectionStringSwitch, connectionString));
             Util.Log("Enter new ConnectionString:");
-            string connectionStringNew = Console.ReadLine();
+            string connectionStringNew = ArgGet(1);
+            if (connectionStringNew == null)
+            {
+                connectionStringNew = Console.ReadLine();
+            }
             //
             Server.Config config = Server.Config.Instance;
             config.ConnectionStringSet(connectionStringNew);

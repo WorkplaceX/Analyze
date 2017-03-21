@@ -56,7 +56,10 @@
                 DescriptionAttribute description = methodInfo.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
                 if (methodInfo.DeclaringType != typeof(object))
                 {
-                    result.Add(new Method() { MethodInfo = methodInfo, Description = description });
+                    if (methodInfo.GetParameters().Length == 0)
+                    {
+                        result.Add(new Method() { MethodInfo = methodInfo, Description = description });
+                    }
                 }
             }
             return result.OrderBy(item => item.Description.OrderBy).ToArray();
@@ -78,10 +81,14 @@
             }
             Framework.Build.ConnectionManagerCheck.Run();
             Console.Write(">");
-            string numberText = Console.ReadLine();
-            int numberInt = int.Parse(numberText);
+            string numberText = script.ArgGet(0);
+            if (numberText == null)
+            {
+                numberText = Console.ReadLine();
+            }
             try
             {
+                int numberInt = int.Parse(numberText);
                 Util.MethodList(script)[numberInt - 1].MethodInfo.Invoke(script, new object[] { });
             }
             catch (Exception exception)
