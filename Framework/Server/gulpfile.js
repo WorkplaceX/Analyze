@@ -33,7 +33,9 @@ gulp.task('copy', function () {
         gulp.src('../Client/dist/**/*.js')
             .pipe(gulp.dest('./Universal/dist/')),
         gulp.src('../Universal/publish/**/*.*')
-            .pipe(gulp.dest('../UniversalExpress/Universal/'))
+            .pipe(gulp.dest('../UniversalExpress/Universal/')),
+        gulp.src('../Client/node_modules/bootstrap/dist/css/bootstrap.min.css')
+            .pipe(gulp.dest('../Server/wwwroot/node_modules/bootstrap/dist/css/'))
     );
 })
 
