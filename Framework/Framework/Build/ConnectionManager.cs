@@ -123,7 +123,8 @@
                 File.Copy(Server.Config.JsonTxtFileName, Server.Config.JsonFileName);
             }
             string connectionStringSwitch = Server.Config.Instance.ConnectionStringSwitch;
-            Util.Log(string.Format("SQL Connection check ({0})", connectionStringSwitch));
+            string ip = Framework.Util.Ip();
+            Util.Log(string.Format("SQL Connection check ({0}) from {1}", connectionStringSwitch, ip));
             string connectionString = Server.ConnectionManager.ConnectionString;
             try
             {

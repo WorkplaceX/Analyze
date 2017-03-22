@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using System.Linq;
+    using System.Net.Http;
     using System.Reflection;
 
     public static class Util
@@ -52,6 +53,29 @@
         public static string[] FileNameList(string folderName)
         {
             var result = Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).OrderBy(item => item).ToArray();
+            return result;
+        }
+
+        /// <summary>
+        /// Returns external ip address.
+        /// </summary>
+        public static string Ip()
+        {
+            string result = null;
+            try
+            {
+                HttpClient client = new HttpClient();
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://bot.whatismyipaddress.com/");
+                var taskSend = client.SendAsync(request);
+                taskSend.Wait();
+                var taskRead = taskSend.Result.Content.ReadAsStringAsync();
+                taskRead.Wait();
+                result = taskRead.Result;
+            }
+            catch (Exception exception)
+            {
+                result = exception.Message;
+            }
             return result;
         }
     }

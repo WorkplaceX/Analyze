@@ -49,6 +49,7 @@ namespace Framework.Build
             string json = JsonConvert.SerializeObject(config, Formatting.Indented);
             Framework.Util.FileWrite(Server.Config.JsonFileName, json);
             Util.Log(string.Format("File updated. ({0})", Server.Config.JsonFileName));
+            ConnectionManagerCheck.Run();
         }
 
         [Description("npm install; dotnet restore; Python error can be ignored", 1)]
