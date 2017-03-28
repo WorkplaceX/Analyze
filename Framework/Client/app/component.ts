@@ -472,7 +472,10 @@ export class GridField {
   }
 
   focus(isFocus: boolean) {
-    this.json.IsFocus = isFocus;
+    if (this.json !=  null) {
+      // this.json can be null
+      this.json.IsFocus = isFocus;
+    }
   }  
 }
 
