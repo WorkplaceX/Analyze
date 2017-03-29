@@ -17,7 +17,7 @@
             // Html
             if (HttpContext.Request.Path == path)
             {
-                JsonApplication jsonApplicationOut = new Application.ApplicationX().Process(null);
+                JsonApplication jsonApplicationOut = new Application.ApplicationX().Process(null, HttpContext.Request.Path);
                 string htmlUniversal = null;
                 string html = IndexHtml(true);
                 htmlUniversal = await HtmlUniversal(html, jsonApplicationOut, true); // Angular Universal server side rendering.
@@ -28,7 +28,7 @@
             {
                 string jsonInText = Util.StreamToString(Request.Body);
                 JsonApplication jsonApplicationIn = Framework.Server.Json.Util.Deserialize<JsonApplication>(jsonInText);
-                JsonApplication jsonApplicationOut = new Application.ApplicationX().Process(jsonApplicationIn);
+                JsonApplication jsonApplicationOut = new Application.ApplicationX().Process(jsonApplicationIn, HttpContext.Request.Path);
                 jsonApplicationOut.IsJsonGet = false;
                 string jsonOutText = Framework.Server.Json.Util.Serialize(jsonApplicationOut);
                 if (Framework.Server.Config.Instance.IsDebugJson)

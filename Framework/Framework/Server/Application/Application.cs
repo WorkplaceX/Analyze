@@ -510,7 +510,7 @@
 
         }
 
-        public JsonApplication Process(JsonApplication jsonApplicationIn)
+        public JsonApplication Process(JsonApplication jsonApplicationIn, string requestPath)
         {
             JsonApplication jsonApplicationOut = Framework.Server.DataAccessLayer.Util.JsonObjectClone<JsonApplication>(jsonApplicationIn);
             if (jsonApplicationOut == null || jsonApplicationOut.Session == Guid.Empty)
