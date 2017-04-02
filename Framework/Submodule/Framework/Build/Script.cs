@@ -70,7 +70,7 @@ namespace Framework.Build
             Util.Log("Server>dotnet restore");
             Util.DotNetRestore(Framework.Util.FolderName + "Submodule/Server/");
             Util.Log("Server>dotnet build");
-            Util.DotNetBuild(Framework.Util.FolderName + "SubmoduleServer/");
+            Util.DotNetBuild(Framework.Util.FolderName + "Submodule/Server/");
             // Office
             Util.MSBuild(Framework.Util.FolderName + "Submodule/Office/Office.csproj");
             RunGulp();
