@@ -23,7 +23,7 @@ namespace Framework.Server
         {
             get
             {
-                return Util.FolderName + "Framework/Server/ConnectionManager.json"; // See also .gitignore
+                return Util.FolderName + "Submodule/Framework/Server/ConnectionManager.json"; // See also .gitignore
             }
         }
 
@@ -31,7 +31,7 @@ namespace Framework.Server
         {
             get
             {
-                return Util.FolderName + "Framework/Server/ConnectionManager.json.txt"; // See also .gitignore
+                return Util.FolderName + "Submodule/Framework/Server/ConnectionManager.json.txt"; // See also .gitignore
             }
         }
 
