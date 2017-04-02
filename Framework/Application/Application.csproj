@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework.csproj" />
+    <ProjectReference Include="..\Submodule\Framework\Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>
