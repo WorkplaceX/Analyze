@@ -106,7 +106,7 @@ namespace Framework.Build
         [Description("VS Code", 6)]
         public void OpenServer()
         {
-            Util.OpenVisualStudioCode(Framework.Util.FolderName + "SubmoduleServer/");
+            Util.OpenVisualStudioCode(Framework.Util.FolderName + "Submodule/Server/");
         }
 
         [Description("VS Code", 7)]
