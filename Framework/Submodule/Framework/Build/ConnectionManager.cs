@@ -21,7 +21,7 @@
         {
             get
             {
-                return Framework.Util.FolderName + "Framework/Build/ConnectionManager.json";
+                return Framework.Util.FolderName + "Submodule/Framework/Build/ConnectionManager.json";
             }
         }
 

@@ -10,7 +10,7 @@ namespace Build.Airport
         public static void Run()
         {
             string connectionString = Framework.Server.ConnectionManager.ConnectionString;
-            string fileName = Framework.Util.FolderName + "Office/bin/Debug/Office.exe";
+            string fileName = Framework.Util.FolderName + "Submodule/Office/bin/Debug/Office.exe";
             // SqlDrop
             {
                 string command = "SqlDrop";
@@ -26,7 +26,7 @@ namespace Build.Airport
             // Run
             {
                 string command = "Run";
-                string folderName = Framework.Util.FolderName + "Build/Airport/";
+                string folderName = Framework.Util.FolderName + "Submodule/Build/Airport/";
                 string arguments = command + " " + "\"" + connectionString + "\"" + " " + "\"" + folderName + "\"";
                 Util.Start(Framework.Util.FolderName, fileName, arguments);
             }

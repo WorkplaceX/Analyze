@@ -35,7 +35,7 @@
                 {
                     jsonApplicationOut.IsJsonGet = true;
                     string jsonOutDebug = Framework.Server.Json.Util.Serialize(jsonApplicationOut);
-                    Framework.Util.FileWrite(Framework.Util.FolderName + "Client/Application.json", jsonOutDebug);
+                    Framework.Util.FileWrite(Framework.Util.FolderName + "Submodule/Client/Application.json", jsonOutDebug);
                 }
                 return Content(jsonOutText, "application/json");
             }

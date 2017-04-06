@@ -56,11 +56,11 @@ namespace Framework.Build
         public void InstallAll()
         {
             Util.Log("Client>npm install");
-            Util.NpmInstall(Framework.Util.FolderName + "Client/");
+            Util.NpmInstall(Framework.Util.FolderName + "Submodule/Client/");
             Util.Log("Server>npm install");
-            Util.NpmInstall(Framework.Util.FolderName + "Server/");
+            Util.NpmInstall(Framework.Util.FolderName + "Submodule/Server/");
             Util.Log("Universal>npm install");
-            Util.NpmInstall(Framework.Util.FolderName + "Universal/", false); // Throws always an exception!
+            Util.NpmInstall(Framework.Util.FolderName + "Submodule/Universal/", false); // Throws always an exception!
             // Application
             Util.Log("Application>dotnet restore");
             Util.DotNetRestore(Framework.Util.FolderName + "Application/");
@@ -68,51 +68,51 @@ namespace Framework.Build
             Util.DotNetBuild(Framework.Util.FolderName + "Application/");
             // Server
             Util.Log("Server>dotnet restore");
-            Util.DotNetRestore(Framework.Util.FolderName + "Server/");
+            Util.DotNetRestore(Framework.Util.FolderName + "Submodule/Server/");
             Util.Log("Server>dotnet build");
-            Util.DotNetBuild(Framework.Util.FolderName + "Server/");
+            Util.DotNetBuild(Framework.Util.FolderName + "Submodule/Server/");
             // Office
-            Util.MSBuild(Framework.Util.FolderName + "Office/Office.csproj");
+            Util.MSBuild(Framework.Util.FolderName + "Submodule/Office/Office.csproj");
             RunGulp();
         }
 
         [Description("Start Server and UniversalExpress", 2)]
         public void StartServerAndClient()
         {
-            Util.DotNetRun(Framework.Util.FolderName + "Server/", false);
-            Util.Node(Framework.Util.FolderName + "UniversalExpress/Universal/", "index.js", false);
+            Util.DotNetRun(Framework.Util.FolderName + "Submodule/Server/", false);
+            Util.Node(Framework.Util.FolderName + "Submodule/UniversalExpress/Universal/", "index.js", false);
             Util.OpenBrowser("http://localhost:5000");
         }
 
         [Description("VS Code", 3)]
         public void OpenClient()
         {
-            Util.OpenVisualStudioCode(Framework.Util.FolderName + "Client/");
+            Util.OpenVisualStudioCode(Framework.Util.FolderName + "Submodule/Client/");
         }
 
         [Description("npm run start", 4)]
         public void StartClient()
         {
-            Util.NpmRun(Framework.Util.FolderName + "Client/", "start");
+            Util.NpmRun(Framework.Util.FolderName + "Submodule/Client/", "start");
         }
 
         [Description("npm run gulp; Run everytime when Client changes", 5)]
         public void RunGulp()
         {
             Util.Log("Server>npm run gulp");
-            Util.NpmRun(Framework.Util.FolderName + "Server/", "gulp");
+            Util.NpmRun(Framework.Util.FolderName + "Submodule/Server/", "gulp");
         }
 
         [Description("VS Code", 6)]
         public void OpenServer()
         {
-            Util.OpenVisualStudioCode(Framework.Util.FolderName + "Server/");
+            Util.OpenVisualStudioCode(Framework.Util.FolderName + "Submodule/Server/");
         }
 
         [Description("VS Code", 7)]
         public void OpenUniversal()
         {
-            Util.OpenVisualStudioCode(Framework.Util.FolderName + "Universal/");
+            Util.OpenVisualStudioCode(Framework.Util.FolderName + "Submodule/Universal/");
         }
 
         [Description("Open Visual Studio", 8)]
@@ -135,7 +135,7 @@ namespace Framework.Build
         {
             SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
-            var fileNameList = Framework.Util.FileNameList(Framework.Util.FolderName + "Build/Sql/");
+            var fileNameList = Framework.Util.FileNameList(Framework.Util.FolderName + "Submodule/Build/Sql/");
             foreach (string fileName in fileNameList)
             {
                 string text = Framework.Util.FileRead(fileName);
@@ -167,7 +167,7 @@ namespace Framework.Build
         [Description("Run unit tests", 11)]
         public void UnitTest()
         {
-            Util.DotNetRun(Framework.Util.FolderName + "UnitTest/");
+            Util.DotNetRun(Framework.Util.FolderName + "Submodule/UnitTest/");
         }
     }
 }

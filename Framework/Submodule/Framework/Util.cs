@@ -27,7 +27,7 @@
                 string result;
                 if (uri.AbsolutePath.Contains("/bin/Debug/")) // Running in Visual Studio
                 {
-                    result = new Uri(uri, "../../../../").AbsolutePath;
+                    result = new Uri(uri, "../../../../../").AbsolutePath;
                 }
                 else
                 {
