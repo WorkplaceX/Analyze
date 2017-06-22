@@ -1,8 +1,3 @@
-Client2
--npm install
--npm run startUniversal
--npm run start
-
 Setup
 -npm install @angular/cli
 -node_modules\.bin\ng new Client
