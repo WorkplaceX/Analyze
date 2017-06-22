@@ -12,6 +12,7 @@ Material
 -https://github.com/angular/material2
 -http://plnkr.co/edit/o077B6uEiiIgkC0S06dd?p=preview
 -https://material.angular.io/guide/getting-started
+--npm install --save @angular/material
 
 Link
 -https://jaxenter.com/angular-4-top-features-133165.html (NgComponentOutlet, <ng-template>)

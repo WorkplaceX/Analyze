@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prestart2": "ng build --prod && ngc",
-    "start2": "ts-node src/server.ts",  
+    "prestartUniversal": "ng build --prod && ngc",
+    "startUniversal": "ts-node src/server.ts",  
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
