@@ -1,10 +1,10 @@
-import { Client2Page } from './app.po';
+import { ClientPage } from './app.po';
 
-describe('client2 App', () => {
-  let page: Client2Page;
+describe('client App', () => {
+  let page: ClientPage;
 
   beforeEach(() => {
-    page = new Client2Page();
+    page = new ClientPage();
   });
 
   it('should display welcome message', () => {
