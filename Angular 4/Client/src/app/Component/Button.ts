@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: '[button]',
-  template: '<button (click)="click()">{{t}}</button>'
+  template: '<p>Press the button:</p><button md-button (click)="click()">{{t}}</button>'
 })
 export class Button {
-  t: string = "Text";
+  t: string = "Button";
 
   click(){
 	this.t = this.t + ".";
