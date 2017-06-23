@@ -8,4 +8,6 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+platformBrowserDynamic(
+  [{ provide: 'requestBodyJson', useValue: null }]
+).bootstrapModule(AppModule);

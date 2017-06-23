@@ -26,10 +26,7 @@ import {
            Name: "app.module.ts=" + util.currentTime(), 
 /* BuildTool */ IsJsonGet: true 
         }) 
-    },
-    { 
-      provide: 'requestBodyJson', useValue: null
-    },
+    }
   ],
   bootstrap: [AppComponent]
 })
