@@ -10,7 +10,8 @@
       "assets": [
         "assets",
         "favicon.ico",
-        "Application.json"
+        "Application.json",
+        "bootstrap.min.css"
       ],
       "index": "index.html",
       "main": "main.ts",

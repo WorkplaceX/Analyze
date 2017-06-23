@@ -7,12 +7,14 @@ Setup
 Universal
 -https://coursetro.com/posts/code/68/Make-your-Angular-App-SEO-Friendly-(Angular-4-+-Universal)
 -npm install --save @angular/platform-server
+-https://github.com/FrozenPandaz/ng-universal-demo
 
 Material
 -https://github.com/angular/material2
 -http://plnkr.co/edit/o077B6uEiiIgkC0S06dd?p=preview
 -https://material.angular.io/guide/getting-started
 -npm install --save @angular/material
+-npm install --save @angular/animations
 -npm install --save @ng-bootstrap/ng-bootstrap
 
 Link
