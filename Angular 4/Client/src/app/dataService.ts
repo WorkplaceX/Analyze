@@ -34,23 +34,36 @@ export class DataService {
 
     http: Http;
 
-    constructor( @Inject('angularJson') angularJson: string, http: Http) {
+    constructor( @Inject('angularJson') angularJson: string, @Inject('requestBodyJson') private requestBodyJson: any, http: Http) {
         this.http = http;
-        // Default data
-        this.json = new Json();
-        this.log = "";
-        this.RequestCount = 0;
-        this.json.Name = "dataService.ts=" + util.currentTime();
-        // Angular universal json
-        if (angularJson != null) {
-            this.json = JSON.parse(angularJson);
+
+        // Request json coming from web post.
+        if (requestBodyJson != null)
+        {
+            this.json = requestBodyJson;
         }
-        // Browser json
-        if (typeof browserJson !== 'undefined') {
-            if (browserJson instanceof Object){
-                this.json = browserJson;
-            } else {
-                this.json = JSON.parse(browserJson);
+        else
+        {
+            // Default data
+            this.json = new Json();
+            this.log = "";
+            this.RequestCount = 0;
+            this.json.Name = "dataService.ts=" + util.currentTime();
+
+            // Angular json coming from client app.module.ts
+            if (angularJson != null) {
+                this.json = JSON.parse(angularJson);
+            }
+            else
+            {
+                // Browser json coming from index.html
+                if (typeof browserJson !== 'undefined') {
+                    if (browserJson instanceof Object){
+                        this.json = browserJson;
+                    } else {
+                        this.json = JSON.parse(browserJson);
+                    }
+                }
             }
         }
         //

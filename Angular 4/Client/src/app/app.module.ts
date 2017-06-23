@@ -1,17 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-//import { AppComponent } from './app.component';
 import { MyComponent } from './Component/MyComponent'
 import * as util from './util';
 import { HttpModule } from '@angular/http';
 import { FormsModule }   from '@angular/forms';
 
-/* BuildToolImport */ import { AppComponent, Selector, Page, Div, LayoutDebug, Button, Literal, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridKeyboard, FocusDirective, RemoveSelectorDirective } from './component';
+import { 
+/* BuildTool */ AppComponent, Selector, Page, Div, LayoutDebug, Button, Literal, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridKeyboard, FocusDirective, RemoveSelectorDirective 
+} from './component';
 
 @NgModule({
   declarations: [
     MyComponent,
-/* BuildToolDeclarations */ AppComponent, Selector, Page, Div, LayoutDebug, Button, Literal, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridKeyboard, FocusDirective, RemoveSelectorDirective
+/* BuildTool */ AppComponent, Selector, Page, Div, LayoutDebug, Button, Literal, Label, Grid, GridRow, GridCell, GridHeader, GridField, GridKeyboard, FocusDirective, RemoveSelectorDirective
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'client'}),
@@ -19,7 +20,16 @@ import { FormsModule }   from '@angular/forms';
     FormsModule
   ],
   providers: [
-    { provide: 'angularJson', useValue: JSON.stringify({ Name: "app.module.ts=" + util.currentTime() }) },
+    { 
+      provide: 'angularJson', useValue: JSON.stringify(
+        {
+           Name: "app.module.ts=" + util.currentTime(), 
+/* BuildTool */ IsJsonGet: true 
+        }) 
+    },
+    { 
+      provide: 'requestBodyJson', useValue: null
+    },
   ],
   bootstrap: [AppComponent]
 })

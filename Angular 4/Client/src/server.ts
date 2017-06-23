@@ -6,6 +6,7 @@ import { AppServerModuleNgFactory } from '../dist/ngfactory/src/app/app.server.m
 import * as express from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import * as bodyParser from 'body-parser';
 
 const PORT = 4000;
 
@@ -15,8 +16,14 @@ const app = express();
 
 let template = readFileSync(join(__dirname, '..', 'dist', 'index.html')).toString();
 
+app.use(bodyParser.json());
+
 app.engine('html', (_, options, callback) => {
-  const opts = { document: template, url: options.req.url };
+  const opts = { 
+    document: template, 
+    url: options.req.url, 
+    extraProviders: [{ provide: 'requestBodyJson', useFactory: () => options.req.body }] // Needs: app.use(bodyParser.json()); 
+ };
 
   renderModuleFactory(AppServerModuleNgFactory, opts)
     .then(html => callback(null, html));
@@ -28,6 +35,10 @@ app.set('views', 'src')
 app.get('*.*', express.static(join(__dirname, '..', 'dist')));
 
 app.get('*', (req, res) => {
+  res.render('index', { req });
+});
+
+app.post('*', (req, res) => {
   res.render('index', { req });
 });
 

@@ -8,6 +8,7 @@ import  * as util from './util';
   selector: 'app',
   template: `
   <p>
+  json.Name=({{ dataService.json.Name }})<br />
   json.RequestUrl=({{ dataService.json.RequestUrl }})<br />
   json.Session=({{ dataService.json.Session }})<br />
   json.IsBrowser=({{ dataService.json.IsBrowser }})<br />
