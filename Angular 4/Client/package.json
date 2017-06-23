@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "buildServerUniversal": "webpack",
     "prestartUniversal": "ng build --prod && ngc",
     "startUniversal": "ts-node src/server.ts",
     "ng": "ng",
@@ -33,9 +34,9 @@
     "@angular/cli": "1.1.3",
     "@angular/compiler-cli": "^4.0.0",
     "@angular/language-service": "^4.0.0",
+    "@types/body-parser": "^1.16.3",
     "@types/jasmine": "2.5.45",
     "@types/node": "~6.0.60",
-    "@types/body-parser": "^1.16.3",
     "codelyzer": "~3.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
@@ -48,6 +49,7 @@
     "protractor": "~5.1.2",
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2",
-    "typescript": "~2.3.3"
+    "typescript": "~2.3.3",
+    "webpack": "^3.0.0"
   }
 }
