@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "universalBuildServer": "webpack",
-    "universalServe": "dist/bundle.js",
-    "universalPrestart": "ng build --prod && ngc",
+    "universalBuild": "npm run prestartUniversal && webpack",
+    "universalServe": "node dist/bundle.js",
+    "prestartUniversal": "ng build --prod && ngc",
     "startUniversal": "ts-node src/server.ts",
     "ng": "ng",
     "start": "ng serve",
