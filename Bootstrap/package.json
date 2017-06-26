@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "grunt": "grunt"
+    "grunt": "grunt --base node_modules/bootstrap/ --gruntfile node_modules/bootstrap/Gruntfile.js"
   },
   "devDependencies": {
     "bootstrap": "^4.0.0-alpha.6",
