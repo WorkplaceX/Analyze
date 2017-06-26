@@ -2,8 +2,7 @@
   "scripts": {
 	"sass": "npm run copyScss && cd node_modules/bootstrap/ && npm run sass && cd ../../ && npm run copyCss",
     "copyScss": "cp _custom.scss node_modules/bootstrap/scss/",
-    "copyCss": "cp node_modules/bootstrap/dist/css/bootstrap.css /"
-  },
+    "copyCss": "cp node_modules/bootstrap/dist/css/bootstrap.css ./"  },
   "devDependencies": {
     "bootstrap": "^4.0.0-alpha.6",
     "node-sass": "^4.5.3"
