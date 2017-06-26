@@ -1,10 +1,11 @@
 {
   "scripts": {
-    "grunt": "grunt --base node_modules/bootstrap/ --gruntfile node_modules/bootstrap/Gruntfile.js"
+	"sass": "npm run copyScss && cd node_modules/bootstrap/ && npm run sass && cd ../../ && npm run copyCss",
+    "copyScss": "cp _custom.scss node_modules/bootstrap/scss/",
+    "copyCss": "cp node_modules/bootstrap/dist/css/bootstrap.css /"
   },
   "devDependencies": {
     "bootstrap": "^4.0.0-alpha.6",
-    "grunt": "^1.0.1",
-    "grunt-cli": "^1.2.0"
+    "node-sass": "^4.5.3"
   }
 }
