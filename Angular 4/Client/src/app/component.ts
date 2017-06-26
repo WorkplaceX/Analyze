@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { Directive, ElementRef, Inject, Renderer } from '@angular/core';
 import { DataService } from './dataService';
 import  * as util from './util';
@@ -143,12 +143,19 @@ export class Button {
 /* Literal */
 @Component({
   selector: 'Literal',
-  template: `<div [ngClass]="json.CssClass" [innerHTML]=json.Html></div>`
+  template: `<div #div [ngClass]="json.CssClass"></div>`
 })
 export class Literal {
+ 
   constructor(dataService: DataService){
     this.dataService = dataService;
   }
+
+  @ViewChild('div') div:ElementRef;
+
+  ngAfterViewInit() {
+    this.div.nativeElement.innerHTML = this.json.Html;
+  }  
 
   @Input() json: any
   dataService: DataService;
