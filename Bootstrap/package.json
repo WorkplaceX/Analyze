@@ -6,7 +6,6 @@
     "copyCss": "cp node_modules/bootstrap/dist/css/bootstrap.css ./ && cp node_modules/bootstrap/dist/css/bootstrap.min.css ./" },
   "devDependencies": {
     "bootstrap": "^4.0.0-alpha.6",
-    "node-sass": "^4.5.3",
     "clean-css": "^3.4.23"
   }
 }
