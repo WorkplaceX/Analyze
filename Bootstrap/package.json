@@ -1,11 +1,13 @@
 {
   "scripts": {
-	"sass": "npm run copyScss && cd node_modules/bootstrap/ && npm run sass && cd ../../ && npm run clean-css && npm run copyCss",
+    "sass": "npm run copyScss && cd node_modules/bootstrap/ && npm run sass && cd ../../ && npm run clean-css && npm run copyCss",
     "copyScss": "cp _custom.scss node_modules/bootstrap/scss/",
     "clean-css": "cleancss --output node_modules/bootstrap/dist/css/bootstrap.min.css node_modules/bootstrap/dist/css/bootstrap.css",
-    "copyCss": "cp node_modules/bootstrap/dist/css/bootstrap.css ./ && cp node_modules/bootstrap/dist/css/bootstrap.min.css ./" },
+    "copyCss": "cp node_modules/bootstrap/dist/css/bootstrap.css ./ && cp node_modules/bootstrap/dist/css/bootstrap.min.css ./"
+  },
   "devDependencies": {
     "bootstrap": "^4.0.0-alpha.6",
+    "node-sass": "^4.1.1",
     "clean-css": "^3.4.23"
   }
 }
