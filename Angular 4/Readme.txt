@@ -17,5 +17,10 @@ Material
 -npm install --save @angular/animations
 -npm install --save @ng-bootstrap/ng-bootstrap
 
+Bootstrap
+-npm install bootstrap@4.0.0-alpha.6 --save-dev
+-node_modules\bootstrap\scss\_variables.scss ($enable-rounded)
+-node_modules\bootstrap\scss\_custom.scss
+
 Link
 -https://jaxenter.com/angular-4-top-features-133165.html (NgComponentOutlet, <ng-template>)
