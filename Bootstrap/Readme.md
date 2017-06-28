@@ -1,7 +1,10 @@
 # Bootstrap 4 SASS
 
-##Install
-*npm install 
+## Install
+* npm install 
+
+## Run
+* npm run sass
 
 ## Input
 * File "_custom.scss" (See also file "node_modules/bootstrap/scss/_variables.scss" for values to overwrite)
