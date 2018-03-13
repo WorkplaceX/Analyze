@@ -9,3 +9,7 @@ FROM
 
 # Pivot Dynamic
 Following sql turns any table or view into key value pair structure.
+
+[PivotDynamic.sql](PivotDynamic.sql)
+
+![PivotDynamic](Doc/PivotDynamic.png)
