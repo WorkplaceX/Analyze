@@ -6,3 +6,6 @@ SELECT
 FROM 
     Table
 ```
+
+# Pivot Dynamic
+Following sql turns any table or view into key value pair structure.
