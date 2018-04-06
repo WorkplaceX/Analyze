@@ -3,5 +3,21 @@
   <h1>
     User List
   </h1>
-  <p *ngFor="let user of UserList" >{{ user.name  }}</p>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Username</th>
+      <th>E-mail</th>
+      <th>Address</th>
+    </tr>
+    <tr *ngFor="let user of UserList">
+      <td>{{ user.id }} {{ user.name }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>
+          {{ user.address.street }}<br/>
+          {{ user.address.city }} {{ user.address.zipcode }}
+      </td>
+    </tr>
+  </table>
 </div>
