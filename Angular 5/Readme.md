@@ -7,3 +7,7 @@
 * Add file package.json
 * npm run ng -- -v (Angular CLI version) v1.7.4
 * npm run ng new Client -- --style-scss --routing
+
+## Develop
+* npm run ng generate component UserList (Add new component)
+* npm run ng lint (Find errors)

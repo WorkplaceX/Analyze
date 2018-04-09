@@ -1,0 +1,26 @@
+<h1>
+  User List
+</h1>
+
+<!-- Show spinner icon while loading -->
+<div class="fa-4x" *ngIf="IsLoad != 0">
+  <i class="fas fa-spinner fa-spin"></i>
+</div>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Username</th>
+    <th>E-mail</th>
+    <th>Address</th>
+  </tr>
+  <tr *ngFor="let user of UserList">
+    <td><a routerLink="user/{{ user.id }}">{{ user.id }}</a> {{ user.name }}</td>
+    <td>{{ user.username }}</td>
+    <td>{{ user.email }}</td>
+    <td>
+        {{ user.address.street }}<br/>
+        {{ user.address.city }} {{ user.address.zipcode }}
+    </td>
+  </tr>
+</table>

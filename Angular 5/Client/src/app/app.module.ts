@@ -7,12 +7,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 
 import { HomeComponent } from './home/home.component';
-import { UserListComponent } from './user/userList.component';
-import { UserService } from './user/user.service';
+import { UserListComponent } from './user-list/user-list.component';
+import { UserService } from './user.service';
+import { UserComponent } from './user/user.component';
 
 @NgModule({
   declarations: [
-    AppComponent, HomeComponent, UserListComponent
+    AppComponent, HomeComponent, UserListComponent, UserComponent
   ],
   imports: [
     BrowserModule,
