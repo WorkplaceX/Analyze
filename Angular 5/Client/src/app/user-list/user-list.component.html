@@ -15,9 +15,9 @@
     <th>Address</th>
   </tr>
   <tr *ngFor="let user of UserList">
-    <td><a routerLink="user/{{ user.id }}">{{ user.id }}</a> {{ user.name }}</td>
+    <td><a routerLink="user/{{ user.id }}">{{ user.name }}</a></td>
     <td>{{ user.username }}</td>
-    <td>{{ user.email }}</td>
+    <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
     <td>
         {{ user.address.street }}<br/>
         {{ user.address.city }} {{ user.address.zipcode }}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user',
@@ -9,7 +10,7 @@ import {Location} from '@angular/common';
 })
 export class UserComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private location: Location) {
+  constructor(private route: ActivatedRoute, private location: Location, private userService: UserService) {
     this.route.params.subscribe( params => {
       if (params['userId']) {
         this.getUser(params['userId']);
@@ -18,6 +19,8 @@ export class UserComponent implements OnInit {
   }
 
   public UserId: number;
+
+  public User;
 
   ngOnInit() {
 
@@ -29,6 +32,10 @@ export class UserComponent implements OnInit {
 
   getUser(userId: number) {
     this.UserId = userId;
+    this.userService.getUser(userId).subscribe(
+      data => { this.User = data; },
+      err => console.error(err),
+      () => console.log('User loaded')
+    );
   }
-
 }

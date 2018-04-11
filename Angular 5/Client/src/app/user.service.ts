@@ -9,4 +9,8 @@ export class UserService {
   getUserList() {
     return this.http.get('http://jsonplaceholder.typicode.com/users');
   }
+
+  getUser(userId: number) {
+    return this.http.get('http://jsonplaceholder.typicode.com/users/' + userId);
+  }
 }
