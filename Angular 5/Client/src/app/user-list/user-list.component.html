@@ -1,15 +1,22 @@
 <h1>
   User List
-</h1>
 
 <!-- Show spinner icon while loading -->
-<div class="fa-4x" *ngIf="IsLoad != 0">
+<span *ngIf="IsLoad != 0">
   <i class="fas fa-spinner fa-spin"></i>
-</div>
+</span>
+<span *ngIf="IsLoad == 0">
+  <i>&nbsp;</i>
+</span>
+</h1>
 
 <table>
   <tr>
-    <th>Name</th>
+    <th (click)='columnNameClick();'>
+      <span *ngIf="SortIsDesc==false"><i class="fas fa-caret-up"></i></span>
+      <span *ngIf="SortIsDesc==true"><i class="fas fa-caret-down"></i></span>
+      Name
+    </th>
     <th>Username</th>
     <th>E-mail</th>
     <th>Address</th>

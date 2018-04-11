@@ -9,11 +9,14 @@ import { UserService } from '../user.service';
 export class UserListComponent implements OnInit {
 
   constructor(private userService: UserService) {
+    this.SortIsDesc = false;
   }
 
   public UserList;
 
   public IsLoad = 0; // Show spinner icon while loading.
+
+  public SortIsDesc: boolean; // Ascending or descending order of json column "name".
 
   ngOnInit() {
     this.getUserList();
@@ -21,10 +24,15 @@ export class UserListComponent implements OnInit {
 
   getUserList() {
     this.IsLoad += 1;
-    this.userService.getUserList().subscribe(
+    this.userService.getUserList('name', this.SortIsDesc).subscribe(
       data => { this.UserList = data; this.IsLoad -= 1; },
       err => console.error(err),
       () => console.log('UserList loaded')
     );
+  }
+
+  columnNameClick() {
+    this.SortIsDesc = !this.SortIsDesc; // Change sort order of json column "name".
+    this.getUserList();
   }
 }
