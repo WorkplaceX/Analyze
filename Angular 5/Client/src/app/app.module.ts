@@ -10,10 +10,11 @@ import { HomeComponent } from './home/home.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserService } from './user.service';
 import { UserComponent } from './user/user.component';
+import { UserAddressComponent } from './user-address/user-address.component';
 
 @NgModule({
   declarations: [
-    AppComponent, HomeComponent, UserListComponent, UserComponent
+    AppComponent, HomeComponent, UserListComponent, UserComponent, UserAddressComponent
   ],
   imports: [
     BrowserModule,
