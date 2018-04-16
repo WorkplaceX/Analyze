@@ -12,11 +12,14 @@ export class UserListComponent implements OnInit {
   constructor(private userService: UserService) {
   }
 
+  /** UserList */
   userList: Typicode.User[];
 
-  isLoad = 0; // Show spinner icon while loading.
+  /** Show spinner icon while loading UserList. */
+  isLoad = 0;
 
-  sortIsDesc = false; // Ascending or descending order of json column "name".
+  /** Ascending or descending order of json column "name". */
+  sortIsDesc = false;
 
   ngOnInit() {
     this.getUserList(); // Load UserList.
@@ -39,7 +42,7 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  // Switch sort direction
+  /** Switch sort direction */
   columnNameClick() {
     this.sortIsDesc = !this.sortIsDesc; // Change sort order of json column "name".
       this.getUserList(); // Update UserList.

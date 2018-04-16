@@ -13,7 +13,7 @@ import { Typicode } from '../user.service';
 })
 export class UserAddressComponent implements OnInit {
   @Input() userAddress: Typicode.Address;
-  
+
   constructor() { }
 
   ngOnInit() {

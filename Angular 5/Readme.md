@@ -11,3 +11,6 @@
 ## Develop
 * npm run ng generate component UserList (Add new component)
 * npm run ng lint (Find errors)
+
+## Visual Stdio Code
+Install "Angular Language Service" extension to enable autocompletion on angular html templates.
