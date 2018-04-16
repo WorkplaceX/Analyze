@@ -1,11 +1,11 @@
 <h1>User</h1>
 <p>
-  <b>UserId:</b> {{ UserId }}<br/>
-  <b>Name:</b> {{ User?.name }}<br/>
-  <b>Username:</b> {{ User?.username }}<br/>
-  <b>Email:</b><a href="mailto:{{ User?.email }}">{{ User?.email }}</a><br/>
-  <b>Phone:</b> {{ User?.phone }}<br/>
-  <b>Website:</b> <a href="http://{{ User?.website }}">{{ User?.website }}</a><br/>
+  <b>UserId:</b> {{ userId }}<br/>
+  <b>Name:</b> {{ user?.name }}<br/>
+  <b>Username:</b> {{ user?.username }}<br/>
+  <b>Email:</b><a href="mailto:{{ user?.email }}">{{ user?.email }}</a><br/>
+  <b>Phone:</b> {{ user?.phone }}<br/>
+  <b>Website:</b> <a href="http://{{ user?.website }}">{{ user?.website }}</a><br/>
   <br/>
   <button (click)='backClick();'><i class="fas fa-long-arrow-alt-left"></i> Back</button>
 </p>

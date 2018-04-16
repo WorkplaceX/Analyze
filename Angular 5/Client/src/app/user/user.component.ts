@@ -18,9 +18,9 @@ export class UserComponent implements OnInit {
     });
   }
 
-  public UserId: number;
+  userId: number;
 
-  public User: Typicode.User;
+  user: Typicode.User;
 
   ngOnInit() {
 
@@ -31,9 +31,9 @@ export class UserComponent implements OnInit {
   }
 
   getUser(userId: number) {
-    this.UserId = userId;
+    this.userId = userId;
     this.userService.getUser(userId).subscribe(
-      data => { this.User = data; },
+      data => { this.user = data; },
       err => console.error(err),
       () => console.log('User loaded')
     );

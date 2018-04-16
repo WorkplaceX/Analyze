@@ -10,16 +10,16 @@ import { summaryForJitName } from '@angular/compiler/src/aot/util';
 export class UserListComponent implements OnInit {
 
   constructor(private userService: UserService) {
-    this.SortIsDesc = false;
+    this.sortIsDesc = false;
   }
 
-  public UserList: Typicode.User[];
+  userList: Typicode.User[];
 
-  public IsLoad = 0; // Show spinner icon while loading.
+  isLoad = 0; // Show spinner icon while loading.
 
-  public SortIsDesc = false; // Ascending or descending order of json column "name".
+  sortIsDesc = false; // Ascending or descending order of json column "name".
 
-  public SortIsClient = true; // Json-Server supports server side sorting. (Switch between server side or client side sorting)
+  sortIsClient = true; // Json-Server supports server side sorting. (Switch between server side or client side sorting)
 
   ngOnInit() {
     this.getUserList(); // Load UserList.
@@ -27,15 +27,15 @@ export class UserListComponent implements OnInit {
 
   getUserList() {
     // Client sort
-    if (this.SortIsClient === true && this.UserList != null) {
-      this.UserList = this.UserList.sort((n1, n2) => this.sortName(n1.name, n2.name));
+    if (this.sortIsClient === true && this.userList != null) {
+      this.userList = this.userList.sort((n1, n2) => this.sortName(n1.name, n2.name));
     }
 
     // Server sort
-    if (this.SortIsClient === false || this.UserList == null) {
-      this.IsLoad += 1;
-      this.userService.getUserList('name', this.SortIsDesc).subscribe(
-        data => { this.UserList = data; this.IsLoad -= 1; },
+    if (this.sortIsClient === false || this.userList == null) {
+      this.isLoad += 1;
+      this.userService.getUserList('name', this.sortIsDesc).subscribe(
+        data => { this.userList = data; this.isLoad -= 1; },
         err => console.error(err),
         () => console.log('UserList loaded')
       );
@@ -44,7 +44,7 @@ export class UserListComponent implements OnInit {
 
   // Switch sort direction
   columnNameClick() {
-    this.SortIsDesc = !this.SortIsDesc; // Change sort order of json column "name".
+    this.sortIsDesc = !this.sortIsDesc; // Change sort order of json column "name".
       this.getUserList();
   }
 
@@ -58,7 +58,7 @@ export class UserListComponent implements OnInit {
     if (name1 > name2) {
       result = -1;
     }
-    if (result !== 0 && !this.SortIsDesc) {
+    if (result !== 0 && !this.sortIsDesc) {
       result = result * -1;
     }
     return result;
