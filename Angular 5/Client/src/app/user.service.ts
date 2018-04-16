@@ -7,7 +7,7 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  /** Json-Server (https://github.com/typicode/json-server) supports server side paging, sorting and filtering out of the box. 
+  /** Json-Server (https://github.com/typicode/json-server) supports server side paging, sorting and filtering out of the box.
    * (Switch mode between server side or client side sorting) */
   public sortIsClient = true;
 
