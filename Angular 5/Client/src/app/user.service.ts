@@ -7,6 +7,9 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  public sortIsClient = true; // Json-Server supports server side sorting. (Switch between server side or client side sorting)
+
+  // Returns UserList.
   getUserList(sortColumnName: string, sortIsDesc: boolean): Observable<Typicode.User[]> {
     /*
 
@@ -23,8 +26,25 @@ export class UserService {
     return this.http.get('http://jsonplaceholder.typicode.com/users' + '?' + sortParam) as Observable<Typicode.User[]>;
   }
 
-  getUser(userId: number) {
+  // Returns single user.
+  getUser(userId: number): Observable<Typicode.User> {
     return this.http.get('http://jsonplaceholder.typicode.com/users/' + userId) as Observable<Typicode.User>;
+  }
+
+  // Starting from Angular 5, do not use or implement pipes for sorting. https://angular.io/guide/pipes quote: "The Angular team and
+  // many experienced Angular developers strongly recommend moving filtering and sorting logic into the component itself."
+  sortName(name1, name2, sortIsDesc: boolean) {
+    let result = 0;
+    if (name1 < name2) {
+      result = 1;
+    }
+    if (name1 > name2) {
+      result = -1;
+    }
+    if (result !== 0 && !sortIsDesc) {
+      result = result * -1;
+    }
+    return result;
   }
 }
 
