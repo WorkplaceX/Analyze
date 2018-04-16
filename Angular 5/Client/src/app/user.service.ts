@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getUserList(sortColumnName: string, sortIsDesc: boolean) {
+  getUserList(sortColumnName: string, sortIsDesc: boolean): Observable<Object> {
     /*
 
     http://jsonplaceholder.typicode.com/users uses Json-Server as backend (https://github.com/typicode/json-server).
-    Json-Server supports server side paging and sorting.
+    Json-Server supports server side paging, sorting and filtering.
 
     */
     let sortParam = '_sort=' + sortColumnName;
