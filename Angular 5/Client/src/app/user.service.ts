@@ -24,7 +24,7 @@ export class UserService {
     return this.http.get('http://jsonplaceholder.typicode.com/users' + '?' + sortParam) as Observable<Typicode.User[]>;
   }
 
-  /** Returns single user. */
+  /** Returns single User. */
   getUser(userId: number): Observable<Typicode.User> {
     return this.http.get('http://jsonplaceholder.typicode.com/users/' + userId) as Observable<Typicode.User>;
   }
