@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
-import { UserService } from '../user.service';
+import { UserService, Typicode } from '../user.service';
 
 @Component({
   selector: 'app-user',
@@ -20,7 +20,7 @@ export class UserComponent implements OnInit {
 
   public UserId: number;
 
-  public User;
+  public User: Typicode.User;
 
   ngOnInit() {
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { UserService, Typicode } from '../user.service';
 import { summaryForJitName } from '@angular/compiler/src/aot/util';
 
 @Component({
@@ -13,7 +13,7 @@ export class UserListComponent implements OnInit {
     this.SortIsDesc = false;
   }
 
-  public UserList;
+  public UserList: Typicode.User[];
 
   public IsLoad = 0; // Show spinner icon while loading.
 
