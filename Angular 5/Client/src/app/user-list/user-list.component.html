@@ -21,7 +21,7 @@
     <th>E-mail</th>
     <th>Address</th>
   </tr>
-  <tr *ngFor="let user of userList">
+  <tr *ngFor="let user of userList; trackBy: trackBy">
     <td><a routerLink="user/{{ user.id }}">{{ user.name }}</a></td>
     <td>{{ user.username }}</td>
     <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>

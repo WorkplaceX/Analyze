@@ -25,6 +25,10 @@ export class UserListComponent implements OnInit {
     this.getUserList(); // Load UserList.
   }
 
+  trackBy(index, item) {
+    return index;
+  }
+
   getUserList() {
     // Client sort
     if (this.userService.sortIsClient === true && this.userList != null) {
