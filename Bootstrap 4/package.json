@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "webpack-dev-server --content-base src --hot --inline",
+    "start": "webpack-dev-server",
     "webpack": "webpack"
   },
   "devDependencies": {
