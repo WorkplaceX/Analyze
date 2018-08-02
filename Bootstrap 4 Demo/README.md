@@ -3,11 +3,11 @@
 Simple demo page for a company. Minimal page with Bootstrap 4 and Webpack 4 dev server with hot reload.
 
 Build to "dist/" folder:
-´´´cmd
+```cmd
 npm run webpack
-´´´
+```
 
 Start dev server:
-´´´cmd
+```cmd
 npm run start
-´´´
+```
