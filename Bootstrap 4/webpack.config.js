@@ -2,21 +2,29 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = [{
   mode: 'development',
-  entry: './src/main.js',
+  context: __dirname + "/src",
+  entry: './main.js',
   output: {
     filename: 'bundle.js'
   },
   module: {
     rules: [{
       test: /\.html$/,
-      use: [ {
+      use: [{
         loader: 'html-loader'
       }],
+    },
+    {
+      test: /\.(png|jpg|gif)$/,
+      use: [{
+        loader: 'file-loader',
+        options: {name: '[path][name].[ext]'}
+      }]
     }]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html'
+      template: './index.html'
     })
   ]  
 }];
