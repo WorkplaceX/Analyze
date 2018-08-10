@@ -43,3 +43,7 @@ WITH
   age int, dateOfBirth datetime2 '$.dob'
 )
 ```
+
+# Sql view with delay
+In order to test async operations it can be useful to intentionally slow down a sql view.
+See: [WaitForDelay.sql](Delay/WaitForDelay.sql)
