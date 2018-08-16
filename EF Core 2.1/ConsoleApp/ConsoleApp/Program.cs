@@ -38,13 +38,15 @@ namespace ConsoleApp
             myUpdate = new My() { Id = myView.Id, Text = myView.Text };
             myUpdate.Text += "V";
             dbContext.Attach(myView).CurrentValues.SetValues(myUpdate);
-            dbContext.SaveChanges();
-
+            dbContext.SaveChanges(); // Throws SQL Error MyView is not updatable, as expected.
         }
 
         public static DbContext DbContext()
         {
             var typeMappingSource = new SqlServerTypeMappingSource(new TypeMappingSourceDependencies(new ValueConverterSelector(new ValueConverterSelectorDependencies())), new RelationalTypeMappingSourceDependencies()); // EF Core 2.1
+
+            // From SQL type to C# type.
+            var type = typeMappingSource.FindMapping("nvarchar(max)").ClrType;
 
             var conventionSet = SqlServerConventionSetBuilder.Build();
             var builder = new ModelBuilder(conventionSet);
