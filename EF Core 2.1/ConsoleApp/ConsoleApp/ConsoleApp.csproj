@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.8.14" />
   </ItemGroup>
 
 </Project>

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Reflection;
 
 namespace ConsoleApp
@@ -16,7 +17,9 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             // Select
-            My my = Query<My>().Where(item => item.Id == 1).ToList().First();
+            var query = Query<My>().Where(item => item.Id == 1);
+            My my = query.ToList().First();
+            Select(query);
 
             // Update
             var dbContext = DbContext();
@@ -78,6 +81,14 @@ namespace ConsoleApp
             var dbContext = DbContext();
             IQueryable query = (IQueryable)(dbContext.GetType().GetTypeInfo().GetMethod("Set").MakeGenericMethod(typeof(T)).Invoke(dbContext, new object[] { }));
             return (IQueryable<T>)query;
+        }
+
+        public static List<object> Select(IQueryable query)
+        {
+            var list = query.ToDynamicList();
+            //List<Row> result = list.Cast<Row>().ToList();
+            return list;
+
         }
     }
     public class My
