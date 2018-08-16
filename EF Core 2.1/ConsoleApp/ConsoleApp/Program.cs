@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ConsoleApp.Framework;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
@@ -42,6 +43,11 @@ namespace ConsoleApp
             myUpdate.Text += "V";
             dbContext.Attach(myView).CurrentValues.SetValues(myUpdate);
             dbContext.SaveChanges(); // Throws SQL Error MyView is not updatable, as expected.
+
+            // Select view without primary key and first column does not start with "Id"
+            {
+                var myList = Framework.Framework.Select(Framework.Framework.Query(typeof(vAdditionalContactInfo)));
+            }
         }
 
         public static DbContext DbContext()
@@ -86,9 +92,8 @@ namespace ConsoleApp
         public static List<object> Select(IQueryable query)
         {
             var list = query.ToDynamicList();
-            //List<Row> result = list.Cast<Row>().ToList();
+            // List<Row> result = list.Cast<Row>().ToList();
             return list;
-
         }
     }
     public class My
@@ -104,4 +109,6 @@ namespace ConsoleApp
 
         public string Text { get; set; }
     }
+
+
 }
