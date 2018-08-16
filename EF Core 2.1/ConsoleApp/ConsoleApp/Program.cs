@@ -46,7 +46,8 @@ namespace ConsoleApp
 
             // Select view without primary key and first column does not start with "Id"
             {
-                var myList = Framework.Framework.Select(Framework.Framework.Query(typeof(vAdditionalContactInfo)));
+                var contactList = Framework.Framework.Select(Framework.Framework.Query(typeof(vAdditionalContactInfo)));
+                var personList = Framework.Framework.Select(Framework.Framework.Query(typeof(Person)));
             }
         }
 

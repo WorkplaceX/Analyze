@@ -47,6 +47,7 @@ namespace ConsoleApp.Framework
                     if (columnAttribute.IsPrimaryKey)
                     {
                         isPrimaryKey = true;
+                        entity.HasKey(propertyInfo.Name); // Prevent null exception if primary key name is not "Id".
                     }
                     entity.Property(propertyInfo.PropertyType, propertyInfo.Name).HasColumnName(columnAttribute.SqlFieldName);
                     CoreTypeMapping coreTypeMapping = typeMappingSource.FindMapping(propertyInfo.PropertyType);
@@ -57,7 +58,7 @@ namespace ConsoleApp.Framework
 
             if (isPrimaryKey == false)
             {
-                entity.HasKey(propertyInfoList.First().Name); // Prevent null exception if first field of view does not start with name "Id".
+                entity.HasKey(propertyInfoList.First().Name); // Prevent null exception if name of first field (of view) is not "Id".
             }
 
             var model = builder.Model;
@@ -206,5 +207,42 @@ namespace ConsoleApp.Framework
 
         [SqlField("Text")]
         public string Text { get; set; }
+    }
+
+    [SqlTable("Person", "Person")]
+    public class Person : Row
+    {
+        [SqlField("BusinessEntityID", true)]
+        public int BusinessEntityID { get; set; }
+
+
+        [SqlField("NameStyle")]
+        public bool NameStyle { get; set; }
+
+        [SqlField("Title")]
+        public string Title { get; set; }
+
+        [SqlField("FirstName")]
+        public string FirstName { get; set; }
+
+        [SqlField("MiddleName")]
+        public string MiddleName { get; set; }
+
+        [SqlField("LastName")]
+        public string LastName { get; set; }
+
+        [SqlField("Suffix")]
+        public string Suffix { get; set; }
+
+        [SqlField("EmailPromotion")]
+        public int EmailPromotion { get; set; }
+
+
+
+        [SqlField("rowguid")]
+        public Guid rowguid { get; set; }
+
+        [SqlField("ModifiedDate")]
+        public DateTime ModifiedDate { get; set; }
     }
 }
