@@ -16,3 +16,9 @@ git commit --amend --author "Author Name <email>"
 git rebase --continue ### Only if <commit> is not latest commit
 git push -f origin master
 ```
+
+Get current hash
+
+```
+git rev-parse --short HEAD
+```
