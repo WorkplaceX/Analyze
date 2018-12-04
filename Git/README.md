@@ -6,13 +6,13 @@ git config core.editor notepad
 ```
 Start rewriting history like changing author or delete a commit.
 ```
-git rebase -i -p <commit>
+git rebase -i -p <commit> ### Only if <commit> is not latest commit
 ```
 
 Notepad opens with a list of commits. Overwrite "pick" with "edit" for the commit you want to change the author.
 
 ```
 git commit --amend --author "Author Name <email>"
-git rebase --continue
+git rebase --continue ### Only if <commit> is not latest commit
 git push -f origin master
 ```
