@@ -6,7 +6,7 @@ Following article shows how to read country and aircraft list from Wikipedia and
 
 and converts country table to a (*.csv) file which can be loaded into a sql database. Program resolves also Wikipedia country and aircraft links.
 
-Country columns:
+## Country Columns
 * Code
 * Country
 * CountryUrl (Wikipedia page)
@@ -17,7 +17,7 @@ Country columns:
 * IsoLink
 * Notes
 
-Aircraft columns:
+## Aircraft Columns
 * IcaoCode
 * IataCode
 * Model
