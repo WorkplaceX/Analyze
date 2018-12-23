@@ -28,6 +28,6 @@ Export data table to (*.sql) script like this:
 
 ![](Doc/SqlExportDialog.png)
 
-Remove GO statements with Notepas++
+Remove GO statements with Notepad++
 
 ![](Doc/NotepadReplaceGO.png)
