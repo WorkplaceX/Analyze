@@ -1,5 +1,5 @@
 # Country List
-Program to read all countries from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 and convert country table into a (*.csv) file to load into a database. Resolves also the wikipedia country links.
+Program reads Wikipedia country list and creates a (*.sql) script. Read all countries from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 and convert country table into a (*.csv) file to load into a database. Resolves also the wikipedia country links.
 
 Columns:
 * Code
@@ -12,4 +12,21 @@ Columns:
 * IsoLink
 * Notes
 
-![Notepad++ Replace GO](https://github.com/WorkplaceX/Research/blob/master/Wikipedia/Doc/NotepadReplaceGO.png?raw=true)
+# Import (*.csv) into sql server
+Bulk import a (*.csv) file like this:
+![](Doc/SqlFlatFileImport.png)
+
+![](Doc/SqlFlatFileImportDialog.png)
+
+Straight forward bulk import for staging area without data type conversion:
+![](Doc/SqlFlatFileImportColumn.png)
+
+# Export data from sql server to (*.sql) script
+Export data table to (*.sql) script like this:
+![](Doc/SqlExport.png)
+
+![](Doc/SqlExport.png)
+
+Remove GO statements with Notepas++
+
+![](Doc/NotepadReplaceGO.png)
