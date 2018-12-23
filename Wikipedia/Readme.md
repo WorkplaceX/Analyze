@@ -1,5 +1,5 @@
 # Country List
-Following article shows how to read country list from Wikipedia and create a (*.sql) script. Program reads Wikipedia country list and  from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 and converts country table into a (*.csv) file to load into a database. Resolves also theWwikipedia country links.
+Following article shows how to read country list from Wikipedia and create a (*.sql) script. Program reads Wikipedia country list from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 and converts country table to a (*.csv) file which can be loaded into a sql database. Program resolves also Wikipedia country links.
 
 Columns:
 * Code
