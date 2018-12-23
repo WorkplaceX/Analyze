@@ -45,8 +45,8 @@ namespace ConsoleApp
             foreach (var row in rowList)
             {
                 var cellList = row.Descendants("td");
-                string icaoCode = cellList.First().InnerHtml;
-                string iataCode = cellList.Skip(1).First().InnerHtml;
+                string icaoCode = cellList.First().InnerHtml.Replace("\n", null);
+                string iataCode = cellList.Skip(1).First().InnerHtml.Replace("\n", null);
                 string model = cellList.Skip(2).First().Descendants("a").First().InnerHtml;
                 string modelUrl = UrlWikipedia + cellList.Skip(2).First().Descendants("a").First().Attributes.First().Value;
                 ModelImageUrl(model, modelUrl, out string modelTitle, out string modelImageUrl);
