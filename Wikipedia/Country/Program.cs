@@ -45,24 +45,24 @@ namespace ConsoleApp
                 var cellList = row.Descendants("td");
                 string code = cellList.First().Descendants("span").First().WriteContentTo();
                 string country = cellList.Skip(1).First().Descendants("a").First().WriteContentTo();
-                string countryLink = cellList.Skip(1).First().Descendants("a").First().Attributes.First().Value;
+                string countryUrl = cellList.Skip(1).First().Descendants("a").First().Attributes.First().Value;
                 string year = cellList.Skip(2).First().WriteContentTo();
                 string ccTLD = cellList.Skip(3).First().Descendants("a").FirstOrDefault()?.WriteContentTo();
-                string ccTLDLink = cellList.Skip(3).First().Descendants("a").FirstOrDefault()?.Attributes.First().Value;
+                string ccTLDUrl = cellList.Skip(3).First().Descendants("a").FirstOrDefault()?.Attributes.First().Value;
                 string iso = cellList.Skip(4).First().Descendants("a").First().WriteContentTo();
-                string isoLink = cellList.Skip(4).First().Descendants("a").First().Attributes.First().Value;
+                string isoUrl = cellList.Skip(4).First().Descendants("a").First().Attributes.First().Value;
                 string notes = cellList.Skip(5).First().WriteContentTo();
                 notes = Regex.Replace(notes, "<.*?>", String.Empty);
                 notes = notes.Replace("\r", null).Replace("\n", null);
                 recordList.Add(new Record() {
                     Code = code,
                     Country = country,
-                    CountryLink = url + countryLink,
+                    CountryUrl = url + countryUrl,
                     Year = year,
                     CcTLD = ccTLD,
-                    CcTLDLink = url + ccTLDLink,
+                    CcTLDUrl = url + ccTLDUrl,
                     Iso = iso,
-                    IsoLink = isoLink,
+                    IsoUrl = isoUrl,
                     Notes = notes,
                 });
             }
@@ -76,8 +76,13 @@ namespace ConsoleApp
                 csv = sw.ToString();
             }
 
+            Console.WriteLine();
+            Console.WriteLine("Save to file Country.csv");
+
             // Write csv file
             File.WriteAllText(FolderName + @"Country\Country.csv", csv);
+            Console.WriteLine("Press Enter...");
+            Console.ReadLine();
         }
 
         public class Record
@@ -86,17 +91,17 @@ namespace ConsoleApp
 
             public string Country { get; set; }
 
-            public string CountryLink { get; set; }
+            public string CountryUrl { get; set; }
 
             public string Year { get; set; }
 
             public string CcTLD { get; set; }
 
-            public string CcTLDLink { get; set; }
+            public string CcTLDUrl { get; set; }
 
             public string Iso { get; set; }
 
-            public string IsoLink { get; set; }
+            public string IsoUrl { get; set; }
 
             public string Notes { get; set; }
         }

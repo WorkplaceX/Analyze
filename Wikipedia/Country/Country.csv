@@ -1,4 +1,4 @@
-Code,Country,CountryLink,Year,CcTLD,CcTLDLink,Iso,IsoLink,Notes
+Code,Country,CountryUrl,Year,CcTLD,CcTLDUrl,Iso,IsoUrl,Notes
 AD,Andorra,https://en.wikipedia.org/wiki/Andorra,1974,.ad,https://en.wikipedia.org/wiki/.ad,ISO 3166-2:AD,/wiki/ISO_3166-2:AD,
 AE,United Arab Emirates,https://en.wikipedia.org/wiki/United_Arab_Emirates,1974,.ae,https://en.wikipedia.org/wiki/.ae,ISO 3166-2:AE,/wiki/ISO_3166-2:AE,
 AF,Afghanistan,https://en.wikipedia.org/wiki/Afghanistan,1974,.af,https://en.wikipedia.org/wiki/.af,ISO 3166-2:AF,/wiki/ISO_3166-2:AF,
