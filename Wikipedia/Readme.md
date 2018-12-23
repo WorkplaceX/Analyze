@@ -4,7 +4,7 @@ Following article shows how to read country and aircraft list from Wikipedia and
 * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 (Country list)
 * https://en.wikipedia.org/wiki/List_of_ICAO_aircraft_type_designators (Aircraft list)
 
-and converts country table to a (*.csv) file which can be loaded into a sql database. Program resolves also Wikipedia country and aircraft links.
+and converts country and aircraft table to a (*.csv) file which can be loaded into a sql database. Program resolves also Wikipedia country and aircraft links.
 
 ## Country Columns
 * Code
