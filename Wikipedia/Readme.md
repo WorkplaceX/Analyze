@@ -11,3 +11,5 @@ Columns:
 * Iso
 * IsoLink
 * Notes
+
+![Notepad++ Replace GO](https://github.com/WorkplaceX/Research/blob/master/Wikipedia/Doc/NotepadReplaceGO.png?raw=true)
