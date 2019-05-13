@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = [{
   mode: 'development',
   context: __dirname + "/src",
-  entry: './main.js',
+  entry: './main2.ts',
   output: {
     filename: 'bundle.js'
   },
@@ -13,6 +13,11 @@ module.exports = [{
       use: [{
         loader: 'html-loader'
       }],
+    },
+    {
+      test: /\.tsx?$/,
+      use: 'ts-loader',
+      exclude: /node_modules/
     },
     {
       test: /\.(png|jpg|gif|ico|css)$/,
