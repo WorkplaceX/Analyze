@@ -24,20 +24,20 @@ class WebGL {
   program: WebGLProgram;
 
   vertexShaderSource: string = `
-    attribute vec2 position; // IN
+    attribute vec2 vertPosition; // IN
     attribute vec3 vertColor; // IN
     varying vec3 fragColor; // OUT
     void main() {
       fragColor = vertColor;
-      gl_Position = vec4(position, 0, 1);
+      gl_Position = vec4(vertPosition, 0, 1);
     }`;
 
   fragmentShaderSource: string = `
     precision mediump float;
     varying vec3 fragColor; // IN
-    uniform vec4 color; // IN
+    uniform vec4 uniformColor; // IN Global
     void main() {
-        gl_FragColor = vec4(fragColor, 1) + color;
+        gl_FragColor = vec4(fragColor, 1) + uniformColor;
     }`;
 
   initShader(): void {
@@ -62,12 +62,12 @@ class WebGL {
     this.vertex = new Float32Array([
       // (X, Y, R, G, B)
       -0.5, -0.5, 1, 0, 0,
-      0.5, 0.5, 1, 0, 0,
-      0.5, -0.5, 1, 0, 0,
+      0.5, 0.5, 0, 1, 1,
+      0.5, -0.5, 0, 1, 0,
 
-      -0.9, 0.2, 0, 1, 0,
+      -0.9, 0.2, 1, 1, 1,
       -0.2, 0.9, 0, 1, 0,
-      -0.9, 0.9, 0, 1, 1,
+      -0.9, 0.9, 0, 0, 1,
     ]);
 
     var buffer = this.gl.createBuffer();
@@ -76,19 +76,19 @@ class WebGL {
 
     this.gl.useProgram(this.program);
 
-    // Shader attribute "position"
-    var position = this.gl.getAttribLocation(this.program, 'position');
-    this.gl.enableVertexAttribArray(position);
-    this.gl.vertexAttribPointer(position, 
+    // Shader attribute "vertPosition"
+    var vertPosition = this.gl.getAttribLocation(this.program, 'vertPosition');
+    this.gl.enableVertexAttribArray(vertPosition);
+    this.gl.vertexAttribPointer(vertPosition, 
       2, // Number of elements per attribute
       this.gl.FLOAT, false, 
       Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
       Float32Array.BYTES_PER_ELEMENT * 0); // Offset from the beginning of a single vertex to this attribute
 
     // Shader attribute "vertColor"
-    var position2 = this.gl.getAttribLocation(this.program, 'vertColor');
-    this.gl.enableVertexAttribArray(position2);
-    this.gl.vertexAttribPointer(position2, 
+    var vertColor = this.gl.getAttribLocation(this.program, 'vertColor');
+    this.gl.enableVertexAttribArray(vertColor);
+    this.gl.vertexAttribPointer(vertColor, 
       3, // Number of elements per attribute
       this.gl.FLOAT, false, 
       Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
@@ -113,8 +113,8 @@ class WebGL {
     this.gl.clearColor(1, 0, 0, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-    var color = this.gl.getUniformLocation(this.program, 'color');
-    this.gl.uniform4fv(color, [0, 1, (time as any % 1000) / 1000, 0.5]);
+    var uniformColor = this.gl.getUniformLocation(this.program, 'uniformColor');
+    this.gl.uniform4fv(uniformColor, [0, 1, (time as any % 1000) / 1000, 0.5]);
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 
       this.vertex.length / (this.vertexElementCount as any)); // Number of vertex.
 
