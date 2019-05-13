@@ -24,16 +24,20 @@ class WebGL {
   program: WebGLProgram;
 
   vertexShaderSource: string = `
-    attribute vec4 position;
+    attribute vec2 position; // IN
+    attribute vec3 vertColor; // IN
+    varying vec3 fragColor; // OUT
     void main() {
-      gl_Position = position;
+      fragColor = vertColor;
+      gl_Position = vec4(position, 0, 1);
     }`;
 
   fragmentShaderSource: string = `
-    precision highp float;
-    uniform vec4 color;
+    precision mediump float;
+    varying vec3 fragColor; // IN
+    uniform vec4 color; // IN
     void main() {
-        gl_FragColor = color;
+        gl_FragColor = vec4(fragColor, 1) + color;
     }`;
 
   initShader(): void {
@@ -52,16 +56,18 @@ class WebGL {
   }
 
   vertex: Float32Array = new Float32Array();
+  vertexElementCount: Number = 5; // Number of entries in one vertex.
 
   initVertex(): void {
     this.vertex = new Float32Array([
-      -0.5, -0.5,
-      0.5, 0.5,
-      0.5, -0.5,
+      // (X, Y, R, G, B)
+      -0.5, -0.5, 1, 0, 0,
+      0.5, 0.5, 1, 0, 0,
+      0.5, -0.5, 1, 0, 0,
 
-      -0.9, 0.2,
-      -0.2, 0.9,
-      -0.9, 0.9,
+      -0.9, 0.2, 0, 1, 0,
+      -0.2, 0.9, 0, 1, 0,
+      -0.9, 0.9, 0, 1, 1,
     ]);
 
     var buffer = this.gl.createBuffer();
@@ -70,10 +76,24 @@ class WebGL {
 
     this.gl.useProgram(this.program);
 
+    // Shader attribute "position"
     var position = this.gl.getAttribLocation(this.program, 'position');
     this.gl.enableVertexAttribArray(position);
-    this.gl.vertexAttribPointer(position, 2, this.gl.FLOAT, false, 0, 0);
-  }
+    this.gl.vertexAttribPointer(position, 
+      2, // Number of elements per attribute
+      this.gl.FLOAT, false, 
+      Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
+      Float32Array.BYTES_PER_ELEMENT * 0); // Offset from the beginning of a single vertex to this attribute
+
+    // Shader attribute "vertColor"
+    var position2 = this.gl.getAttribLocation(this.program, 'vertColor');
+    this.gl.enableVertexAttribArray(position2);
+    this.gl.vertexAttribPointer(position2, 
+      3, // Number of elements per attribute
+      this.gl.FLOAT, false, 
+      Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
+      Float32Array.BYTES_PER_ELEMENT * 2); // Offset from the beginning of a single vertex to this attribute
+    }
 
   createShader(gl: WebGLRenderingContext, sourceCode: string, type: GLenum): any {
     // type gl.VERTEX_SHADER or gl.FRAGMENT_SHADER
@@ -90,14 +110,13 @@ class WebGL {
   }
 
   mainLoop = (time: Number) => {
-    // console.log(time);
-
     this.gl.clearColor(1, 0, 0, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     var color = this.gl.getUniformLocation(this.program, 'color');
-    this.gl.uniform4fv(color, [0, 1, (time as any % 1000) / 1000, 1]);
-    this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertex.length / 2); // this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, this.vertex.length / 2);
+    this.gl.uniform4fv(color, [0, 1, (time as any % 1000) / 1000, 0.5]);
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, 
+      this.vertex.length / (this.vertexElementCount as any)); // Number of vertex.
 
     requestAnimationFrame(this.mainLoop);
   }
