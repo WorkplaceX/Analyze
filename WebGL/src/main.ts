@@ -2,19 +2,23 @@ import { inherits } from "util";
 
 require('./favicon.ico');
 require('./style.css');
+require('./leaves.jpg');
 
 class WebGL {
   constructor(canvasId: string) {
     this.canvasId = canvasId;
     this.canvas = document.getElementById(canvasId);
-    this.gl = this.canvas.getContext('webgl'); // this.gl = this.canvas.getContext('webgl2');
+    this.gl = this.canvas.getContext('webgl', { // this.canvas.getContext('webgl2');
+      premultipliedAlpha: false, // https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
+      alpha: true, 
+    });
     this.program = this.gl.createProgram() as any;
 
     // console.log(this.gl.getSupportedExtensions());
 
     this.initShader();
     this.initVertex();
-
+    this.initTexture();
     requestAnimationFrame(this.mainLoop);
   }
 
@@ -36,8 +40,10 @@ class WebGL {
     precision mediump float;
     varying vec3 fragColor; // IN
     uniform vec4 uniformColor; // IN Global
+    uniform sampler2D uniformTexture; // IN Global
     void main() {
-        gl_FragColor = vec4(fragColor, 1) + uniformColor;
+        vec2 texcoord = vec2(gl_FragCoord.x / 400.0, gl_FragCoord.y / 400.0);  // get a value from the middle of the texture
+        gl_FragColor = texture2D(uniformTexture, texcoord) * uniformColor; // ; // vec4(fragColor, 1)
     }`;
 
   initShader(): void {
@@ -79,21 +85,21 @@ class WebGL {
     // Shader attribute "vertPosition"
     var vertPosition = this.gl.getAttribLocation(this.program, 'vertPosition');
     this.gl.enableVertexAttribArray(vertPosition);
-    this.gl.vertexAttribPointer(vertPosition, 
+    this.gl.vertexAttribPointer(vertPosition,
       2, // Number of elements per attribute
-      this.gl.FLOAT, false, 
+      this.gl.FLOAT, false,
       Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
       Float32Array.BYTES_PER_ELEMENT * 0); // Offset from the beginning of a single vertex to this attribute
 
     // Shader attribute "vertColor"
     var vertColor = this.gl.getAttribLocation(this.program, 'vertColor');
     this.gl.enableVertexAttribArray(vertColor);
-    this.gl.vertexAttribPointer(vertColor, 
+    this.gl.vertexAttribPointer(vertColor,
       3, // Number of elements per attribute
-      this.gl.FLOAT, false, 
+      this.gl.FLOAT, false,
       Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
       Float32Array.BYTES_PER_ELEMENT * 2); // Offset from the beginning of a single vertex to this attribute
-    }
+  }
 
   createShader(gl: WebGLRenderingContext, sourceCode: string, type: GLenum): any {
     // type gl.VERTEX_SHADER or gl.FRAGMENT_SHADER
@@ -109,13 +115,41 @@ class WebGL {
     return shader;
   }
 
-  mainLoop = (time: Number) => {
-    this.gl.clearColor(1, 0, 0, 1);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+  initTexture() {
+    var texture: WebGLTexture = this.gl.createTexture() as any;
+    this.gl.activeTexture(this.gl.TEXTURE7); // Tell WebGL we want to affect texture unit 0
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+  
+    // Set the parameters so we can render any size image.
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
 
+    var pixel = new Uint8Array([0, 0, 255, 255]); // RGBA. See also: premultipliedAlpha: false
+    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixel);
+
+    var image = new Image();
+    image.src = 'leaves.jpg';
+    image.onload = () => {
+      setTimeout(() => {
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
+      }, 1000);
+    };
+  }
+
+  mainLoop = (time: Number) => {
+    this.gl.clearColor(1, 0, 0, 1); // RGBA Range (0..1)
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT); // | this.gl.COLOR_BUFFER_BIT
+
+    // GLSL parameter "uniformColor"
     var uniformColor = this.gl.getUniformLocation(this.program, 'uniformColor');
-    this.gl.uniform4fv(uniformColor, [0, 1, (time as any % 1000) / 1000, 0.5]);
-    this.gl.drawArrays(this.gl.TRIANGLES, 0, 
+    this.gl.uniform4fv(uniformColor, [1, 1, 1, (time as any % 1000) / 1000]);
+
+    // GLSL parameter "uniformTexture"
+    var uniformTexture = this.gl.getUniformLocation(this.program, 'uniformTexture');
+    this.gl.uniform1i(uniformTexture, 7); // this.gl.TEXTURE7
+
+    this.gl.drawArrays(this.gl.TRIANGLES, 0,
       this.vertex.length / (this.vertexElementCount as any)); // Number of vertex.
 
     requestAnimationFrame(this.mainLoop);
