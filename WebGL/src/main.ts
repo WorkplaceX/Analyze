@@ -8,6 +8,8 @@ class WebGL {
   constructor(canvasId: string) {
     this.canvasId = canvasId;
     this.canvas = document.getElementById(canvasId);
+    this.canvas.width = this.canvasWidth;
+    this.canvas.height = this.canvasHeight;
     this.gl = this.canvas.getContext('webgl', { // this.canvas.getContext('webgl2');
       premultipliedAlpha: false, // https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
       alpha: true, 
@@ -24,6 +26,8 @@ class WebGL {
 
   canvasId: string;
   canvas: any;
+  canvasWidth: number = 640;
+  canvasHeight: number = 480;
   gl: WebGLRenderingContext;
   program: WebGLProgram;
 
@@ -37,14 +41,45 @@ class WebGL {
     }`;
 
   fragmentShaderSource: string = `
-    precision mediump float;
-    varying vec3 fragColor; // IN
-    uniform vec4 uniformColor; // IN Global
-    uniform sampler2D uniformTexture; // IN Global
-    void main() {
-        vec2 texcoord = vec2(gl_FragCoord.x / 400.0, gl_FragCoord.y / 400.0);  // get a value from the middle of the texture
-        gl_FragColor = texture2D(uniformTexture, texcoord) * uniformColor; // ; // vec4(fragColor, 1)
-    }`;
+  precision mediump float;
+  #define resolution vec2(640.0, 480.0)
+  #define thickness 0.003
+
+  float drawLine(vec2 p1, vec2 p2) { // https://stackoverflow.com/questions/15276454/is-it-possible-to-draw-line-thickness-in-a-fragment-shader
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+
+    float a = abs(distance(p1, uv));
+    float b = abs(distance(p2, uv));
+    float c = abs(distance(p1, p2));
+
+    if ( a >= c || b >=  c ) return 0.0;
+
+    float p = (a + b + c) * 0.5;
+
+    // median to (p1, p2) vector
+    float h = 2.0 / c * sqrt( p * ( p - a) * ( p - b) * ( p - c));
+
+    return mix(0.5, 0.0, smoothstep(1.0 * thickness, 1.0 * thickness, h));
+  }
+
+  precision mediump  float;
+  varying vec3 fragColor; // IN
+  uniform vec4 uniformColor; // IN Global
+  uniform sampler2D uniformTexture; // IN Global
+  void main() {
+      vec2 texcoord = vec2(gl_FragCoord.x / resolution.x, gl_FragCoord.y / resolution.y);  // get a value from the middle of the texture
+      if (texture2D(uniformTexture, (vec2(0, 0))) == vec4(1, 1, 1, 0)) // Texture not yet loaded. See also: Uint8Array([255, 255, 255, 0])
+      {
+        gl_FragColor = vec4(fragColor, 1); // Color defined in vertex.
+      }
+      else
+      {
+        gl_FragColor = gl_FragColor + texture2D(uniformTexture, texcoord); // Color from texture.
+      }
+      gl_FragColor = gl_FragColor + vec4(drawLine(vec2(0.6, 0.3), vec2(0.6, 0.5))); // Draw line.
+      gl_FragColor = gl_FragColor * uniformColor; // Color defined global.
+      // gl_FragColor = vec4(drawLine(vec2(0.6, 0.3), vec2(0.6, 0.5))) + texture2D(uniformTexture, texcoord) * uniformColor;
+  }`;
 
   initShader(): void {
     var vertexShader = this.createShader(this.gl, this.vertexShaderSource, this.gl.VERTEX_SHADER);
@@ -74,6 +109,10 @@ class WebGL {
       -0.9, 0.2, 1, 1, 1,
       -0.2, 0.9, 0, 1, 0,
       -0.9, 0.9, 0, 0, 1,
+
+      -0.9, 0.2, 1, 0, 0,
+      0.3, 0.2, 0, 1, 0,
+      -0.2, 0.9, 0, 0, 1,
     ]);
 
     var buffer = this.gl.createBuffer();
@@ -125,7 +164,7 @@ class WebGL {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
 
-    var pixel = new Uint8Array([0, 0, 255, 255]); // RGBA. See also: premultipliedAlpha: false
+    var pixel = new Uint8Array([255, 255, 255, 0]); // RGBA. See also: texture2D(uniformTexture, (vec2(0, 0))) == vec4(1, 1, 1, 0). See also: premultipliedAlpha: false
     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixel);
 
     var image = new Image();
