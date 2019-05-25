@@ -14,6 +14,7 @@ class WebGL {
       premultipliedAlpha: false, // https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html
       alpha: true, 
     });
+    this.gl.enable(this.gl.DEPTH_TEST);
     this.program = this.gl.createProgram() as any;
 
     // console.log(this.gl.getSupportedExtensions());
@@ -32,12 +33,12 @@ class WebGL {
   program: WebGLProgram;
 
   vertexShaderSource: string = `
-    attribute vec2 vertPosition; // IN
+    attribute vec3 vertPosition; // IN
     attribute vec3 vertColor; // IN
     varying vec3 fragColor; // OUT
     void main() {
       fragColor = vertColor;
-      gl_Position = vec4(vertPosition, 0, 1);
+      gl_Position = vec4(vertPosition, 1.0); // (X, Y, Z, W) W is used for clipping.
     }`;
 
   fragmentShaderSource: string = `
@@ -97,22 +98,22 @@ class WebGL {
   }
 
   vertex: Float32Array = new Float32Array();
-  vertexElementCount: Number = 5; // Number of entries in one vertex.
+  vertexElementCount: Number = 6; // Number of entries in one vertex.
 
   initVertex(): void {
-    this.vertex = new Float32Array([
-      // (X, Y, R, G, B)
-      -0.5, -0.5, 1, 0, 0,
-      0.5, 0.5, 0, 1, 1,
-      0.5, -0.5, 0, 1, 0,
+    this.vertex = new Float32Array([ // See also vertexElementCount.
+      // (X, Y, Z, R, G, B)
+      -0.5, -0.5, +0.0, 1, 0, 0,
+      +0.5, +0.5, +0.0, 0, 1, 1,
+      +0.5, -0.5, +0.0, 0, 1, 0,
 
-      -0.9, 0.2, 1, 1, 1,
-      -0.2, 0.9, 0, 1, 0,
-      -0.9, 0.9, 0, 0, 1,
+      -0.9, +0.2, +0.0, 1, 1, 1,
+      -0.2, +0.9, -0.0, 0, 1, 0,
+      -0.9, +0.9, +0.0, 0, 0, 1,
 
-      -0.9, 0.2, 1, 0, 0,
-      0.3, 0.2, 0, 1, 0,
-      -0.2, 0.9, 0, 0, 1,
+      -0.9, +0.2, +0.0, 1, 0, 0,
+      +0.3, +0.2, +1.0, 0, 1, 0,
+      -0.2, +0.9, +0.0, 0, 0, 1,
     ]);
 
     var buffer = this.gl.createBuffer();
@@ -125,19 +126,19 @@ class WebGL {
     var vertPosition = this.gl.getAttribLocation(this.program, 'vertPosition');
     this.gl.enableVertexAttribArray(vertPosition);
     this.gl.vertexAttribPointer(vertPosition,
-      2, // Number of elements per attribute
+      2, // Number of components per vertex attribute. Must be 1, 2, 3, or 4.
       this.gl.FLOAT, false,
-      Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
+      Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y, Z)
       Float32Array.BYTES_PER_ELEMENT * 0); // Offset from the beginning of a single vertex to this attribute
 
     // Shader attribute "vertColor"
     var vertColor = this.gl.getAttribLocation(this.program, 'vertColor');
     this.gl.enableVertexAttribArray(vertColor);
     this.gl.vertexAttribPointer(vertColor,
-      3, // Number of elements per attribute
+      3, // (R, G, B)
       this.gl.FLOAT, false,
-      Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y)
-      Float32Array.BYTES_PER_ELEMENT * 2); // Offset from the beginning of a single vertex to this attribute
+      Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y, Z)
+      Float32Array.BYTES_PER_ELEMENT * 3); // (R, G, B)
   }
 
   createShader(gl: WebGLRenderingContext, sourceCode: string, type: GLenum): any {
@@ -178,7 +179,7 @@ class WebGL {
 
   mainLoop = (time: Number) => {
     this.gl.clearColor(1, 0, 0, 1); // RGBA Range (0..1)
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT); // | this.gl.COLOR_BUFFER_BIT
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT);
 
     // GLSL parameter "uniformColor"
     var uniformColor = this.gl.getUniformLocation(this.program, 'uniformColor');
