@@ -80,7 +80,7 @@ class WebGL {
       gl_FragColor = gl_FragColor + vec4(drawLine(vec2(0.6, 0.3), vec2(0.6, 0.5))); // Draw line.
       gl_FragColor = gl_FragColor * uniformColor; // Color defined global.
       // gl_FragColor = vec4(drawLine(vec2(0.6, 0.3), vec2(0.6, 0.5))) + texture2D(uniformTexture, texcoord) * uniformColor;
-  }`;
+    }`;
 
   initShader(): void {
     var vertexShader = this.createShader(this.gl, this.vertexShaderSource, this.gl.VERTEX_SHADER);
@@ -108,13 +108,13 @@ class WebGL {
       +0.5, -0.5, +0.0, 0, 1, 0,
 
       -0.9, +0.2, +0.0, 1, 1, 1,
-      -0.2, +0.9, -0.0, 0, 1, 0,
+      -0.2, +0.9, +0.0, 0, 1, 0,
       -0.9, +0.9, +0.0, 0, 0, 1,
 
-      -0.9, +0.2, +0.0, 1, 0, 0,
-      +0.3, +0.2, +1.0, 0, 1, 0,
-      -0.2, +0.9, +0.0, 0, 0, 1,
-    ]);
+      -0.9, +0.2, +1.0, 1, 0, 0,
+      +0.5, +0.2, -0.2, 0, 1, 0,
+      -0.2, +0.9, +1.0, 0, 0, 1,
+    ])
 
     var buffer = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
@@ -126,19 +126,19 @@ class WebGL {
     var vertPosition = this.gl.getAttribLocation(this.program, 'vertPosition');
     this.gl.enableVertexAttribArray(vertPosition);
     this.gl.vertexAttribPointer(vertPosition,
-      2, // Number of components per vertex attribute. Must be 1, 2, 3, or 4.
+      3, // vec3(X, Y, Z)
       this.gl.FLOAT, false,
       Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y, Z)
-      Float32Array.BYTES_PER_ELEMENT * 0); // Offset from the beginning of a single vertex to this attribute
+      Float32Array.BYTES_PER_ELEMENT * 0); // Offset
 
     // Shader attribute "vertColor"
     var vertColor = this.gl.getAttribLocation(this.program, 'vertColor');
     this.gl.enableVertexAttribArray(vertColor);
     this.gl.vertexAttribPointer(vertColor,
-      3, // (R, G, B)
+      3, // vec3(R, G, B)
       this.gl.FLOAT, false,
       Float32Array.BYTES_PER_ELEMENT * (this.vertexElementCount as any), // Size of an individual vertex (X, Y, Z)
-      Float32Array.BYTES_PER_ELEMENT * 3); // (R, G, B)
+      Float32Array.BYTES_PER_ELEMENT * 3); // Offset (R, G, B)
   }
 
   createShader(gl: WebGLRenderingContext, sourceCode: string, type: GLenum): any {
