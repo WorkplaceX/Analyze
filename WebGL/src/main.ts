@@ -39,8 +39,8 @@ class WebGL {
   uniform mat4 model; // IN
   uniform mat4 projection; // IN
   uniform mat4 view; // IN
-  varying vec3 fragColor; // OUT
-  varying vec2 vTextureCoord; // OUT
+  varying vec3 fragColor; // OUT interpolated frag color
+  varying vec2 vTextureCoord; // OUT interpolated texture coordinate
   void main() {
     gl_Position = projection * view * model * vec4(vertPosition, 1); // (X, Y, Z, W) W is used for clipping cube (+Z, -Z and -X, +X and -Y, +Y).
     // gl_Position.w = 1.0;
@@ -72,8 +72,8 @@ class WebGL {
   }
 
   precision mediump  float;
-  varying vec3 fragColor; // IN
-  varying vec2 vTextureCoord; // IN
+  varying vec3 fragColor; // IN interpolated frag color for this fragment
+  varying vec2 vTextureCoord; // IN interpolated texture coordinate for this fragment
   uniform vec4 uniformColor; // IN Global
   uniform sampler2D uniformTexture; // IN Global
   void main() {
@@ -90,6 +90,24 @@ class WebGL {
     gl_FragColor = gl_FragColor + vec4(drawLine(vec2(0.6, 0.3), vec2(0.6, 0.5))); // Draw line.
     gl_FragColor = gl_FragColor * uniformColor; // Color defined global.
     // gl_FragColor = vec4(drawLine(vec2(0.6, 0.3), vec2(0.6, 0.5))) + texture2D(uniformTexture, texcoord) * uniformColor;
+
+    float x,y;
+    x=fract(vTextureCoord.x*25.0);
+    y=fract(vTextureCoord.y*25.0);
+
+    // Draw a black and white grid.
+    // if (abs(mod(gl_FragCoord.x / vTextureCoord.x, 25.0 * vTextureCoord.x)) > 24.0 * vTextureCoord.x)
+    if (mod(floor(vTextureCoord.x * 100.0), 20.0) == 0.0)
+    {
+      // if (mod(gl_FragCoord.x, vTextureCoord.x * 12.0) < 5.0)
+      {
+        gl_FragColor = vec4(1,1,1,1);
+      }
+    }
+    if (mod(gl_FragCoord.y, 25.0) > 24.0)
+    {
+      gl_FragColor = vec4(1,1,1,1);
+    }
   }`;
 
   initShader(): void {
@@ -224,6 +242,7 @@ class WebGL {
     this.gl.uniformMatrix4fv(viewLocation, false, view);
 
     // Draw
+    this.gl.drawArrays(this.gl.LINES, 0, this.vertex.length / (this.vertexElementCount as any)); // Number of vertex.
     this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertex.length / (this.vertexElementCount as any)); // Number of vertex.
     requestAnimationFrame(this.mainLoop);
   }
