@@ -1,2 +1,2 @@
 # Research Projects
-Projects to analyse topics around Angular2 .NET Core Windows, Linux and SQL database.
+Projects to analyse and document topics around Angular, .NET Core, Windows, Linux, SQL database and much more.
