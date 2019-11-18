@@ -3,3 +3,5 @@ lsb_release -a
 dotnet --version
 node --version
 npm --version
+
+echo ${{ secrets.My }} 
