@@ -10,6 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run a one-line script
+      env: 
+        My: ${{ secrets.My }} 
       run: ./"GitHub Actions"/build.sh
     - name: Run a multi-line script
       run: |
