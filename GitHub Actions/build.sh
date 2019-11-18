@@ -3,4 +3,3 @@ lsb_release -a
 dotnet --version
 node --version
 npm --version
-git git --version
