@@ -4,4 +4,4 @@ dotnet --version
 node --version
 npm --version
 
-echo ${{ secrets.My }} 
+echo $My
