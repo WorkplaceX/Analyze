@@ -10,10 +10,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Docker script
-      uses: Research/"GitHub Actions"/Docker@v1
+      uses: Research/GitHubActions/Docker@master
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
-      run: ./"GitHub Actions"/install.sh
+      run: ./GitHubActions/install.sh
     - name: Build script
-      run: ./"GitHub Actions"/build.sh
+      run: ./GitHubActions/build.sh
