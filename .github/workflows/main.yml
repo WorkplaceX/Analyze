@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v1
     - name: Docker script
       uses: WorkplaceX/Research/GitHubActions/Docker@master
       with:
         myparam: 'MyParamy'
+    - uses: actions/checkout@v1
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
