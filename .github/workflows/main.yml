@@ -9,11 +9,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Docker script
+      run: ./GitHubActions/Docker/action.yml
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
       run: ./GitHubActions/install.sh
-    - name: Docker script
-      run: ./GitHubActions/Docker/Dockerfile
     - name: Build script
       run: ./GitHubActions/build.sh
