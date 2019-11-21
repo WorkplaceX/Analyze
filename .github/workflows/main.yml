@@ -16,6 +16,4 @@ jobs:
     - name: Build script
       run: ./"GitHub Actions"/build.sh
     - name: Docker script
-      runs:
-        using: 'docker'
-        image: './"GitHub Actions"/Docker/Dockerfile'
+      uses: ./"GitHub Actions"/Docker/my
