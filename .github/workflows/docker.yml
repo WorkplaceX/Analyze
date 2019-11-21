@@ -1,7 +1,0 @@
-name: CI Docker
-
-on: [push]
-
-runs:
-  using: 'docker'
-  image: './"GitHub Actions"/Docker/Dockerfile'
