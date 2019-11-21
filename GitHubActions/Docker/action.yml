@@ -1,7 +1,6 @@
 name: 'Hello World'
 inputs:
   myparam: # id of input
-    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
