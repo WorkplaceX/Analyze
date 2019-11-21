@@ -1,6 +1,4 @@
 name: 'Hello World'
-inputs:
-  myparam:
 runs:
   using: 'docker'
   image: 'Dockerfile'
