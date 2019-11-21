@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Docker script
-      runs:
+      run:
         using: 'docker'
         image: 'Dockerfile'      
     - name: Install script
