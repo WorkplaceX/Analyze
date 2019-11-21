@@ -9,7 +9,6 @@ jobs:
 
     steps:
     - name: Docker script
-      uses: actions/hello-world-docker-action@master
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
