@@ -1,4 +1,6 @@
 name: 'Hello World'
 runs:
   using: 'docker'
-  image: 'Dockerfile2'
+  image: 'Dockerfile'
+name: 'G2'
+  run: log.sh
