@@ -18,4 +18,4 @@ jobs:
     - name: Docker script
       runs:
         using 'docker'
-        image: ./"GitHub Actions"/Docker/Dockerfile
+        image: './"GitHub Actions"/Docker/Dockerfile'
