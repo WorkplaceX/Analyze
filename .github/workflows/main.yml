@@ -13,6 +13,7 @@ jobs:
       env: 
         My: ${{ secrets.My }} 
       run: ./GitHubActions/install.sh
+    - name: Docker script
       run: ./GitHubActions/Docker/Dockerfile
     - name: Build script
       run: ./GitHubActions/build.sh
