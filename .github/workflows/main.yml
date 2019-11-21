@@ -10,9 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Docker script
-      run:
-        using: 'docker'
-        image: 'Dockerfile'      
+      uses: ./GitHubActions/Docker/action
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
