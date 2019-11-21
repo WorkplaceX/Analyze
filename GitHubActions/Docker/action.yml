@@ -2,5 +2,4 @@ name: 'Hello World'
 runs:
   using: 'docker'
   image: 'Dockerfile'
-name: 'G2'
-  run: log.sh
+run: log.sh
