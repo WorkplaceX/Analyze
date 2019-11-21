@@ -1,7 +1,6 @@
 name: 'Hello World'
 inputs:
   myparam: # id of input
-    description: 'Who to greet'
     required: true
 runs:
   using: 'docker'
