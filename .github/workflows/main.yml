@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: WorkplaceX/Research@master
+    - uses: actions/checkout@v1
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
