@@ -1,6 +1,9 @@
 name: 'Hello World'
 inputs:
-  myparam: ''
+  myparam:
+    description: 'Who to greet'
+    required: true
+    default: 'World'
 runs:
   using: 'docker'
   image: 'Dockerfile'
