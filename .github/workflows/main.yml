@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    - uses: WorkplaceX/Research@master
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
