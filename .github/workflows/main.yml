@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Docker script
-      run: ./GitHubActions/Docker/action.yml
+      uses: actions/hello-world-docker-action@v1
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
