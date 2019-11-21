@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Docker script
-      uses: ./"GitHub Actions"/Docker
+      uses: Research/"GitHub Actions"/Docker@v1
     - name: Install script
       env: 
         My: ${{ secrets.My }} 
