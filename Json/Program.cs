@@ -18,7 +18,7 @@ namespace ConsoleApp
             var person = new Person() { Hello = "ldcsdcl", Name = "John", Value2 = 232M, Value1 = 88, Value3 = 9.5, RowList = rowList };
             person.RowList2.Add("j", new Row() { Hello = "Myd2" });
             person.RowList2.Add("k", new Person() { Hello = "My3", Name = "Mc" });
-            buttonSource.My = new My2(buttonSource) { X = "X", Y = "Y" , Row = person };
+            buttonSource.My = new My2(buttonSource) { X = "X", Y = "Y", Row = person, Type2 = typeof(int) };
 
             // Serialize with Newtonsoft and inheritance
             var jsonNewtonsoftSource = Newtonsoft.Json.JsonConvert.SerializeObject(buttonSource, new Newtonsoft.Json.JsonSerializerSettings() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All });
@@ -87,10 +87,24 @@ namespace ConsoleApp
             {
                 if (valueList.ContainsKey(propertyInfo.Name))
                 {
-                    var value = JsonSerializer.Deserialize(valueList[propertyInfo.Name].GetRawText(), propertyInfo.PropertyType, options);
-                    propertyInfo.SetValue(result, value);
+                    object propertyValue;
+
+                    // Special property
+                    if (propertyInfo.PropertyType == typeof(Type))
+                    {
+                        string typeName = JsonSerializer.Deserialize<string>(valueList[propertyInfo.Name].GetRawText(), options);
+                        propertyValue = Type.GetType(typeName);
+                    }
+                    else
+                    {
+                        // Normal property
+                        propertyValue = JsonSerializer.Deserialize(valueList[propertyInfo.Name].GetRawText(), propertyInfo.PropertyType, options);
+                    }
+
+                    propertyInfo.SetValue(result, propertyValue);
                 }
             }
+
             return result;
         }
 
@@ -135,9 +149,19 @@ namespace ConsoleApp
                             isPropertyTypeAssert = true;
                         }
                     }
+
+                    // Special property
+                    if (propertyInfo.PropertyType == typeof(Type))
+                    {
+                        isPropertyTypeAssert = true; // Property type is class Type. Property value typeof(int) is class RuntimeType (which derives from class Type)
+                        propertyValue = propertyValue.ToString();
+                    }
+
                     UtilFramework.Assert(isPropertyTypeAssert, string.Format("Combination property type and value type not supported! (PropertyName={0}; PropertyType={1}; ValueType={2};)", propertyInfo.Name, propertyInfo.PropertyType.Name, propertyValue.GetType().Name));
 
-                    // TODO Write reference ComponentJson.Id if in same object graph. Distinct serialize for client and for server.
+                    // TODO Write reference ComponentJson.Id if not Component.List
+                    // TODO Distinct serialize for client and for server.
+                    // TODO Check ComponentJson reference is in same composition- graph.
 
                     // Serialize property value
                     writer.WritePropertyName(propertyInfo.Name);

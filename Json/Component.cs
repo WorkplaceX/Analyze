@@ -116,6 +116,8 @@ namespace ConsoleApp
         public string Y { get; set; }
 
         public Row Row { get; set; }
+
+        public Type Type2 { get; set; }
     }
 
     public class Row
