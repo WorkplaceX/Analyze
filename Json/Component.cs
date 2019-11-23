@@ -118,6 +118,8 @@ namespace ConsoleApp
         public Row Row { get; set; }
 
         public Type Type2 { get; set; }
+
+        public GridCell GridCell { get; set; }
     }
 
     public class Row
@@ -138,5 +140,16 @@ namespace ConsoleApp
         public List<Row> RowList { get; set; } = new List<Row>();
 
         public Dictionary<string, Row> RowList2 { get; set; } = new Dictionary<string, Row>();
+
+        public List<Type> TypeList { get; set; } = new List<Type>();
+
+        public Dictionary<string, Type> List { get; set; } = new Dictionary<string, Type>();
+
+        public List<Type> ListX { get; set; } = new List<Type>();
+    }
+
+    public class GridCell
+    {
+        public string Text { get; set; }
     }
 }

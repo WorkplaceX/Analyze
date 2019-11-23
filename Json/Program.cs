@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -18,7 +19,15 @@ namespace ConsoleApp
             var person = new Person() { Hello = "ldcsdcl", Name = "John", Value2 = 232M, Value1 = 88, Value3 = 9.5, RowList = rowList };
             person.RowList2.Add("j", new Row() { Hello = "Myd2" });
             person.RowList2.Add("k", new Person() { Hello = "My3", Name = "Mc" });
-            buttonSource.My = new My2(buttonSource) { X = "X", Y = "Y", Row = person, Type2 = typeof(int) };
+            person.TypeList.Add(typeof(string));
+            person.TypeList.Add(typeof(int));
+            person.TypeList.Add(typeof(List<>));
+            person.TypeList.Add(null);
+            person.List.Add("4", null);
+            person.List.Add("5", typeof(string));
+            person.ListX.Add(null);
+            person.ListX.Add(typeof(Dictionary<,>));
+            buttonSource.My = new My2(buttonSource) { X = "X", Y = "Y", Row = person, Type2 = typeof(int), GridCell = new GridCell() { Text = "Language" } };
 
             // Serialize with Newtonsoft and inheritance
             var jsonNewtonsoftSource = Newtonsoft.Json.JsonConvert.SerializeObject(buttonSource, new Newtonsoft.Json.JsonSerializerSettings() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All });
@@ -49,8 +58,8 @@ namespace ConsoleApp
     {
         public override bool CanConvert(Type typeToConvert)
         {
-            // Handle inheritance of ComponentJson and Row classes.
-            return UtilFramework.IsSubclassOf(typeToConvert, typeof(ComponentJson)) || UtilFramework.IsSubclassOf(typeToConvert, typeof(Row));
+            // Handle inheritance of ComponentJson and Row classes. Or handle Type object.
+            return UtilFramework.IsSubclassOf(typeToConvert, typeof(ComponentJson)) || UtilFramework.IsSubclassOf(typeToConvert, typeof(Row)) || typeToConvert == typeof(Type);
         }
 
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
@@ -74,6 +83,13 @@ namespace ConsoleApp
         /// </summary>
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            // Deserialize Type object
+            if (typeToConvert == typeof(Type))
+            {
+                var typeName = JsonSerializer.Deserialize<string>(ref reader);
+                return (T)(object)Type.GetType(typeName);
+            }
+
             // Deserialize Component or Row object
             var valueList = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(ref reader);
 
@@ -87,20 +103,7 @@ namespace ConsoleApp
             {
                 if (valueList.ContainsKey(propertyInfo.Name))
                 {
-                    object propertyValue;
-
-                    // Special property
-                    if (propertyInfo.PropertyType == typeof(Type))
-                    {
-                        string typeName = JsonSerializer.Deserialize<string>(valueList[propertyInfo.Name].GetRawText(), options);
-                        propertyValue = Type.GetType(typeName);
-                    }
-                    else
-                    {
-                        // Normal property
-                        propertyValue = JsonSerializer.Deserialize(valueList[propertyInfo.Name].GetRawText(), propertyInfo.PropertyType, options);
-                    }
-
+                    var propertyValue = JsonSerializer.Deserialize(valueList[propertyInfo.Name].GetRawText(), propertyInfo.PropertyType, options);
                     propertyInfo.SetValue(result, propertyValue);
                 }
             }
@@ -109,10 +112,62 @@ namespace ConsoleApp
         }
 
         /// <summary>
+        /// PropertyType has to be (ComponentJson, Row or Type). Or PropertyType and PropertyValue type need to match. Applies also for list or dictionary.
+        /// </summary>
+        private void ValidatePropertyAndValueType(PropertyInfo propertyInfo, object propertyValue)
+        {
+            Type propertyType = propertyInfo.PropertyType;
+            ICollection propertyValueList = new List<object>(new object[] { propertyValue });
+            if (propertyValue is IList list)
+            {
+                propertyType = propertyValue.GetType().GetGenericArguments()[0]; // List type
+                propertyValueList = list;
+            }
+            if (propertyValue is IDictionary dictionary)
+            {
+                propertyType = propertyValue.GetType().GetGenericArguments()[1]; // Key type
+                propertyValueList = dictionary.Values;
+            }
+
+            // Property type is of type ComponentJson or Row. For example property type object would throw exception.
+            if (UtilFramework.IsSubclassOf(propertyType, typeof(ComponentJson)) || UtilFramework.IsSubclassOf(propertyType, typeof(Row)))
+            {
+                return;
+            }
+            // Property type is class Type. Property value typeof(int) is class RuntimeType (which derives from class Type)
+            if (propertyType == typeof(Type))
+            {
+                return;
+            }
+
+            foreach (var item in propertyValueList)
+            {
+                if (item != null)
+                {
+                    // Property type is equal to value. No inheritance.
+                    if (!(UtilFramework.TypeUnderlying(propertyType) == item.GetType()))
+                    {
+                        throw new Exception(string.Format("Combination property type and value type not supported! (PropertyName={0}.{1}; PropertyType={2}; ValueType={3}; Value={4};)", propertyInfo.DeclaringType.Name, propertyInfo.Name, propertyType.Name, item.GetType().Name, item));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Serialize ComponentJson or Row objects.
         /// </summary>
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
         {
+            // Serialize Type object
+            if (typeof(T) == typeof(Type))
+            {
+                if (value is Type type)
+                {
+                    JsonSerializer.Serialize<string>(writer, type.FullName);
+                }
+                return;
+            }
+
             // ComponentJson or Row object start
             writer.WriteStartObject();
             
@@ -135,29 +190,7 @@ namespace ConsoleApp
                 }
                 if (!isIgnoreNullValue)
                 {
-                    bool isPropertyTypeAssert = false;
-                    if (UtilFramework.TypeUnderlying(propertyInfo.PropertyType) == propertyValue.GetType())
-                    {
-                        // Property type is equal to value. No inheritance.
-                        isPropertyTypeAssert = true;
-                    }
-                    else
-                    {
-                        // Property type is of type ComponentJson or Row. For example property type object would throw exception.
-                        if (UtilFramework.IsSubclassOf(propertyInfo.PropertyType, typeof(ComponentJson)) || UtilFramework.IsSubclassOf(propertyInfo.PropertyType, typeof(Row)))
-                        {
-                            isPropertyTypeAssert = true;
-                        }
-                    }
-
-                    // Special property
-                    if (propertyInfo.PropertyType == typeof(Type))
-                    {
-                        isPropertyTypeAssert = true; // Property type is class Type. Property value typeof(int) is class RuntimeType (which derives from class Type)
-                        propertyValue = propertyValue.ToString();
-                    }
-
-                    UtilFramework.Assert(isPropertyTypeAssert, string.Format("Combination property type and value type not supported! (PropertyName={0}; PropertyType={1}; ValueType={2};)", propertyInfo.Name, propertyInfo.PropertyType.Name, propertyValue.GetType().Name));
+                    ValidatePropertyAndValueType(propertyInfo, propertyValue);
 
                     // TODO Write reference ComponentJson.Id if not Component.List
                     // TODO Distinct serialize for client and for server.
@@ -165,7 +198,7 @@ namespace ConsoleApp
 
                     // Serialize property value
                     writer.WritePropertyName(propertyInfo.Name);
-                    JsonSerializer.Serialize(writer, propertyValue, options);
+                    JsonSerializer.Serialize(writer, propertyValue, propertyInfo.PropertyType, options);
                 }
             }
 
