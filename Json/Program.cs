@@ -17,18 +17,20 @@ namespace ConsoleApp
             List<Row> rowList = new List<Row>();
             rowList.Add(new Person() { Name = "Marc" });
             rowList.Add(new Person() { Name = "Andrew" });
-            var person = new Person() { Hello = "ldcsdcl", Name = "John", Value2 = 232M, Value1 = 88, Value3 = 9.5, RowList = rowList };
-            person.RowList2.Add("j", new Row() { Hello = "Myd2" });
-            person.RowList2.Add("k", new Person() { Hello = "My3", Name = "Mc" });
-            person.TypeList.Add(typeof(string));
-            person.TypeList.Add(typeof(int));
-            person.TypeList.Add(typeof(List<>));
-            person.TypeList.Add(null);
-            person.List.Add("4", null);
-            person.List.Add("5", typeof(string));
-            person.ListX.Add(null);
-            person.ListX.Add(typeof(Dictionary<,>));
-            buttonSource.My = new My2(buttonSource) { X = "X", Y = "Y", Row = person, Type2 = typeof(int), GridCell = new GridCell() { Text = "Language" } };
+            var person = new Person() { Hello = "ldcsdcl", Name = "John", Value2 = 232M, Value1 = 88, Value3 = 9.5 };
+            buttonSource.My = new My2(buttonSource) { X = "X", Y = "Y", Row = person, Type2 = typeof(int), GridCell = new GridCell() { Text = "Language" }, RowList = rowList };
+            ((My2)buttonSource.My).RowList2.Add("j", new Row() { Hello = "Myd2" });
+            ((My2)buttonSource.My).RowList2.Add("k", new Person() { Hello = "My3", Name = "Mc" });
+            ((My2)buttonSource.My).TypeList.Add(typeof(string));
+            ((My2)buttonSource.My).TypeList.Add(typeof(int));
+            ((My2)buttonSource.My).TypeList.Add(typeof(List<>));
+            ((My2)buttonSource.My).TypeList.Add(null);
+            buttonSource.Row = new Person { Value1 = 23 };
+            buttonSource.Person = new Person { Value1 = 23 };
+            ((My2)buttonSource.My).ListX.Add("4", null);
+            ((My2)buttonSource.My).ListX.Add("5", typeof(string));
+            ((My2)buttonSource.My).ListX2.Add(null);
+            ((My2)buttonSource.My).ListX2.Add(typeof(Dictionary<,>));
 
             int performanceCount = 1; // 5000;
 
@@ -244,6 +246,11 @@ namespace ConsoleApp
                 }
             }
             return result;
+        }
+
+        private void Container(PropertyInfo propertyInfo, object propertyValue)
+        {
+
         }
 
         /// <summary>

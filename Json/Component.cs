@@ -76,6 +76,10 @@ namespace ConsoleApp
         public bool IsClick { get; set; }
 
         public My My { get; set; }
+
+        public Row Row { get; set; }
+        
+        public Row Person { get; set; }
     }
 
     public class Page : ComponentJson
@@ -120,8 +124,21 @@ namespace ConsoleApp
         public Type Type2 { get; set; }
 
         public GridCell GridCell { get; set; }
+
+        public List<Row> RowList { get; set; } = new List<Row>();
+
+        public Dictionary<string, Row> RowList2 { get; set; } = new Dictionary<string, Row>();
+
+        public List<Type> TypeList { get; set; } = new List<Type>();
+
+        public Dictionary<string, Type> ListX { get; set; } = new Dictionary<string, Type>();
+
+        public List<Type> ListX2 { get; set; } = new List<Type>();
     }
 
+    /// <summary>
+    /// Data row
+    /// </summary>
     public class Row
     {
         public string Hello { get; set; }
@@ -137,15 +154,7 @@ namespace ConsoleApp
 
         public double Value3 { get; set; }
 
-        public List<Row> RowList { get; set; } = new List<Row>();
-
-        public Dictionary<string, Row> RowList2 { get; set; } = new Dictionary<string, Row>();
-
-        public List<Type> TypeList { get; set; } = new List<Type>();
-
-        public Dictionary<string, Type> List { get; set; } = new Dictionary<string, Type>();
-
-        public List<Type> ListX { get; set; } = new List<Type>();
+        public Guid Id { get; set; }
     }
 
     public class GridCell
