@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace ConsoleApp
 {
@@ -69,6 +70,70 @@ namespace ConsoleApp
         }
     }
 
+    public enum PropertyEnum { None = 0, Property = 1, List = 2, Dictionary = 3 }
+
+    /// <summary>
+    /// Access property, list or dictionary.
+    /// </summary>
+    public class Property
+    {
+        public Property(PropertyInfo propertyInfo, object propertyValue)
+        {
+            // Property
+            PropertyEnum = PropertyEnum.Property;
+            PropertyType = propertyInfo.PropertyType;
+            PropertyValue = propertyValue;
+            PropertyValueList = new List<object>(new object[] { propertyValue });
+
+            // List
+            if (propertyValue is IList list)
+            {
+                PropertyEnum = PropertyEnum.List;
+                PropertyType = propertyValue.GetType().GetGenericArguments()[0]; // List type
+                PropertyValueList = list;
+            }
+
+            // Dictionary
+            if (propertyValue is IDictionary dictionary)
+            {
+                PropertyEnum = PropertyEnum.Dictionary;
+                PropertyType = propertyValue.GetType().GetGenericArguments()[1]; // Key type
+                PropertyValueList = dictionary.Values;
+                PropertyDictionary = dictionary;
+            }
+        }
+
+        /// <summary>
+        /// Gets PropertyEnum (property, list or dictionary)
+        /// </summary>
+        public PropertyEnum PropertyEnum;
+
+        /// <summary>
+        /// Gets PropertyType for property, list and dictionary.
+        /// </summary>
+        public Type PropertyType;
+
+        /// <summary>
+        /// Gets PropertyValueList for property, list and dictionary.
+        /// </summary>
+        public ICollection PropertyValueList;
+
+        /// <summary>
+        /// Gets PropertyValue for property.
+        /// </summary>
+        public object PropertyValue;
+
+        /// <summary>
+        /// Gets PropertyDictionary for dictionary to access key, value pair with DictionaryEntry.
+        /// </summary>
+        public IDictionary PropertyDictionary;
+    }
+
+    public class ComponentJsonReference
+    {
+        public int? IdReference { get; set; }
+    }
+
     public class Converter<T> : JsonConverter<T>
     {
         public Converter(Factory factory)
@@ -112,22 +177,54 @@ namespace ConsoleApp
         }
 
         /// <summary>
+        /// Replace ComponentJson with ComponentJsonReference.
+        /// </summary>
+        private object ComponentJsonReferenceReplace(PropertyInfo propertyInfo, object propertyValue)
+        {
+            object result = propertyValue;
+            bool isComponentJsonList = UtilFramework.IsSubclassOf(propertyInfo.DeclaringType, typeof(ComponentJson)) && propertyInfo.Name == nameof(ComponentJson.List);
+            if (isComponentJsonList == false)
+            {
+                Property property = new Property(propertyInfo, propertyValue);
+                if (UtilFramework.IsSubclassOf(property.PropertyType, typeof(ComponentJson)))
+                {
+                    switch (property.PropertyEnum)
+                    {
+                        case PropertyEnum.List:
+                            var list = new List<ComponentJsonReference>();
+                            foreach (ComponentJson item in property.PropertyValueList)
+                            {
+                                list.Add(new ComponentJsonReference() { IdReference = item?.Id });
+                            }
+                            result = list;
+                            break;
+                        case PropertyEnum.Dictionary:
+                            var dictionary = new Dictionary<string, ComponentJsonReference>();
+                            foreach (DictionaryEntry item in property.PropertyDictionary)
+                            {
+                                string key = (string)item.Key;
+                                ComponentJson componentJson = (ComponentJson)item.Value;
+                                dictionary.Add(key, new ComponentJsonReference { IdReference = componentJson?.Id });
+                            }
+                            result = dictionary;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// PropertyType has to be (ComponentJson, Row or Type). Or PropertyType and PropertyValue type need to match. Applies also for list or dictionary.
         /// </summary>
         private void ValidatePropertyAndValueType(PropertyInfo propertyInfo, object propertyValue)
         {
-            Type propertyType = propertyInfo.PropertyType;
-            ICollection propertyValueList = new List<object>(new object[] { propertyValue });
-            if (propertyValue is IList list)
-            {
-                propertyType = propertyValue.GetType().GetGenericArguments()[0]; // List type
-                propertyValueList = list;
-            }
-            if (propertyValue is IDictionary dictionary)
-            {
-                propertyType = propertyValue.GetType().GetGenericArguments()[1]; // Key type
-                propertyValueList = dictionary.Values;
-            }
+            var property = new Property(propertyInfo, propertyValue);
+            
+            Type propertyType = property.PropertyType;
+            ICollection propertyValueList = property.PropertyValueList;
 
             // Property type is of type ComponentJson or Row. For example property type object would throw exception.
             if (UtilFramework.IsSubclassOf(propertyType, typeof(ComponentJson)) || UtilFramework.IsSubclassOf(propertyType, typeof(Row)))
@@ -167,7 +264,7 @@ namespace ConsoleApp
                 }
                 return;
             }
-
+            
             // ComponentJson or Row object start
             writer.WriteStartObject();
             
@@ -224,6 +321,11 @@ namespace ConsoleApp
             {
                 throw new Exception(exceptionText);
             }
+        }
+
+        internal static void Assert(bool isAssert)
+        {
+            Assert(isAssert, "Assert!");
         }
 
         /// <summary>
