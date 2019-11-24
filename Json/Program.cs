@@ -30,17 +30,34 @@ namespace ConsoleApp
             person.ListX.Add(typeof(Dictionary<,>));
             buttonSource.My = new My2(buttonSource) { X = "X", Y = "Y", Row = person, Type2 = typeof(int), GridCell = new GridCell() { Text = "Language" } };
 
-            // Serialize with Newtonsoft and inheritance
-            var jsonNewtonsoftSource = Newtonsoft.Json.JsonConvert.SerializeObject(buttonSource, new Newtonsoft.Json.JsonSerializerSettings() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All });
+            int performanceCount = 1; // 5000;
 
-            // Serialize with System.Text.Json
+            string jsonNewtonsoftSource = null;
+            for (int i = 0; i < performanceCount; i++)
+            {
+                // Serialize with Newtonsoft and inheritance
+                jsonNewtonsoftSource = Newtonsoft.Json.JsonConvert.SerializeObject(buttonSource, new Newtonsoft.Json.JsonSerializerSettings() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All });
+
+                // Deserialize with Newtonsoft and inheritance
+                Newtonsoft.Json.JsonConvert.DeserializeObject(jsonNewtonsoftSource, new Newtonsoft.Json.JsonSerializerSettings() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All });
+            }
+
+            // Serialize with System.Text.Json (Init)
             var options = new JsonSerializerOptions();
             options.Converters.Add(new Factory());
             options.WriteIndented = true;
-            var jsonSource = JsonSerializer.Serialize(buttonSource, options);
 
-            // Deserialize with System.Text.Json
-            var buttonDest = JsonSerializer.Deserialize<ComponentJson>(jsonSource, options);
+            // Serialize with System.Text.Json
+            string jsonSource = null;
+            string jsonDest = null;
+            ComponentJson buttonDest = null;
+            for (int i = 0; i < performanceCount; i++)
+            {
+                jsonSource = JsonSerializer.Serialize(buttonSource, options);
+
+                // Deserialize with System.Text.Json
+                buttonDest = JsonSerializer.Deserialize<ComponentJson>(jsonSource, options);
+            }
 
             // Serialize System.Text.Json deserialized object with Newtonsoft and inheritance again.
             var jsonNewtonsoftDest = Newtonsoft.Json.JsonConvert.SerializeObject(buttonDest, new Newtonsoft.Json.JsonSerializerSettings() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All });
@@ -129,9 +146,22 @@ namespace ConsoleApp
         public IDictionary PropertyDictionary;
     }
 
-    public class ComponentJsonReference
+    public enum ContainerEnum { None = 0, Type = 1, ComponentReference, Row }
+
+    /// <summary>
+    /// Wrapper object for Type, ContainerReference and Row.
+    /// </summary>
+    public class Container
     {
-        public int? IdReference { get; set; }
+        public ContainerEnum ContainerEnum { get; set; }
+
+        public string TypeName { get; set; }
+
+        public int? ComponentReferenceId { get; set; }
+
+        public string RowTypeName { get; set; }
+
+        public Row RowSerialize { get; set; }
     }
 
     public class Converter<T> : JsonConverter<T>
@@ -148,7 +178,7 @@ namespace ConsoleApp
         /// </summary>
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            // Deserialize Type object
+                        // Deserialize Type object
             if (typeToConvert == typeof(Type))
             {
                 var typeName = JsonSerializer.Deserialize<string>(ref reader);
@@ -161,7 +191,7 @@ namespace ConsoleApp
             // Read type information
             string typeText = valueList["$Type"].GetString();
             Type type = Type.GetType(typeText); // TODO Cache on factory
-            T result = (T)(object)Activator.CreateInstance(type); // TODO No parameterless constructor for ComponentJson
+            var result = Activator.CreateInstance(type); // TODO No parameterless constructor for ComponentJson
 
             // Loop through properties
             foreach (var propertyInfo in type.GetProperties())
@@ -173,7 +203,7 @@ namespace ConsoleApp
                 }
             }
 
-            return result;
+            return (T)(object)result;
         }
 
         /// <summary>
@@ -191,20 +221,20 @@ namespace ConsoleApp
                     switch (property.PropertyEnum)
                     {
                         case PropertyEnum.List:
-                            var list = new List<ComponentJsonReference>();
+                            var list = new List<Container>();
                             foreach (ComponentJson item in property.PropertyValueList)
                             {
-                                list.Add(new ComponentJsonReference() { IdReference = item?.Id });
+                                list.Add(new Container() { ComponentReferenceId = item?.Id });
                             }
                             result = list;
                             break;
                         case PropertyEnum.Dictionary:
-                            var dictionary = new Dictionary<string, ComponentJsonReference>();
+                            var dictionary = new Dictionary<string, Container>();
                             foreach (DictionaryEntry item in property.PropertyDictionary)
                             {
                                 string key = (string)item.Key;
                                 ComponentJson componentJson = (ComponentJson)item.Value;
-                                dictionary.Add(key, new ComponentJsonReference { IdReference = componentJson?.Id });
+                                dictionary.Add(key, new Container { ComponentReferenceId = componentJson?.Id });
                             }
                             result = dictionary;
                             break;
@@ -264,7 +294,7 @@ namespace ConsoleApp
                 }
                 return;
             }
-            
+
             // ComponentJson or Row object start
             writer.WriteStartObject();
             
