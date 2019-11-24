@@ -180,15 +180,24 @@ namespace ConsoleApp
         /// </summary>
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-                        // Deserialize Type object
+            // Deserialize Type object
             if (typeToConvert == typeof(Type))
             {
                 var typeName = JsonSerializer.Deserialize<string>(ref reader);
                 return (T)(object)Type.GetType(typeName);
             }
 
-            // Deserialize Component or Row object
+            // Deserialize ComponentJson or Row object
             var valueList = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(ref reader);
+
+            if (UtilFramework.IsSubclassOf(typeToConvert, typeof(Row)))
+            {
+                var typeRowName = valueList["$typeRow"].GetString();
+                string rowJson = valueList["$row"].GetRawText();
+                Type typeRow = Type.GetType(typeRowName);
+                var resultRow = JsonSerializer.Deserialize(rowJson, typeRow); // Native deserialization for data row.
+                return (T)(object)resultRow;
+            }
 
             // Read type information
             string typeText = valueList["$Type"].GetString();
@@ -295,10 +304,19 @@ namespace ConsoleApp
             // Serialize Type object
             if (typeof(T) == typeof(Type))
             {
-                if (value is Type type)
-                {
-                    JsonSerializer.Serialize<string>(writer, type.FullName);
-                }
+                JsonSerializer.Serialize(writer, (value as Type).FullName);
+                return;
+            }
+
+            // Serialize data row object
+            if (UtilFramework.IsSubclassOf(typeof(T), typeof(Row)))
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("$typeRow");
+                JsonSerializer.Serialize(writer, value.GetType().FullName);
+                writer.WritePropertyName("$row");
+                JsonSerializer.Serialize(writer, value, value.GetType()); // Native serialization of data row
+                writer.WriteEndObject();
                 return;
             }
 
