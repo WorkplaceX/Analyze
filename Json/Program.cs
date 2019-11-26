@@ -58,6 +58,14 @@ namespace ConsoleApp
 
                 // Deserialize with System.Text.Json
                 buttonDest = JsonSerializer.Deserialize<ComponentJson>(jsonSource, options);
+                var factory = options.Converters.OfType<Factory>().Single();
+                foreach (var item in factory.ComponentJsonReferenceList)
+                {
+                    PropertyInfo propertyInfo = item.PropertyInfo;
+                    ComponentJson componentJson = item.ComponentJson;
+                    ComponentJson componentJsonReference = factory.ComponentJsonList[item.Id];
+                    propertyInfo.SetValue(componentJson, componentJsonReference);
+                }
             }
 
             // Serialize System.Text.Json deserialized object with Newtonsoft and inheritance again.
@@ -86,6 +94,19 @@ namespace ConsoleApp
             var converterType = typeof(Converter<>).MakeGenericType(typeToConvert);
             return (JsonConverter)Activator.CreateInstance(converterType, this);
         }
+
+        public List<ComponentJsonReference> ComponentJsonReferenceList = new List<ComponentJsonReference>();
+
+        public Dictionary<int, ComponentJson> ComponentJsonList = new Dictionary<int, ComponentJson>();
+    }
+
+    public class ComponentJsonReference
+    {
+        public PropertyInfo PropertyInfo;
+
+        public ComponentJson ComponentJson;
+
+        public int Id;
     }
 
     public enum PropertyEnum { None = 0, Property = 1, List = 2, Dictionary = 3 }
@@ -103,21 +124,23 @@ namespace ConsoleApp
             PropertyValue = propertyValue;
             PropertyValueList = new List<object>(new object[] { propertyValue });
 
+            var interfaceList = propertyInfo.PropertyType.GetInterfaces();
+
             // List
-            if (propertyValue is IList list)
+            if (interfaceList.Contains(typeof(IList)))
             {
                 PropertyEnum = PropertyEnum.List;
-                PropertyType = propertyValue.GetType().GetGenericArguments()[0]; // List type
-                PropertyValueList = list;
+                PropertyType = propertyInfo.PropertyType.GetGenericArguments()[0]; // List type
+                PropertyValueList = (IList)propertyValue;
             }
 
             // Dictionary
-            if (propertyValue is IDictionary dictionary)
+            if (interfaceList.Contains(typeof(IDictionary)))
             {
                 PropertyEnum = PropertyEnum.Dictionary;
-                PropertyType = propertyValue.GetType().GetGenericArguments()[1]; // Key type
-                PropertyValueList = dictionary.Values;
-                PropertyDictionary = dictionary;
+                PropertyType = propertyInfo.PropertyType.GetGenericArguments()[1]; // Key type
+                PropertyDictionary = (IDictionary)propertyValue;
+                PropertyValueList = PropertyDictionary?.Values;
             }
         }
 
@@ -149,22 +172,6 @@ namespace ConsoleApp
 
     public enum ContainerEnum { None = 0, Type = 1, ComponentReference, Row }
 
-    /// <summary>
-    /// Wrapper object for Type, ContainerReference and Row.
-    /// </summary>
-    public class Container
-    {
-        public ContainerEnum ContainerEnum { get; set; }
-
-        public string TypeName { get; set; }
-
-        public int? ComponentReferenceId { get; set; }
-
-        public string RowTypeName { get; set; }
-
-        public Row RowSerialize { get; set; }
-    }
-
     public class Converter<T> : JsonConverter<T>
     {
         public Converter(Factory factory)
@@ -189,6 +196,7 @@ namespace ConsoleApp
             // Deserialize ComponentJson or Row object
             var valueList = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(ref reader);
 
+            // Deserialize Row
             if (UtilFramework.IsSubclassOf(typeToConvert, typeof(Row)))
             {
                 var typeRowName = valueList["$typeRow"].GetString();
@@ -199,66 +207,35 @@ namespace ConsoleApp
             }
 
             // Read type information
-            string typeText = valueList["$Type"].GetString();
+            string typeText = valueList["$type"].GetString();
             Type type = Type.GetType(typeText); // TODO Cache on factory
-            var result = Activator.CreateInstance(type); // TODO No parameterless constructor for ComponentJson
+            var result = (ComponentJson)Activator.CreateInstance(type); // TODO No parameterless constructor for ComponentJson
 
             // Loop through properties
             foreach (var propertyInfo in type.GetProperties())
             {
                 if (valueList.ContainsKey(propertyInfo.Name))
                 {
+                    if (IsComponentJsonReference(propertyInfo))
+                    {
+                        // Deserialize ComponentJsonReference
+                        var componentJsonReferenceValueList = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(valueList[propertyInfo.Name].GetRawText());
+                        UtilFramework.Assert(componentJsonReferenceValueList["$type"].GetString() == "$componentJsonReference");
+                        int id = componentJsonReferenceValueList["$id"].GetInt32();
+                        Factory.ComponentJsonReferenceList.Add(new ComponentJsonReference { PropertyInfo = propertyInfo, ComponentJson = result, Id = id });
+                        continue;
+                    }
+
+                    // Deserialize ComponentJson
                     var propertyValue = JsonSerializer.Deserialize(valueList[propertyInfo.Name].GetRawText(), propertyInfo.PropertyType, options);
                     propertyInfo.SetValue(result, propertyValue);
                 }
             }
 
+            // Add ComponentJson for ComponentJsonReference resolve
+            Factory.ComponentJsonList.Add(result.Id, result);
+
             return (T)(object)result;
-        }
-
-        /// <summary>
-        /// Replace ComponentJson with ComponentJsonReference.
-        /// </summary>
-        private object ComponentJsonReferenceReplace(PropertyInfo propertyInfo, object propertyValue)
-        {
-            object result = propertyValue;
-            bool isComponentJsonList = UtilFramework.IsSubclassOf(propertyInfo.DeclaringType, typeof(ComponentJson)) && propertyInfo.Name == nameof(ComponentJson.List);
-            if (isComponentJsonList == false)
-            {
-                Property property = new Property(propertyInfo, propertyValue);
-                if (UtilFramework.IsSubclassOf(property.PropertyType, typeof(ComponentJson)))
-                {
-                    switch (property.PropertyEnum)
-                    {
-                        case PropertyEnum.List:
-                            var list = new List<Container>();
-                            foreach (ComponentJson item in property.PropertyValueList)
-                            {
-                                list.Add(new Container() { ComponentReferenceId = item?.Id });
-                            }
-                            result = list;
-                            break;
-                        case PropertyEnum.Dictionary:
-                            var dictionary = new Dictionary<string, Container>();
-                            foreach (DictionaryEntry item in property.PropertyDictionary)
-                            {
-                                string key = (string)item.Key;
-                                ComponentJson componentJson = (ComponentJson)item.Value;
-                                dictionary.Add(key, new Container { ComponentReferenceId = componentJson?.Id });
-                            }
-                            result = dictionary;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            return result;
-        }
-
-        private void Container(PropertyInfo propertyInfo, object propertyValue)
-        {
-
         }
 
         /// <summary>
@@ -295,6 +272,23 @@ namespace ConsoleApp
             }
         }
 
+        private bool IsComponentJsonReference(PropertyInfo propertyInfo)
+        {
+            bool result = false;
+            Property property = new Property(propertyInfo, null);
+            bool isComponentJsonList = propertyInfo.DeclaringType == typeof(ComponentJson) && propertyInfo.Name == nameof(ComponentJson.List);
+            bool isComponentJson = UtilFramework.IsSubclassOf(property.PropertyType, typeof(ComponentJson));
+            if (!isComponentJsonList && isComponentJson) // Is it a component reference?
+            {
+                if (property.PropertyEnum == PropertyEnum.List || property.PropertyEnum == PropertyEnum.Dictionary)
+                {
+                    throw new Exception("ComponentJson reference supported only for property! Not for list and dictionary!");
+                }
+                result = true;
+            }
+            return result;
+        }
+
         /// <summary>
         /// Serialize ComponentJson or Row objects.
         /// </summary>
@@ -323,7 +317,7 @@ namespace ConsoleApp
             writer.WriteStartObject();
             
             // Type information
-            writer.WritePropertyName("$Type"); // Note: Type information could be omitted if property type is equal to property value type.
+            writer.WritePropertyName("$type"); // Note: Type information could be omitted if property type is equal to property value type.
             JsonSerializer.Serialize(writer, value.GetType().FullName);
 
             // Loop through properties
@@ -342,14 +336,25 @@ namespace ConsoleApp
                 if (!isIgnoreNullValue)
                 {
                     ValidatePropertyAndValueType(propertyInfo, propertyValue);
-
-                    // TODO Write reference ComponentJson.Id if not Component.List
-                    // TODO Distinct serialize for client and for server.
-                    // TODO Check ComponentJson reference is in same composition- graph.
-
-                    // Serialize property value
                     writer.WritePropertyName(propertyInfo.Name);
-                    JsonSerializer.Serialize(writer, propertyValue, propertyInfo.PropertyType, options);
+                    if (IsComponentJsonReference(propertyInfo))
+                    {
+                        writer.WriteStartObject();
+                        writer.WritePropertyName("$type");
+                        JsonSerializer.Serialize(writer, "$componentJsonReference");
+                        writer.WritePropertyName("$id");
+                        var id = ((ComponentJson)propertyValue).Id;
+                        JsonSerializer.Serialize<int>(writer, id); 
+                        writer.WriteEndObject();
+                    }
+                    else
+                    {
+                        // TODO Distinct serialize for client and for server.
+                        // TODO Check ComponentJson reference is in same composition- graph.
+
+                        // Serialize property value
+                        JsonSerializer.Serialize(writer, propertyValue, propertyInfo.PropertyType, options);
+                    }
                 }
             }
 
