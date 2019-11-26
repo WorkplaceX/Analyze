@@ -12,12 +12,12 @@ namespace ConsoleApp
 
         }
 
-        public ComponentJson(ComponentJson? owner)
+        public ComponentJson(ComponentJson owner)
         {
             Constructor(owner);
         }
 
-        internal void Constructor(ComponentJson? owner)
+        internal void Constructor(ComponentJson owner)
         {
             this.Type = GetType().Name;
             if (owner == null)
@@ -37,11 +37,11 @@ namespace ConsoleApp
 
         internal int RootIdCount = 0;
 
-        public string? Type { get; set; }
+        public string Type { get; set; }
 
         public int Id { get; set; }
 
-        private List<ComponentJson>? list;
+        private List<ComponentJson> list;
 
         public List<ComponentJson> List { get; set; } = new List<ComponentJson>();
         //{
@@ -63,13 +63,13 @@ namespace ConsoleApp
 
         }
 
-        public Button(ComponentJson? owner) 
+        public Button(ComponentJson owner) 
             : base(owner)
         {
 
         }
 
-        public string? TextHtml { get; set; }
+        public string TextHtml { get; set; }
 
         public DateTime DateTime { get; set; }
 
@@ -97,7 +97,7 @@ namespace ConsoleApp
         {
 
         }
-        public My(ComponentJson? owner) : base(owner)
+        public My(ComponentJson owner) : base(owner)
         {
 
         }
@@ -112,7 +112,7 @@ namespace ConsoleApp
 
         }
 
-        public My2(ComponentJson? owner) : base(owner)
+        public My2(ComponentJson owner) : base(owner)
         {
 
         }

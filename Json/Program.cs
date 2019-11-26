@@ -51,7 +51,6 @@ namespace ConsoleApp
 
             // Serialize with System.Text.Json
             string jsonSource = null;
-            string jsonDest = null;
             ComponentJson buttonDest = null;
             for (int i = 0; i < performanceCount; i++)
             {
