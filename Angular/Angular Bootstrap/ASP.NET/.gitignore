@@ -1,9 +1,0 @@
-/bin/
-/obj/
-/.vs/
-/.vscode/
-/wwwroot/node_modules/
-/wwwroot/typings/
-/*.user
-/Properties/
-/project.lock.json
