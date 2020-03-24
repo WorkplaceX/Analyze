@@ -1,5 +1,7 @@
 # Web Audio API
 
+Play beep for three seconds every minute.
+
 Install
 ```cmd
 npm install
