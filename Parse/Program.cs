@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Parse
 {
@@ -10,20 +11,23 @@ namespace Parse
 
             string text = @"
             # Hello World
-            This is the <!--
+            This is the <!-- My comment
+            # Comment
             --> paragraph
             ";
 
-            // text = "7\r\n# R  <!--";
+            // text = "7\r\n# Rk  <!--";
 
             var storageDocument = new Storage.Document();
             new Storage.FileText(storageDocument, text);
 
-            var mdTokenDocument = new MdToken.Document(storageDocument);
+            var mdLexerDocument = new MdLexer.Document(storageDocument);
 
-            var d = mdTokenDocument.List[0].List;
+            var d = mdLexerDocument.List[0].List;
 
-            var mdDocument = new Md.Document(mdTokenDocument);
+            var mdParserDocument = new MdParser.Document(mdLexerDocument);
+
+            var md = mdParserDocument.List[0].List.ToList();
 
         }
     }
