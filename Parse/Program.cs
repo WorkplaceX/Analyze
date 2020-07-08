@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Parse
 {
@@ -9,26 +11,29 @@ namespace Parse
         {
             Console.WriteLine("Hello World!");
 
-            string text = @"
+
+            {
+                var storageDocument = new Storage.Document();
+                string text = "# Hello  123 <!-- Comment\r\n -->";
+
+                text = @"
             # Hello World
             This is the <!-- My comment
             # Comment
             --> paragraph
             ";
 
-            // text = "7\r\n# Rk  <!--";
+                text = "# Title\r\n# Tit<!---->le2";
 
-            var storageDocument = new Storage.Document();
-            new Storage.FileText(storageDocument, text);
+                new Storage.FileText(storageDocument, text);
 
-            var mdLexerDocument = new MdLexer.Document(storageDocument);
+                var lexerDocument = new MarkdownLexer.Document(storageDocument);
+                var d = lexerDocument.List[0].List;
 
-            var d = mdLexerDocument.List[0].List;
+                var document = new Markdown.Document(lexerDocument);
+                var d2 = document.List[0].List;
 
-            var mdParserDocument = new MdParser.Document(mdLexerDocument);
-
-            var md = mdParserDocument.List[0].List.ToList();
-
+            }
         }
     }
 }

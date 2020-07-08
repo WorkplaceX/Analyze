@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-
-namespace Parse
+﻿namespace Parse
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
     public static class UtilFramework
     {
         public static void Assert(bool value)
@@ -36,52 +34,308 @@ namespace Parse
 
             public readonly List<Component> List = new List<Component>();
 
-            public readonly Component Owner;
+            /// <summary>
+            /// Gets Index. This is the index of this component in owners list.
+            /// </summary>
+            public int Index
+            {
+                get
+                {
+                    int result = -1;
+                    if (Owner != null)
+                    {
+                        result = Owner.List.IndexOf(this);
+                    }
+                    return result;
+                }
+            }
+
+            private void ListAll(Component component, List<Component> result)
+            {
+                if (component != this)
+                {
+                    result.Add(component);
+                }
+                foreach (var item in component.List)
+                {
+                    ListAll(item, result);
+                }
+            }
 
             /// <summary>
-            /// Returns last component.
+            /// Returns all components (hierarchical).
             /// </summary>
-            /// <param name="indexOffset">If 1, last component befory last component is returned.</param>
-            public T Last<T>(int indexOffset) where T : Component
+            public List<Component> ListAll()
             {
-                T result = null;
-                var list = List.OfType<T>().ToList();
-                if ((list.Count - 1) - indexOffset >= 0)
-                {
-                    result = list[(list.Count - 1) - indexOffset];
-                }
+                List<Component> result = new List<Component>();
+                ListAll(this, result);
                 return result;
             }
+
+            /// <summary>
+            /// Gets Owner. Owner of this component.
+            /// </summary>
+            public Component Owner { get; private set; }
 
             /// <summary>
             /// Returns last child component.
             /// </summary>
-            public T Last<T>() where T : Component
+            public Component Last
             {
-                return Last<T>(0);
+                get
+                {
+                    Component result = null;
+                    if (List.Count - 1 >= 0)
+                    {
+                        result = List[List.Count - 1];
+                    }
+                    return result;
+                }
             }
 
             /// <summary>
-            /// Returns next sibling component.
+            /// Returns last child component (hierarchical).
             /// </summary>
-            public Component Next()
+            public Component LastAll
             {
-                Component result = null;
-                var indexNext = Owner.List.IndexOf(this) + 1;
-                if (Owner.List.Count > indexNext)
+                get
                 {
-                    result = Owner.List[indexNext];
+                    Component result = Last;
+                    if (result?.List.Count > 0)
+                    {
+                        result = result.ListAll().Last();
+                    }
+                    return result;
                 }
-                return result;
+            }
+
+            /// <summary>
+            /// Gets Next. This is the next sibling component.
+            /// </summary>
+            public Component Next
+            {
+                get
+                {
+                    Component result = null;
+                    if (Owner != null)
+                    {
+                        var index = Owner.List.IndexOf(this) + 1;
+                        if (index < Owner.List.Count)
+                        {
+                            result = Owner.List[index];
+                        }
+                    }
+                   return result;
+                }
+            }
+
+
+            /// <summary>
+            /// Gets Previous. This is the previous sibling component.
+            /// </summary>
+            public Component Previous
+            {
+                get
+                {
+                    Component result = null;
+                    if (Owner != null)
+                    {
+                        var index = Owner.List.IndexOf(this) - 1;
+                        if (index >= 0)
+                        {
+                            result = Owner.List[index];
+                        }
+                    }
+                    return result;
+                }
+            }
+
+            /// <summary>
+            /// Gets Previous. This is the previous sibling component (hierarchical).
+            /// </summary>
+            public Component PreviousAll
+            {
+                get
+                {
+                    var result = Previous;
+                    if (result?.List.Count > 0)
+                    {
+                        result = result.ListAll().Last();
+                    }
+                    return result;
+                }
+            }
+
+            /// <summary>
+            /// Removes this component from owners list.
+            /// </summary>
+            public void Remove()
+            {
+                if (Owner != null)
+                {
+                    UtilFramework.Assert(Owner.List.Remove(this));
+                    Owner = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntax tree.
+        /// </summary>
+        public class Syntax : Component
+        {
+            public Syntax(Component owner, Syntax referenceBegin, Syntax referenceEnd) 
+                : base(owner)
+            {
+                ReferenceBegin = referenceBegin;
+                ReferenceEnd = referenceEnd;
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Syntax() 
+                : base(null)
+            {
+
+            }
+
+            public bool IsFactory => Owner == null;
+
+            public readonly Syntax ReferenceBegin;
+
+            public int ReferenceBeginIndex
+            {
+                get
+                {
+                    int result = -1;
+                    if (ReferenceBegin != null)
+                    {
+                        result = ReferenceBegin.Index;
+                    }
+                    return result;
+                }
+            }
+
+            public readonly Syntax ReferenceEnd;
+
+            public int ReferenceEndIndex
+            {
+                get
+                {
+                    int result = -1;
+                    if (ReferenceEnd != null)
+                    {
+                        result = ReferenceEnd.Index;
+                    }
+                    return result;
+                }
+            }
+
+            public Syntax ReferenceEndAll
+            {
+                get
+                {
+                    var result = ReferenceEnd;
+                    if (List.Count > 0)
+                    {
+                        result = ((Syntax)ListAll().Last()).ReferenceEnd;
+                    }
+                    return result;
+                }
+            }
+
+            /// <summary>
+            /// Create syntax.
+            /// </summary>
+            /// <param name="owner">Owner of new syntax.</param>
+            /// <param name="referenceList">Reference list to loop through</param>
+            /// <param name="reference">Reference item to start with.</param>
+            public static void Create(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList, List<Syntax> syntaxFactoryStopList)
+            {
+                int referenceIndex = 0;
+                if (reference != null)
+                {
+                    UtilFramework.Assert(referenceList.Contains(reference));
+                    referenceIndex = referenceList.IndexOf(reference);
+                }
+
+                // Loop through reference list starting at item.
+                for (int index = referenceIndex; index < referenceList.Count; index++)
+                {
+                    Syntax item = (Syntax)referenceList[index];
+
+                    // Create syntax from factory
+                    Syntax syntax = null;
+                    // Syntax factory used to create syntax
+                    Syntax syntaxFactory = null;
+                    foreach (var syntaxFactoryItem in syntaxFactoryList)
+                    {
+                        // Create before
+                        int syntaxLength = owner.List.Count;
+                        Syntax syntaxLast = (Syntax)owner.Last;
+
+                        // Create
+                        syntaxFactoryItem.Create(owner, referenceList, item, syntaxFactoryList);
+
+                        // Create after
+                        Syntax syntaxNewLast = (Syntax)owner.Last;
+                        int syntaxNewLength = owner.List.Count;
+
+                        // Create result get
+                        UtilFramework.Assert(syntaxNewLength - syntaxLength == 0 || syntaxNewLength - syntaxLength == 1); // Zero or one token added.
+                        if (syntaxNewLength - syntaxLength == 1)
+                        {
+                            syntax = syntaxNewLast;
+                        }
+                        else
+                        {
+                            if (syntaxLast != syntaxNewLast)
+                            {
+                                syntax = syntaxNewLast;
+                            }
+                        }
+
+                        // Create result
+                        if (syntax != null)
+                        {
+                            UtilFramework.Assert(syntax.GetType() == syntaxFactoryItem.GetType());
+                            syntaxFactory = syntaxFactoryItem;
+                            break;
+                        }
+                    }
+
+                    // Created syntax
+                    UtilFramework.Assert(syntax != null);
+                    var syntaxPrevious = (Syntax)syntax.PreviousAll;
+                    if (syntaxPrevious != null)
+                    {
+                        UtilFramework.Assert(syntaxPrevious.ReferenceEndIndex + 1 == syntax.ReferenceBeginIndex);
+                    }
+                    int referenceEndIndex = syntax.ReferenceEndAll.Index;
+                    UtilFramework.Assert(index <= referenceEndIndex && referenceEndIndex < referenceList.Count);
+                    // Move index to new end
+                    index = referenceEndIndex;
+                    if (syntaxFactoryStopList.Contains(syntaxFactory))
+                    {
+                        syntax.Remove();
+                        break;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Create one new Syntax component or replace last Syntax component.
+            /// </summary>
+            public virtual void Create(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList)
+            {
+
             }
         }
     }
 
     public static class Storage
     {
-        /// <summary>
-        /// Storage root component.
-        /// </summary>
         public class Document : Tree.Component
         {
             public Document() 
@@ -91,210 +345,161 @@ namespace Parse
             }
         }
 
-        /// <summary>
-        /// A text file.
-        /// </summary>
         public class FileText : Tree.Component
         {
             public FileText(Document owner, string text)
                 : base(owner)
             {
                 Text = text;
+                for (int index = 0; index < Text.Length; index++)
+                {
+                    new Character(this, index);
+                }
             }
 
             public readonly string Text;
         }
 
-        /// <summary>
-        /// Token emitted by lexer. Lexer emits a list of tokens (not a hierarchical structure). See also: https://www.youtube.com/watch?v=TG0qRDrUPpA and
-        /// https://www.youtube.com/watch?v=9-EYWLbmiG0
-        /// </summary>
-        public class Token : Tree.Component
+        public class Character : Tree.Syntax
         {
-            public Token(FileText owner, int indexStart, int indexEnd)
-                : base(owner)
+            public Character(FileText owner, int textIndex)
+                : base(owner, null, null)
             {
-                IndexStart = indexStart;
-                IndexEnd = indexEnd;
+                TextIndex = textIndex;
             }
 
-            /// <summary>
-            /// Constructor factory.
-            /// </summary>
-            public Token()
+            public new FileText Owner => (FileText)base.Owner;
+
+            public readonly int TextIndex;
+
+            public char Text
+            {
+                get
+                {
+                    return Owner.Text[TextIndex];
+                }
+            }
+        }
+    }
+
+    public static class MarkdownLexer
+    {
+        public class Document : Tree.Component
+        {
+            public Document(Storage.Document storageDocument)
                 : base(null)
+            {
+                List<Tree.Syntax> syntaxFactoryList = new List<Tree.Syntax>();
+                syntaxFactoryList.Add(new NewLine());
+                syntaxFactoryList.Add(new Comment());
+                syntaxFactoryList.Add(new Space());
+                syntaxFactoryList.Add(new Header());
+                syntaxFactoryList.Add(new Content());
+
+                List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>();
+
+                foreach (Storage.FileText referenceFileText in storageDocument.List)
+                {
+                    var fileText = new FileText(this);
+                    Tree.Syntax.Create(fileText, referenceFileText.List, null, syntaxFactoryList, syntaxFactoryStopList);
+                }
+            }
+        }
+
+        public class FileText : Tree.Component
+        {
+            public FileText(Document owner)
+                : base(owner)
+            {
+
+            }
+        }
+
+        public class Token : Tree.Syntax
+        {
+            public Token(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
             {
 
             }
 
             public new FileText Owner => (FileText)base.Owner;
 
-            /// <summary>
-            /// Gets IsFactory. Returns true, if instance is used to create tokens.
-            /// </summary>
-            public bool IsFactory => Owner == null;
+            public new Storage.Character ReferenceBegin => (Storage.Character)base.ReferenceBegin;
+
+            public new Storage.Character ReferenceEnd => (Storage.Character)base.ReferenceEnd;
 
             /// <summary>
-            /// Gets IndexStart. Token starts at this index position.
+            /// Constructor factory.
             /// </summary>
-            public readonly int IndexStart;
+            public Token()
+                : base()
+            {
 
-            /// <summary>
-            /// Gets IndexEnd. Token ends at this index position.
-            /// </summary>
-            public readonly int IndexEnd;
+            }
 
-            /// <summary>
-            /// Gets Length. This is the token length.
-            /// </summary>
-            public int Length
+            public new Token Next
             {
                 get
                 {
-                    return IndexEnd - IndexStart + 1;
+                    return (Token)base.Next;
                 }
             }
 
-            /// <summary>
-            /// Gets Text. This is the text from IndexStart to IndexEnd.
-            /// </summary>
             public string Text
             {
                 get
                 {
-                    return Owner.Text.Substring(IndexStart, IndexEnd - IndexStart + 1);
+                    Storage.FileText fileText = ReferenceBegin.Owner;
+                    int indexBegin = ReferenceBegin.TextIndex;
+                    int indexEnd = ReferenceEnd.TextIndex;
+                    return fileText.Text.Substring(indexBegin, indexEnd - indexBegin + 1);
                 }
             }
 
-            /// <summary>
-            /// Returns token if text at possition matches.
-            /// </summary>
-            /// <param name="index">Returns new index position</param>
-            public virtual Token Create(FileText owner, int index)
+            public static void Create(FileText owner, Storage.Character reference, Action<FileText, string, Storage.Character, Storage.Character> createSyntax, params string[] tokenTextList)
             {
-                return null;
-            }
-
-            /// <summary>
-            /// Returns true if tokenText matches.
-            /// </summary>
-            public static bool Create(FileText owner, int index, string tokenText)
-            {
-                bool result = false;
-                if (index + tokenText.Length <= owner.Text.Length)
+                var referenceCharacter = (Storage.Character)reference;
+                foreach (var tokenText in tokenTextList)
                 {
-                    if (owner.Text.Substring(index, tokenText.Length) == tokenText)
+                    if (referenceCharacter.Owner.Text.Length > referenceCharacter.TextIndex + tokenText.Length - 1)
                     {
-                        result = true;
-                    }
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Returns token if tokenText matches.
-            /// </summary>
-            public static TToken Create<TToken>(FileText owner, int index, Func<FileText, int, int, string, TToken> create, string tokenText) where TToken : Token
-            {
-                TToken result = null;
-                if (Create(owner, index, tokenText))
-                {
-                    result = create(owner, index, index + tokenText.Length - 1, tokenText);
-                    UtilFramework.Assert(result != null);
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Returns token if tokenText matches.
-            /// </summary>
-            public static TToken Create<TToken>(FileText owner, int index, Func<FileText, int, int, string, TToken> create, params string[] tokenTextList) where TToken : Token
-            {
-                TToken result = null;
-                foreach (string tokenText in tokenTextList)
-                {
-                    result = Create(owner, index, create, tokenText);
-                    if (result != null)
-                    {
-                        break;
-                    }
-                }
-                return result;
-            }
-        }
-    }
-
-    public static class MdLexer
-    {
-        /// <summary>
-        /// MdLexer root component.
-        /// </summary>
-        public class Document : Storage.Document
-        {
-            /// <summary>
-            /// Constructor. Lexer emmiting tokens.
-            /// </summary>
-            public Document(Storage.Document storageDocument)
-                : base()
-            {
-                // Copy FileText components
-                foreach (var item in storageDocument.List)
-                {
-                    if (item is Storage.FileText fileText)
-                    {
-                        new Storage.FileText(this, fileText.Text);
-                    }
-                }
-
-                // Populate token factory
-                List<Storage.Token> tokenFactoryList = new List<Storage.Token>();
-                tokenFactoryList.Add(new Space());
-                tokenFactoryList.Add(new NewLine());
-                tokenFactoryList.Add(new Comment());
-                tokenFactoryList.Add(new Header());
-                tokenFactoryList.Add(new Content());
-
-                // Loop over Document components
-                foreach (var item in List)
-                {
-                    // Loop over FileText
-                    if (item is Storage.FileText fileText)
-                    {
-                        // Loop over each character
-                        for (int index = 0; index < fileText.Text.Length; index++)
+                        if (referenceCharacter.Owner.Text.Substring(referenceCharacter.TextIndex, tokenText.Length) == tokenText)
                         {
-                            // Loop over each token factory.
-                            Storage.Token token = null;
-                            foreach (var tokenFactory in tokenFactoryList)
-                            {
-                                token = tokenFactory.Create(fileText, index);
-                                if (token != null)
-                                {
-                                    UtilFramework.Assert(token.IndexStart <= token.IndexEnd);
-                                    var tokenLastLast = fileText.Last<Storage.Token>(1);
-                                    if (tokenLastLast != null)
-                                    {
-                                        UtilFramework.Assert(tokenLastLast.IndexEnd + 1 == token.IndexStart);
-                                    }
-                                    UtilFramework.Assert(token.IndexEnd < fileText.Text.Length);
-                                    index = token.IndexEnd; // Move index if token length greater one.
-                                    break;
-                                }
-                            }
-                            UtilFramework.Assert(token != null);
+                            var referenceEnd = (Storage.Character)reference.Owner.List[referenceCharacter.TextIndex + tokenText.Length - 1];
+
+                            // Create before
+                            int length = owner.List.Count;
+
+                            // Create
+                            createSyntax(owner, tokenText, reference, referenceEnd);
+
+                            // Create after
+                            int lengthNew = owner.List.Count;
+
+                            // Create validate
+                            UtilFramework.Assert(lengthNew - length == 1); // Created one token
+                            break;
                         }
                     }
                 }
             }
+
+            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            {
+                Create((FileText)owner, referenceList, (Storage.Character)reference);
+            }
+
+            public virtual void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            {
+
+            }
         }
 
-        /// <summary>
-        /// Space token. One or many space characters.
-        /// </summary>
-        public class Space : Storage.Token
+        public class Space : Token
         {
-            public Space(Storage.FileText owner, int indexStart, int indexEnd)
-                : base(owner, indexStart, indexEnd)
+            public Space(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
             {
 
             }
@@ -302,142 +507,59 @@ namespace Parse
             /// <summary>
             /// Constructor factory.
             /// </summary>
-            public Space()
+            public Space() 
                 : base()
             {
 
             }
 
-            public override Storage.Token Create(Storage.FileText owner, int index)
+            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
             {
-                Space result = null;
-                int indexEnd;
-                for (indexEnd = index; indexEnd < owner.Text.Length; indexEnd++)
+                var character =reference;
+                if (character.Text == ' ')
                 {
-                    if (owner.Text[indexEnd] != ' ')
+                    if (owner.Last is Space space)
                     {
-                        break;
-                    }
-                }
-                indexEnd -= 1;
-                if (index <= indexEnd)
-                {
-                    result = new Space(owner, index, indexEnd);
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// New line token.
-        /// </summary>
-        public class NewLine : Storage.Token
-        {
-            public NewLine(Storage.FileText owner, int indexStart, int indexEnd) 
-                : base(owner, indexStart, indexEnd)
-            {
-
-            }
-
-            /// <summary>
-            /// Constructor factory.
-            /// </summary>
-            public NewLine() 
-                : base()
-            {
-
-            }
-
-            public override Storage.Token Create(Storage.FileText owner, int index)
-            {
-                return Create(owner, index, (owner, indexStart, indexEnd, tokenText) => new NewLine(owner, indexStart, indexEnd), "\r\n", "\r", "\n");
-            }
-        }
-
-        /// <summary>
-        /// Comment begin or comment end token.
-        /// </summary>
-        public class Comment : Storage.Token
-        {
-            public Comment(Storage.FileText owner, int indexStart, int indexEnd, bool isEnd)
-                : base(owner, indexStart, indexEnd)
-            {
-                IsEnd = isEnd;
-            }
-
-            /// <summary>
-            /// Constructor factory.
-            /// </summary>
-            public Comment() 
-                : base()
-            {
-
-            }
-
-            /// <summary>
-            /// Gets IsEnd. If true, this is the end comment token.
-            /// </summary>
-            public readonly bool IsEnd;
-
-            public override Storage.Token Create(Storage.FileText owner, int index)
-            {
-                return Create(owner, index, (owner, indexStart, indexEnd, tokenText) => new Comment(owner, indexStart, indexEnd, tokenText == "-->"), "<!--", "-->");
-            }
-        }
-
-        /// <summary>
-        /// Header token.
-        /// </summary>
-        public class Header : Storage.Token
-        {
-            public Header(Storage.FileText owner, int indexStart, int indexEnd)
-                : base(owner, indexStart, indexEnd)
-            {
-
-            }
-
-            /// <summary>
-            /// Constructor factory.
-            /// </summary>
-            public Header() 
-                : base()
-            {
-
-            }
-
-            public override Storage.Token Create(Storage.FileText owner, int index)
-            {
-                Header result = null;
-                if (Create(owner, index, "# "))
-                {
-                    var tokenLast = owner.Last<Storage.Token>();
-                    if (tokenLast == null || tokenLast is NewLine)
-                    {
-                        result = new Header(owner, index, index);
+                        space.Remove();
+                        new Space(owner, space.ReferenceBegin, reference);
                     }
                     else
                     {
-                        var tokenLastLast = owner.Last<Storage.Token>(1);
-                        if (tokenLast is Space)
-                        {
-                            if (tokenLastLast == null || tokenLastLast is NewLine)
-                            {
-                                result = new Header(owner, index, index);
-                            }
-                        }
+                        new Space(owner, reference, reference);
                     }
                 }
-                return result;
             }
         }
 
-        /// <summary>
-        /// Content token to fill the gaps.
-        /// </summary>
-        public class Content : Storage.Token
+        public class Header : Token
         {
-            public Content(Storage.FileText owner, int indexStart, int indexEnd)
-                : base(owner, indexStart, indexEnd)
+            public Header(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
+            {
+
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Header()
+            {
+
+            }
+
+            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            {
+                if (reference.Text == '#')
+                {
+                    new Header(owner, reference, reference);
+                }
+            }
+        }
+
+        public class Content : Token
+        {
+            public Content(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd) 
+                : base(owner, referenceBegin, referenceEnd)
             {
 
             }
@@ -450,73 +572,92 @@ namespace Parse
 
             }
 
-            public override Storage.Token Create(Storage.FileText owner, int index)
+            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
             {
-                Content result;
-                if (owner.Last<Storage.Token>() is Content content)
+                if (owner.Last is Content content)
                 {
-                    UtilFramework.Assert(owner.List.Remove(content));
-                    result = new Content(owner, content.IndexStart, index);
+                    content.Remove();
+                    new Content((FileText)owner, content.ReferenceBegin, reference);
                 }
                 else
                 {
-                    result = new Content(owner, index, index);
+                    new Content((FileText)owner, reference, reference);
                 }
-                return result;
+            }
+        }
+
+        public class Comment : Token
+        {
+            public Comment(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd, bool isEnd)
+                : base(owner, referenceBegin, referenceEnd)
+            {
+                IsEnd = isEnd;
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Comment()
+            {
+
+            }
+
+            public readonly bool IsEnd;
+
+            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            {
+                Create(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new Comment(owner, referenceBegin, referenceEnd, tokenText == "-->"), "<!--", "-->");
+            }
+        }
+
+        public class NewLine : Token
+        {
+            public NewLine(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
+            {
+
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public NewLine()
+            {
+
+            }
+
+            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            {
+                Create(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new NewLine(owner, referenceBegin, referenceEnd), "\r\n", "\r", "\n");
             }
         }
     }
 
-    public static class MdParser
+    public static class Markdown
     {
-        /// <summary>
-        /// Md root component.
-        /// </summary>
         public class Document : Tree.Component
         {
-            /// <summary>
-            /// Constructor. Token parser.
-            /// </summary>
-            public Document(MdLexer.Document mdLexerDocument) 
+            public Document(MarkdownLexer.Document mdLexerDocument) 
                 : base(null)
             {
-                var syntaxFactoryList = new List<Syntax>();
+                List<Tree.Syntax> syntaxFactoryList = new List<Tree.Syntax>();
+                syntaxFactoryList.Add(new Space());
+                syntaxFactoryList.Add(new NewLine());
                 syntaxFactoryList.Add(new Comment());
                 syntaxFactoryList.Add(new Header());
                 syntaxFactoryList.Add(new Content());
 
-                // Loop through document components
-                foreach (var item in mdLexerDocument.List)
+                List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>();
+                syntaxFactoryStopList.Add(new NewLine());
+
+                foreach (var fileText in mdLexerDocument.List.OfType<MarkdownLexer.FileText>())
                 {
-                    // Loop through FileText components
-                    if (item is Storage.FileText fileText)
-                    {
-                        var page = new Page(this);
-                        // Loop through token list
-                        var tokenList = fileText.List.OfType<Storage.Token>().ToList();
-                        for (int i = 0; i < tokenList.Count; i++)
-                        {
-                            var token = tokenList[i];
-                            // Loop through syntax factory
-                            Syntax syntax = null;
-                            foreach (var syntaxFactory in syntaxFactoryList)
-                            {
-                                syntax = syntaxFactory.Create(page, token);
-                                if (syntax != null)
-                                {
-                                    break;
-                                }
-                            }
-                            UtilFramework.Assert(syntax != null);
-                        }
-                    }
+                    var page = new Page(this);
+                    Tree.Syntax.Create(page, fileText.List, null, syntaxFactoryList, syntaxFactoryStopList);
                 }
             }
         }
 
-        /// <summary>
-        /// Page with md syntax.
-        /// </summary>
         public class Page : Tree.Component
         {
             public Page(Document owner) 
@@ -526,13 +667,10 @@ namespace Parse
             }
         }
 
-        /// <summary>
-        /// Md syntax tree. Syntax element is created based on one or more tokens.
-        /// </summary>
-        public class Syntax : Tree.Component
+        public class Node : Tree.Syntax
         {
-            public Syntax(Tree.Component owner)
-                : base(owner)
+            public Node(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
             {
 
             }
@@ -540,74 +678,135 @@ namespace Parse
             /// <summary>
             /// Constructor factory.
             /// </summary>
-            public Syntax()
-                : base(null)
+            public Node() 
+                : base(null, null, null)
             {
 
             }
 
-            /// <summary>
-            /// Gets IsFactory. If true, syntax element is used as factory.
-            /// </summary>
-            public bool IsFactory => Owner == null;
+            public new MarkdownLexer.Token ReferenceBegin => (MarkdownLexer.Token)base.ReferenceBegin;
 
-            /// <summary>
-            /// Create syntax element.
-            /// </summary>
-            /// <param name="owner">Page or syntax element.</param>
-            /// <param name="token">Token emitted by lexer.</param>
-            public virtual Syntax Create(Tree.Component owner, Storage.Token token)
+            public new MarkdownLexer.Token ReferenceEnd => (MarkdownLexer.Token)base.ReferenceEnd;
+
+            public string Text
             {
-                return null;
+                get
+                {
+                    var tokenBegin = ReferenceBegin;
+                    var characterBegin = tokenBegin.ReferenceBegin;
+
+                    var tokenEnd = ReferenceEnd;
+                    var characterEnd = tokenEnd.ReferenceEnd;
+
+                    var fileText = characterBegin.Owner;
+
+                    return fileText.Text.Substring(characterBegin.TextIndex, characterEnd.TextIndex - characterBegin.TextIndex + 1);
+                }
+            }
+
+            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            {
+                List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>(syntaxFactoryList.Where(item => item is NewLine || item is Comment));
+                Create(owner, referenceList, (MarkdownLexer.Token)reference, syntaxFactoryList, syntaxFactoryStopList);
+            }
+
+            public virtual void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            {
+
             }
         }
 
-        /// <summary>
-        /// Comment syntax.
-        /// </summary>
-        public class Comment : Syntax
+        public class Space : Node
         {
-            public Comment(Page owner, string text) 
-                : base(owner)
+            public Space(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
             {
-                Text = text;
+
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Space()
+                : base(null, null, null)
+            {
+
+            }
+
+            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            {
+                if (reference is MarkdownLexer.Space)
+                {
+                    new Space(owner, reference, reference);
+                }
+            }
+
+        }
+
+        public class NewLine : Node
+        {
+            public NewLine(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
+            {
+
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public NewLine()
+                : base(null, null, null)
+            {
+
+            }
+
+            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            {
+                if (reference is MarkdownLexer.NewLine)
+                {
+                    new NewLine(owner, reference, reference);
+                }
+            }
+        }
+
+        public class Comment : Node
+        {
+            public Comment(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
+            {
+
             }
 
             /// <summary>
             /// Constructor factory.
             /// </summary>
             public Comment() 
-                : base()
+                : base(null, null, null)
             {
 
             }
 
-            public readonly string Text;
-
-            public override Syntax Create(Tree.Component owner, Storage.Token token)
+            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
             {
-                Comment result = null;
-                if (token is MdLexer.Comment comment && comment.IsEnd == false)
+                if (reference is MarkdownLexer.Comment comment && comment.IsEnd == false)
                 {
-                    StringBuilder text = new StringBuilder();
-                    while ((token= (Storage.Token)token.Next()) != null)
+                    MarkdownLexer.Token referenceNext = reference;
+                    while ((referenceNext = referenceNext.Next) != null)
                     {
-                        if (token is MdLexer.Comment commentNext && commentNext.IsEnd)
+                        if (referenceNext is MarkdownLexer.Comment commentNext && commentNext.IsEnd)
                         {
-                            result = new Comment((Page)owner, text.ToString());
+                            new Comment(owner, reference, referenceNext);
                             break;
                         }
-                        text.Append(token.Text);
                     }
                 }
-                return result;
             }
         }
 
-        public class Header : Syntax
+        public class Header : Node
         {
-            public Header(Page owner) 
-                : base(owner)
+            public Header(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
             {
 
             }
@@ -615,57 +814,54 @@ namespace Parse
             /// <summary>
             /// Constructor factory.
             /// </summary>
-            public Header() 
-                : base(null)
+            public Header()
+                : base(null, null, null)
             {
 
             }
 
-            public override Syntax Create(Tree.Component owner, Storage.Token token)
+            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
             {
-                Header result = null;
-                if (token is MdLexer.Header header)
+                if (reference is MarkdownLexer.Header tokenHeader)
                 {
-                    // TODO Level0, Level1 Syntax
+                    if (tokenHeader.Previous == null || (tokenHeader.Previous is MarkdownLexer.Space && (tokenHeader.Previous.Previous == null || tokenHeader.Previous.Previous is MarkdownLexer.NewLine)))
+                    {
+                        var header = new Header(owner, reference, reference);
+                        Tree.Syntax.Create(header, referenceList, reference.Next, syntaxFactoryList, syntaxFactoryStopList);
+                    }
                 }
-                return result;
             }
         }
 
-        /// <summary>
-        /// Content syntax to fill the gaps.
-        /// </summary>
-        public class Content : Syntax
+
+        public class Content : Node
         {
-            public Content(Tree.Component owner, string text)
-                : base(owner)
+            public Content(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd) 
+                : base(owner, referenceBegin, referenceEnd)
             {
-                Text = text;
+
             }
 
             /// <summary>
             /// Constructor factory.
             /// </summary>
-            public Content()
+            public Content() 
+                : base(null, null, null)
             {
 
             }
 
-            public readonly string Text;
-
-            public override Syntax Create(Tree.Component owner, Storage.Token token)
+            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
             {
-                Content result;
-                if (owner.Last<Syntax>() is Content content)
+                if (owner.Last is Content content)
                 {
-                    UtilFramework.Assert(owner.List.Remove(content));
-                    result = new Content(owner, content.Text + token.Text);
+                    content.Remove();
+                    new Content(owner, content.ReferenceBegin, reference);
                 }
                 else
                 {
-                    result = new Content(owner, token.Text);
+                    new Content(owner, reference, reference);
                 }
-                return result;
             }
         }
     }
