@@ -21,14 +21,14 @@ namespace Parse
             This is the <!-- My comment
             # Comment
             --> paragraph
+            # Hello2 
             ";
 
-                text = "# Title\r\n# Title2";
+                // text = "# T<!-- # T -->itle\r\n# Title2";
 
 
-                text = "Title\r\n88";
 
-                // text = "# Title\r\n# Tit<!---->le2";
+                // text = "# Title\r\n# Tit<!-- # D -->le2";
 
 
                 new Storage.FileText(storageDocument, text);
