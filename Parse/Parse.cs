@@ -250,34 +250,33 @@
             /// Create syntax.
             /// </summary>
             /// <param name="owner">Owner of new syntax.</param>
-            /// <param name="referenceList">Reference list to loop through</param>
             /// <param name="reference">Reference item to start with or null to start with first item.</param>
-            public static void Create(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList, List<Syntax> syntaxFactoryStopList)
+            public static void CreateTree(Component owner, Syntax reference, CreateTreeArgs createTreeArgs)
             {
                 int referenceIndex = 0;
                 if (reference != null)
                 {
-                    UtilFramework.Assert(referenceList.Contains(reference));
-                    referenceIndex = referenceList.IndexOf(reference);
+                    UtilFramework.Assert(createTreeArgs.ReferenceList.Contains(reference));
+                    referenceIndex = createTreeArgs.ReferenceList.IndexOf(reference);
                 }
 
                 // Loop through reference list starting at item.
-                for (int index = referenceIndex; index < referenceList.Count; index++)
+                for (int index = referenceIndex; index < createTreeArgs.ReferenceList.Count; index++)
                 {
-                    Syntax item = (Syntax)referenceList[index];
+                    Syntax item = (Syntax)createTreeArgs.ReferenceList[index];
 
                     // Create syntax from factory
                     Syntax syntax = null;
                     // Syntax factory used to create syntax
                     Syntax syntaxFactory = null;
-                    foreach (var syntaxFactoryItem in syntaxFactoryList)
+                    foreach (var syntaxFactoryItem in createTreeArgs.SyntaxFactoryList)
                     {
                         // Create before
                         int syntaxLength = owner.List.Count;
                         Syntax syntaxLast = (Syntax)owner.Last;
 
                         // Create
-                        syntaxFactoryItem.Create(owner, referenceList, item, syntaxFactoryList);
+                        syntaxFactoryItem.Create(owner, item, createTreeArgs);
 
                         // Create after
                         Syntax syntaxNewLast = (Syntax)owner.Last;
@@ -314,10 +313,10 @@
                         UtilFramework.Assert(syntaxPrevious.ReferenceEndIndex + 1 == syntax.ReferenceBeginIndex);
                     }
                     int referenceEndIndex = syntax.ReferenceEndAll.Index;
-                    UtilFramework.Assert(index <= referenceEndIndex && referenceEndIndex < referenceList.Count);
+                    UtilFramework.Assert(index <= referenceEndIndex && referenceEndIndex < createTreeArgs.ReferenceList.Count);
                     // Move index to new end
                     index = referenceEndIndex;
-                    if (syntaxFactoryStopList.Contains(syntaxFactory))
+                    if (createTreeArgs.SyntaxFactoryStopList.Contains(syntaxFactory))
                     {
                         syntax.Remove();
                         break;
@@ -325,10 +324,29 @@
                 }
             }
 
+            public class CreateTreeArgs
+            {
+                public CreateTreeArgs(List<Component> referenceList, List<Syntax> syntaxFactoryList, List<Syntax> syntaxFactoryStopList)
+                {
+                    ReferenceList = referenceList;
+                    SyntaxFactoryList = syntaxFactoryList;
+                    SyntaxFactoryStopList = syntaxFactoryStopList;
+                }
+
+                /// <summary>
+                /// Reference list to loop through.
+                /// </summary>
+                public List<Component> ReferenceList;
+
+                public List<Syntax> SyntaxFactoryList;
+
+                public List<Syntax> SyntaxFactoryStopList;
+            }
+
             /// <summary>
-            /// Create one new Syntax component or replace last Syntax component.
+            /// Create one new Syntax component or replace owners last Syntax component.
             /// </summary>
-            public virtual void Create(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList)
+            public virtual void Create(Component owner, Syntax reference, CreateTreeArgs createTreeArgs)
             {
 
             }
@@ -402,7 +420,7 @@
                 foreach (Storage.FileText referenceFileText in storageDocument.List)
                 {
                     var fileText = new FileText(this);
-                    Tree.Syntax.Create(fileText, referenceFileText.List, null, syntaxFactoryList, syntaxFactoryStopList);
+                    Tree.Syntax.CreateTree(fileText, null, new Tree.Syntax.CreateTreeArgs(referenceFileText.List, syntaxFactoryList, syntaxFactoryStopList));
                 }
             }
         }
@@ -473,40 +491,48 @@
                 }
             }
 
-            public static void Create(FileText owner, Storage.Character reference, Action<FileText, string, Storage.Character, Storage.Character> createSyntax, params string[] tokenTextList)
+            /// <summary>
+            /// Create one token if one tokenTextList matches.
+            /// </summary>
+            /// <param name="owner">Owner of new token to create.</param>
+            /// <param name="reference">Character to start match.</param>
+            /// <param name="createToken">Call back method to create one token.</param>
+            /// <param name="tokenTextList">One of these tokens has to match.</param>
+            public static void CreateToken(FileText owner, Storage.Character reference, Action<FileText, string, Storage.Character, Storage.Character> createToken, params string[] tokenTextList)
             {
-                var referenceCharacter = (Storage.Character)reference;
                 foreach (var tokenText in tokenTextList)
                 {
-                    if (referenceCharacter.Owner.Text.Length > referenceCharacter.TextIndex + tokenText.Length - 1)
+                    if (reference.Owner.Text.Length > reference.TextIndex + tokenText.Length - 1)
                     {
-                        if (referenceCharacter.Owner.Text.Substring(referenceCharacter.TextIndex, tokenText.Length) == tokenText)
+                        if (reference.Owner.Text.Substring(reference.TextIndex, tokenText.Length) == tokenText)
                         {
-                            var referenceEnd = (Storage.Character)reference.Owner.List[referenceCharacter.TextIndex + tokenText.Length - 1];
+                            var referenceEnd = (Storage.Character)reference.Owner.List[reference.TextIndex + tokenText.Length - 1];
 
                             // Create before
                             int length = owner.List.Count;
 
                             // Create
-                            createSyntax(owner, tokenText, reference, referenceEnd);
+                            createToken(owner, tokenText, reference, referenceEnd);
 
                             // Create after
                             int lengthNew = owner.List.Count;
 
                             // Create validate
                             UtilFramework.Assert(lengthNew - length == 1); // Created one token
+                            UtilFramework.Assert(owner.Last is Token); // Create of type token
+
                             break;
                         }
                     }
                 }
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(Tree.Component owner, Tree.Syntax reference, CreateTreeArgs createTreeArgs)
             {
-                Create((FileText)owner, referenceList, (Storage.Character)reference);
+                Create((FileText)owner, (Storage.Character)reference, createTreeArgs);
             }
 
-            public virtual void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            public virtual void Create(FileText owner, Storage.Character reference, CreateTreeArgs createTreeArgs)
             {
 
             }
@@ -529,7 +555,7 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            public override void Create(FileText owner, Storage.Character reference, CreateTreeArgs createTreeArgs)
             {
                 var character =reference;
                 if (character.Text == ' ')
@@ -563,7 +589,7 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            public override void Create(FileText owner, Storage.Character reference, CreateTreeArgs createTreeArgs)
             {
                 if (reference.Text == '#')
                 {
@@ -588,7 +614,7 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            public override void Create(FileText owner, Storage.Character reference, CreateTreeArgs createTreeArgs)
             {
                 if (owner.Last is Content content)
                 {
@@ -620,9 +646,9 @@
 
             public readonly bool IsEnd;
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            public override void Create(FileText owner, Storage.Character reference, CreateTreeArgs createTreeArgs)
             {
-                Create(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new Comment(owner, referenceBegin, referenceEnd, tokenText == "-->"), "<!--", "-->");
+                CreateToken(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new Comment(owner, referenceBegin, referenceEnd, tokenText == "-->"), "<!--", "-->");
             }
         }
 
@@ -642,9 +668,9 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference)
+            public override void Create(FileText owner, Storage.Character reference, CreateTreeArgs createTreeArgs)
             {
-                Create(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new NewLine(owner, referenceBegin, referenceEnd), "\r\n", "\r", "\n");
+                CreateToken(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new NewLine(owner, referenceBegin, referenceEnd), "\r\n", "\r", "\n");
             }
         }
     }
@@ -669,7 +695,7 @@
                 foreach (var fileText in mdLexerDocument.List.OfType<MarkdownLexer.FileText>())
                 {
                     var page = new Page(this);
-                    Tree.Syntax.Create(page, fileText.List, null, syntaxFactoryList, syntaxFactoryStopList);
+                    Tree.Syntax.CreateTree(page, null, new Tree.Syntax.CreateTreeArgs(fileText.List, syntaxFactoryList, syntaxFactoryStopList));
                 }
             }
         }
@@ -771,13 +797,13 @@
                 }
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(Tree.Component owner, Tree.Syntax reference, CreateTreeArgs createTreeArgs)
             {
-                List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>(syntaxFactoryList.Where(item => item is NewLine || item is Comment));
-                Create(owner, referenceList, (MarkdownLexer.Token)reference, syntaxFactoryList, syntaxFactoryStopList);
+                List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>(createTreeArgs.SyntaxFactoryList.Where(item => item is NewLine || item is Comment));
+                Create(owner, (MarkdownLexer.Token)reference, createTreeArgs);
             }
 
-            public virtual void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            public virtual void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateTreeArgs createTreeArgs)
             {
 
             }
@@ -800,7 +826,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateTreeArgs createTreeArgs)
             {
                 if (reference is MarkdownLexer.Space)
                 {
@@ -827,7 +853,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateTreeArgs createTreeArgs)
             {
                 if (reference is MarkdownLexer.NewLine)
                 {
@@ -853,7 +879,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateTreeArgs createTreeArgs)
             {
                 if (reference is MarkdownLexer.Comment comment && comment.IsEnd == false)
                 {
@@ -887,7 +913,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateTreeArgs createTreeArgs)
             {
                 if (reference is MarkdownLexer.Header tokenHeader)
                 {
@@ -898,7 +924,7 @@
                     if (isNull || isSpace || isNewLine)
                     {
                         var header = new Header(owner, reference, reference);
-                        Tree.Syntax.Create(header, referenceList, reference.Next, syntaxFactoryList, syntaxFactoryStopList);
+                        Tree.Syntax.CreateTree(header, reference.Next, createTreeArgs);
                     }
                 }
             }
@@ -922,7 +948,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList, List<Tree.Syntax> syntaxFactoryStopList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateTreeArgs createTreeArgs)
             {
                 if (owner.Last is Content content)
                 {
