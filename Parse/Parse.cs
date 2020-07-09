@@ -720,6 +720,7 @@
                 : base(null)
             {
                 List<Tree.Syntax> syntaxFactoryList = new List<Tree.Syntax>();
+                syntaxFactoryList.Add(new Page());
                 syntaxFactoryList.Add(new Space());
                 syntaxFactoryList.Add(new NewLine());
                 syntaxFactoryList.Add(new Comment());
@@ -730,20 +731,34 @@
                 syntaxFactoryStopList.Add(syntaxFactoryList.First(item => item is NewLine));
                 syntaxFactoryStopList.Add(syntaxFactoryList.First(item => item is Content));
 
-                foreach (var fileText in mdLexerDocument.List.OfType<MarkdownLexer.FileText>())
-                {
-                    var page = new Page(this);
-                    Tree.Syntax.CreateTree(page, null, new Tree.Syntax.CreateTreeArgs(fileText.List, syntaxFactoryList, syntaxFactoryStopList));
-                }
+                Tree.Syntax.CreateTree(this, null, new Tree.Syntax.CreateTreeArgs(mdLexerDocument.ListAll(), syntaxFactoryList, syntaxFactoryStopList));
             }
         }
 
-        public class Page : Tree.Component
+        public class Page : Tree.Syntax
         {
-            public Page(Document owner) 
-                : base(owner)
+            public Page(Document owner, MarkdownLexer.FileText reference) 
+                : base(owner, reference, reference)
             {
 
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Page() 
+                : base()
+            {
+
+            }
+
+            public override void Create(Tree.Component owner, Tree.Syntax reference, CreateTreeArgs createTreeArgs)
+            {
+                if (reference is MarkdownLexer.FileText referenceFileText)
+                {
+                    var page = new Page((Document)owner, referenceFileText);
+                    Tree.Syntax.CreateTree(page, reference.NextAll, createTreeArgs);
+                }
             }
         }
 
