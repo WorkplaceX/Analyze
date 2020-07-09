@@ -23,7 +23,13 @@ namespace Parse
             --> paragraph
             ";
 
+                text = "# Title\r\n# Title2";
+
+
+
+
                 text = "# Title\r\n# Tit<!---->le2";
+
 
                 new Storage.FileText(storageDocument, text);
 
@@ -31,7 +37,9 @@ namespace Parse
                 var d = lexerDocument.List[0].List;
 
                 var document = new Markdown.Document(lexerDocument);
-                var d2 = document.List[0].List;
+                var d2 = (Markdown.Node)document.List[0].List[0];
+
+                var x = d2.TextTree;
 
             }
         }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Text;
 
@@ -250,7 +251,7 @@
             /// </summary>
             /// <param name="owner">Owner of new syntax.</param>
             /// <param name="referenceList">Reference list to loop through</param>
-            /// <param name="reference">Reference item to start with.</param>
+            /// <param name="reference">Reference item to start with or null to start with first item.</param>
             public static void Create(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList, List<Syntax> syntaxFactoryStopList)
             {
                 int referenceIndex = 0;
@@ -415,12 +416,27 @@
             }
         }
 
+        [DebuggerDisplay("{DebuggerDisplay()}")]
         public class Token : Tree.Syntax
         {
             public Token(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
                 : base(owner, referenceBegin, referenceEnd)
             {
 
+            }
+
+            /// <summary>
+            /// Returns text to show in debugger.
+            /// </summary>
+            internal string DebuggerDisplay()
+            {
+                string result = "Token." + GetType().Name;
+                string text = Text;
+                if (!string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
+                {
+                    result += " (" + text + ")";
+                }
+                return result;
             }
 
             public new FileText Owner => (FileText)base.Owner;
@@ -667,6 +683,7 @@
             }
         }
 
+        [DebuggerDisplay("{DebuggerDisplay()}")]
         public class Node : Tree.Syntax
         {
             public Node(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
@@ -682,6 +699,20 @@
                 : base(null, null, null)
             {
 
+            }
+
+            /// <summary>
+            /// Returns text to show in debugger.
+            /// </summary>
+            internal string DebuggerDisplay()
+            {
+                string result = "Node." + GetType().Name;
+                string text = Text;
+                if (!string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
+                {
+                    result += " (" + text + ")";
+                }
+                return result;
             }
 
             public new MarkdownLexer.Token ReferenceBegin => (MarkdownLexer.Token)base.ReferenceBegin;
@@ -701,6 +732,42 @@
                     var fileText = characterBegin.Owner;
 
                     return fileText.Text.Substring(characterBegin.TextIndex, characterEnd.TextIndex - characterBegin.TextIndex + 1);
+                }
+            }
+
+            private void TextTreeGet(int level, StringBuilder result)
+            {
+                for (int i = 0; i < level; i++)
+                {
+                    result.Append("    ");
+                }
+                result.Append("- ");
+                var text = Text;
+                result.Append("Node." + GetType().Name);
+                if (string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
+                {
+                    result.AppendLine();
+                }
+                else
+                {
+                    result.AppendLine(" " + "(\"" + text + "\")");
+                }
+                foreach (Node item in List)
+                {
+                    item.TextTreeGet(level + 1, result);
+                }
+            }
+
+            /// <summary>
+            /// Gets TextTree. This is the syntax tree to debug.
+            /// </summary>
+            public string TextTree
+            {
+                get
+                {
+                    var result = new StringBuilder();
+                    TextTreeGet(0, result);
+                    return result.ToString();
                 }
             }
 
@@ -824,7 +891,11 @@
             {
                 if (reference is MarkdownLexer.Header tokenHeader)
                 {
-                    if (tokenHeader.Previous == null || (tokenHeader.Previous is MarkdownLexer.Space && (tokenHeader.Previous.Previous == null || tokenHeader.Previous.Previous is MarkdownLexer.NewLine)))
+                    // Previous
+                    bool isNull = tokenHeader.Previous == null;
+                    bool isSpace = tokenHeader.Previous is MarkdownLexer.Space && (tokenHeader.Previous.Previous == null || tokenHeader.Previous.Previous is MarkdownLexer.NewLine);
+                    bool isNewLine = tokenHeader.Previous is MarkdownLexer.NewLine;
+                    if (isNull || isSpace || isNewLine)
                     {
                         var header = new Header(owner, reference, reference);
                         Tree.Syntax.Create(header, referenceList, reference.Next, syntaxFactoryList, syntaxFactoryStopList);
