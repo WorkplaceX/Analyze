@@ -26,7 +26,7 @@ namespace Parse
                 text = "# Title\r\n# Title2";
 
 
-
+                text = "Title\r\n88";
 
                 // text = "# Title\r\n# Tit<!---->le2";
 
@@ -36,10 +36,11 @@ namespace Parse
                 var lexerDocument = new MarkdownLexer.Document(storageDocument);
                 var d = lexerDocument.List[0].List;
 
-                var document = new Markdown.Document(lexerDocument);
-                var d2 = (Markdown.Node)document.List[0].List[0];
+                var markDownDocument = new Markdown.Document(lexerDocument);
+                var d2 = (Markdown.Node)markDownDocument.List[0].List[0];
 
-                var x = d2.TextTree;
+                var x = lexerDocument.TextTree;
+                var x2 = markDownDocument.TextTree;
 
             }
         }

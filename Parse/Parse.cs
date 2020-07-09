@@ -22,6 +22,7 @@
         /// <summary>
         /// Component of tree structure.
         /// </summary>
+        [DebuggerDisplay("{TextGet()}")]
         public class Component
         {
             public Component(Component owner)
@@ -33,7 +34,45 @@
                 }
             }
 
+            /// <summary>
+            /// Gets Owner. Owner of this component.
+            /// </summary>
+            public Component Owner { get; private set; }
+
             public readonly List<Component> List = new List<Component>();
+
+            protected virtual string TextGet()
+            {
+                return GetType().Name;
+            }
+
+            private void TextTreeGet(int level, StringBuilder result)
+            {
+                for (int i = 0; i < level; i++)
+                {
+                    result.Append("    ");
+                }
+                result.Append("- ");
+                result.Append(TextGet());
+                result.AppendLine();
+                foreach (var item in List)
+                {
+                    item.TextTreeGet(level + 1, result);
+                }
+            }
+
+            /// <summary>
+            /// Gets TextTree. Hierarchical representation.
+            /// </summary>
+            public string TextTree
+            {
+                get
+                {
+                    var result = new StringBuilder();
+                    TextTreeGet(0, result);
+                    return result.ToString();
+                }
+            }
 
             /// <summary>
             /// Gets Index. This is the index of this component in owners list.
@@ -51,7 +90,7 @@
                 }
             }
 
-            private void ListAll(Component component, List<Component> result)
+            private void ListAllGet(Component component, List<Component> result)
             {
                 if (component != this)
                 {
@@ -59,24 +98,22 @@
                 }
                 foreach (var item in component.List)
                 {
-                    ListAll(item, result);
+                    ListAllGet(item, result);
                 }
             }
 
             /// <summary>
             /// Returns all components (hierarchical).
             /// </summary>
-            public List<Component> ListAll()
+            public List<Component> ListAll
             {
-                List<Component> result = new List<Component>();
-                ListAll(this, result);
-                return result;
+                get
+                {
+                    List<Component> result = new List<Component>();
+                    ListAllGet(this, result);
+                    return result;
+                }
             }
-
-            /// <summary>
-            /// Gets Owner. Owner of this component.
-            /// </summary>
-            public Component Owner { get; private set; }
 
             /// <summary>
             /// Returns last child component.
@@ -104,7 +141,7 @@
                     Component result = Last;
                     if (result?.List.Count > 0)
                     {
-                        result = result.ListAll().Last();
+                        result = result.ListAll.Last();
                     }
                     return result;
                 }
@@ -181,7 +218,7 @@
                     var result = Previous;
                     if (result?.List.Count > 0)
                     {
-                        result = result.ListAll().Last();
+                        result = result.ListAll.Last();
                     }
                     return result;
                 }
@@ -208,6 +245,7 @@
             public Syntax(Component owner, Syntax referenceBegin, Syntax referenceEnd) 
                 : base(owner)
             {
+                UtilFramework.Assert(!(referenceBegin == null ^ referenceEnd == null));
                 ReferenceBegin = referenceBegin;
                 ReferenceEnd = referenceEnd;
             }
@@ -227,33 +265,7 @@
 
             public readonly Syntax ReferenceBegin;
 
-            public int ReferenceBeginIndex
-            {
-                get
-                {
-                    int result = -1;
-                    if (ReferenceBegin != null)
-                    {
-                        result = ReferenceBegin.Index;
-                    }
-                    return result;
-                }
-            }
-
             public readonly Syntax ReferenceEnd;
-
-            public int ReferenceEndIndex
-            {
-                get
-                {
-                    int result = -1;
-                    if (ReferenceEnd != null)
-                    {
-                        result = ReferenceEnd.Index;
-                    }
-                    return result;
-                }
-            }
 
             public Syntax ReferenceEndAll
             {
@@ -262,7 +274,7 @@
                     var result = ReferenceEnd;
                     if (List.Count > 0)
                     {
-                        result = ((Syntax)ListAll().Last()).ReferenceEnd;
+                        result = ((Syntax)ListAll.Last()).ReferenceEnd;
                     }
                     return result;
                 }
@@ -301,20 +313,20 @@
                         syntaxFactoryItem.Create(owner, item, createTreeArgs);
 
                         // Create after
-                        Syntax syntaxNewLast = (Syntax)owner.Last;
-                        int syntaxNewLength = owner.List.Count;
+                        int syntaxLengthNew = owner.List.Count;
+                        Syntax syntaxLastNew = (Syntax)owner.Last;
 
                         // Create result get
-                        UtilFramework.Assert(syntaxNewLength - syntaxLength == 0 || syntaxNewLength - syntaxLength == 1); // Zero or one token added.
-                        if (syntaxNewLength - syntaxLength == 1)
+                        UtilFramework.Assert(syntaxLengthNew - syntaxLength == 0 || syntaxLengthNew - syntaxLength == 1); // Zero or one token added.
+                        if (syntaxLengthNew - syntaxLength == 1)
                         {
-                            syntax = syntaxNewLast;
+                            syntax = syntaxLastNew;
                         }
                         else
                         {
-                            if (syntaxLast != syntaxNewLast)
+                            if (syntaxLast != syntaxLastNew)
                             {
-                                syntax = syntaxNewLast;
+                                syntax = syntaxLastNew;
                             }
                         }
 
@@ -332,7 +344,8 @@
                     var syntaxPrevious = (Syntax)syntax.PreviousAll;
                     if (syntaxPrevious != null)
                     {
-                        UtilFramework.Assert(syntaxPrevious.ReferenceEndIndex + 1 == syntax.ReferenceBeginIndex);
+                        // Make sure every reference component is covered.
+                        UtilFramework.Assert(syntaxPrevious.ReferenceEnd.Index + 1 == syntax.ReferenceBegin.Index);
                     }
                     int referenceEndIndex = createTreeArgs.ReferenceList.IndexOf(syntax.ReferenceEndAll);
                     UtilFramework.Assert(index <= referenceEndIndex && referenceEndIndex < createTreeArgs.ReferenceList.Count);
@@ -440,7 +453,7 @@
 
                 var syntaxFactoryStopList = new List<Tree.Syntax>();
 
-                Tree.Syntax.CreateTree(this, null, new Tree.Syntax.CreateTreeArgs(storageDocument.ListAll(), syntaxFactoryList, syntaxFactoryStopList));
+                Tree.Syntax.CreateTree(this, null, new Tree.Syntax.CreateTreeArgs(storageDocument.ListAll, syntaxFactoryList, syntaxFactoryStopList));
             }
         }
 
@@ -466,32 +479,17 @@
                 if (reference is Storage.FileText referenceFileText)
                 {
                     var fileText = new FileText((Document)owner, referenceFileText);
-                    Tree.Syntax.CreateTree(fileText, reference.NextAll, createTreeArgs);
+                    CreateTree(fileText, reference.NextAll, createTreeArgs);
                 }
             }
         }
 
-        [DebuggerDisplay("{DebuggerDisplay()}")]
         public class Token : Tree.Syntax
         {
             public Token(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
                 : base(owner, referenceBegin, referenceEnd)
             {
 
-            }
-
-            /// <summary>
-            /// Returns text to show in debugger.
-            /// </summary>
-            internal string DebuggerDisplay()
-            {
-                string result = "Token." + GetType().Name;
-                string text = Text;
-                if (!string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
-                {
-                    result += " (" + text + ")";
-                }
-                return result;
             }
 
             public new FileText Owner => (FileText)base.Owner;
@@ -515,6 +513,17 @@
                 {
                     return (Token)base.Next;
                 }
+            }
+
+            protected override string TextGet()
+            {
+                string result = "Token." + GetType().Name;
+                string text = Text;
+                if (!string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
+                {
+                    result += " (" + text + ")";
+                }
+                return result;
             }
 
             public string Text
@@ -729,9 +738,9 @@
 
                 List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>();
                 syntaxFactoryStopList.Add(syntaxFactoryList.First(item => item is NewLine));
-                syntaxFactoryStopList.Add(syntaxFactoryList.First(item => item is Content));
+                syntaxFactoryStopList.Add(syntaxFactoryList.First(item => item is Comment));
 
-                Tree.Syntax.CreateTree(this, null, new Tree.Syntax.CreateTreeArgs(mdLexerDocument.ListAll(), syntaxFactoryList, syntaxFactoryStopList));
+                Tree.Syntax.CreateTree(this, null, new Tree.Syntax.CreateTreeArgs(mdLexerDocument.ListAll, syntaxFactoryList, syntaxFactoryStopList));
             }
         }
 
@@ -757,12 +766,11 @@
                 if (reference is MarkdownLexer.FileText referenceFileText)
                 {
                     var page = new Page((Document)owner, referenceFileText);
-                    Tree.Syntax.CreateTree(page, reference.NextAll, createTreeArgs);
+                    CreateTree(page, reference.NextAll, createTreeArgs);
                 }
             }
         }
 
-        [DebuggerDisplay("{DebuggerDisplay()}")]
         public class Node : Tree.Syntax
         {
             public Node(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
@@ -778,20 +786,6 @@
                 : base(null, null, null)
             {
 
-            }
-
-            /// <summary>
-            /// Returns text to show in debugger.
-            /// </summary>
-            internal string DebuggerDisplay()
-            {
-                string result = "Node." + GetType().Name;
-                string text = Text;
-                if (!string.IsNullOrEmpty(text?.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
-                {
-                    result += " (" + text + ")";
-                }
-                return result;
             }
 
             public new MarkdownLexer.Token ReferenceBegin => (MarkdownLexer.Token)base.ReferenceBegin;
@@ -819,40 +813,18 @@
                 }
             }
 
-            private void TextTreeGet(int level, StringBuilder result)
+            protected override string TextGet()
             {
-                for (int i = 0; i < level; i++)
+                string result = "Markdown." + GetType().Name;
+                if (!IsFactory)
                 {
-                    result.Append("    ");
+                    var text = Text;
+                    if (!string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
+                    {
+                        result += " " + "(\"" + text + "\")";
+                    }
                 }
-                result.Append("- ");
-                var text = Text;
-                result.Append("Node." + GetType().Name);
-                if (string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
-                {
-                    result.AppendLine();
-                }
-                else
-                {
-                    result.AppendLine(" " + "(\"" + text + "\")");
-                }
-                foreach (Node item in List)
-                {
-                    item.TextTreeGet(level + 1, result);
-                }
-            }
-
-            /// <summary>
-            /// Gets TextTree. This is the syntax tree to debug.
-            /// </summary>
-            public string TextTree
-            {
-                get
-                {
-                    var result = new StringBuilder();
-                    TextTreeGet(0, result);
-                    return result.ToString();
-                }
+                return result;
             }
 
             public override void Create(Tree.Component owner, Tree.Syntax reference, CreateTreeArgs createTreeArgs)
@@ -981,7 +953,7 @@
                     if (isNull || isSpace || isNewLine)
                     {
                         var header = new Header(owner, reference, reference);
-                        Tree.Syntax.CreateTree(header, reference.Next, createTreeArgs);
+                        CreateTree(header, reference.Next, createTreeArgs);
                     }
                 }
             }
