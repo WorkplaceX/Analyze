@@ -130,6 +130,26 @@
                 }
             }
 
+            /// <summary>
+            /// Gets NextAll. 
+            /// </summary>
+            public Component NextAll
+            {
+                get
+                {
+                    Component result;
+                    if (List.Count > 0)
+                    {
+                        result = List[0];
+                    }
+                    else
+                    {
+                        result = Next;
+                    }
+                    return result;
+                }
+            }
+
 
             /// <summary>
             /// Gets Previous. This is the previous sibling component.
@@ -202,6 +222,8 @@
             }
 
             public bool IsFactory => Owner == null;
+
+            public new Syntax NextAll => (Syntax)base.NextAll;
 
             public readonly Syntax ReferenceBegin;
 
@@ -312,7 +334,7 @@
                     {
                         UtilFramework.Assert(syntaxPrevious.ReferenceEndIndex + 1 == syntax.ReferenceBeginIndex);
                     }
-                    int referenceEndIndex = syntax.ReferenceEndAll.Index;
+                    int referenceEndIndex = createTreeArgs.ReferenceList.IndexOf(syntax.ReferenceEndAll);
                     UtilFramework.Assert(index <= referenceEndIndex && referenceEndIndex < createTreeArgs.ReferenceList.Count);
                     // Move index to new end
                     index = referenceEndIndex;
@@ -364,10 +386,10 @@
             }
         }
 
-        public class FileText : Tree.Component
+        public class FileText : Tree.Syntax
         {
             public FileText(Document owner, string text)
-                : base(owner)
+                : base(owner, null, null)
             {
                 Text = text;
                 for (int index = 0; index < Text.Length; index++)
@@ -409,28 +431,43 @@
                 : base(null)
             {
                 List<Tree.Syntax> syntaxFactoryList = new List<Tree.Syntax>();
+                syntaxFactoryList.Add(new FileText());
                 syntaxFactoryList.Add(new NewLine());
                 syntaxFactoryList.Add(new Comment());
                 syntaxFactoryList.Add(new Space());
                 syntaxFactoryList.Add(new Header());
                 syntaxFactoryList.Add(new Content());
 
-                List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>();
+                var syntaxFactoryStopList = new List<Tree.Syntax>();
 
-                foreach (Storage.FileText referenceFileText in storageDocument.List)
-                {
-                    var fileText = new FileText(this);
-                    Tree.Syntax.CreateTree(fileText, null, new Tree.Syntax.CreateTreeArgs(referenceFileText.List, syntaxFactoryList, syntaxFactoryStopList));
-                }
+                Tree.Syntax.CreateTree(this, null, new Tree.Syntax.CreateTreeArgs(storageDocument.ListAll(), syntaxFactoryList, syntaxFactoryStopList));
             }
         }
 
-        public class FileText : Tree.Component
+        public class FileText : Tree.Syntax
         {
-            public FileText(Document owner)
-                : base(owner)
+            public FileText(Document owner, Storage.FileText reference)
+                : base(owner, reference, reference)
             {
 
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public FileText() 
+                : base()
+            {
+
+            }
+
+            public override void Create(Tree.Component owner, Tree.Syntax reference, CreateTreeArgs createTreeArgs)
+            {
+                if (reference is Storage.FileText referenceFileText)
+                {
+                    var fileText = new FileText((Document)owner, referenceFileText);
+                    Tree.Syntax.CreateTree(fileText, reference.NextAll, createTreeArgs);
+                }
             }
         }
 
@@ -690,7 +727,8 @@
                 syntaxFactoryList.Add(new Content());
 
                 List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>();
-                syntaxFactoryStopList.Add(new NewLine());
+                syntaxFactoryStopList.Add(syntaxFactoryList.First(item => item is NewLine));
+                syntaxFactoryStopList.Add(syntaxFactoryList.First(item => item is Content));
 
                 foreach (var fileText in mdLexerDocument.List.OfType<MarkdownLexer.FileText>())
                 {
@@ -734,7 +772,7 @@
             {
                 string result = "Node." + GetType().Name;
                 string text = Text;
-                if (!string.IsNullOrEmpty(text.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
+                if (!string.IsNullOrEmpty(text?.Replace(" ", "").Replace("\r", "").Replace("\n", "")))
                 {
                     result += " (" + text + ")";
                 }
@@ -749,15 +787,20 @@
             {
                 get
                 {
-                    var tokenBegin = ReferenceBegin;
-                    var characterBegin = tokenBegin.ReferenceBegin;
+                    string result = null;
+                    if (IsFactory == false)
+                    {
+                        var tokenBegin = ReferenceBegin;
+                        var characterBegin = tokenBegin.ReferenceBegin;
 
-                    var tokenEnd = ReferenceEnd;
-                    var characterEnd = tokenEnd.ReferenceEnd;
+                        var tokenEnd = ReferenceEnd;
+                        var characterEnd = tokenEnd.ReferenceEnd;
 
-                    var fileText = characterBegin.Owner;
+                        var fileText = characterBegin.Owner;
 
-                    return fileText.Text.Substring(characterBegin.TextIndex, characterEnd.TextIndex - characterBegin.TextIndex + 1);
+                        result = fileText.Text.Substring(characterBegin.TextIndex, characterEnd.TextIndex - characterBegin.TextIndex + 1);
+                    }
+                    return result;
                 }
             }
 
@@ -799,7 +842,6 @@
 
             public override void Create(Tree.Component owner, Tree.Syntax reference, CreateTreeArgs createTreeArgs)
             {
-                List<Tree.Syntax> syntaxFactoryStopList = new List<Tree.Syntax>(createTreeArgs.SyntaxFactoryList.Where(item => item is NewLine || item is Comment));
                 Create(owner, (MarkdownLexer.Token)reference, createTreeArgs);
             }
 
