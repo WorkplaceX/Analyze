@@ -494,6 +494,7 @@
                 syntaxFactoryList.Add(new NewLine());
                 syntaxFactoryList.Add(new Comment());
                 syntaxFactoryList.Add(new Space());
+                syntaxFactoryList.Add(new Special());
                 syntaxFactoryList.Add(new Header());
                 syntaxFactoryList.Add(new Content());
 
@@ -582,27 +583,27 @@
             }
 
             /// <summary>
-            /// Create one token if one tokenTextList matches.
+            /// Create one token if one textTokenList matches.
             /// </summary>
             /// <param name="owner">Owner of new token to create.</param>
             /// <param name="reference">Character to start match.</param>
             /// <param name="createToken">Call back method to create one token.</param>
-            /// <param name="tokenTextList">One of these tokens has to match.</param>
-            public static void CreateToken(FileText owner, Storage.Character reference, Action<FileText, string, Storage.Character, Storage.Character> createToken, params string[] tokenTextList)
+            /// <param name="textTokenList">One of these tokens has to match.</param>
+            public static void CreateToken(FileText owner, Storage.Character reference, Action<FileText, string, Storage.Character, Storage.Character> createToken, params string[] textTokenList)
             {
-                foreach (var tokenText in tokenTextList)
+                foreach (var textToken in textTokenList)
                 {
-                    if (reference.Owner.Text.Length > reference.TextIndex + tokenText.Length - 1)
+                    if (reference.Owner.Text.Length > reference.TextIndex + textToken.Length - 1)
                     {
-                        if (reference.Owner.Text.Substring(reference.TextIndex, tokenText.Length) == tokenText)
+                        if (reference.Owner.Text.Substring(reference.TextIndex, textToken.Length) == textToken)
                         {
-                            var referenceEnd = (Storage.Character)reference.Owner.List[reference.TextIndex + tokenText.Length - 1];
+                            var referenceEnd = (Storage.Character)reference.Owner.List[reference.TextIndex + textToken.Length - 1];
 
                             // Create before
                             int length = owner.List.Count;
 
                             // Create
-                            createToken(owner, tokenText, reference, referenceEnd);
+                            createToken(owner, textToken, reference, referenceEnd);
 
                             // Create after
                             int lengthNew = owner.List.Count;
@@ -619,10 +620,10 @@
 
             public override void CreateSyntax(Tree.Component owner, Tree.Syntax reference, CreateSyntaxResult result)
             {
-                Create((FileText)owner, (Storage.Character)reference, result);
+                CreateSyntax((FileText)owner, (Storage.Character)reference, result);
             }
 
-            public virtual void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            public virtual void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
 
             }
@@ -645,7 +646,7 @@
 
             }
 
-            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            public override void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 var character =reference;
                 if (character.Text == ' ')
@@ -661,6 +662,30 @@
                     }
                 }
             }
+        }
+
+        public class Special : Token
+        {
+            public Special(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
+                : base(owner, referenceBegin, referenceEnd)
+            {
+
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Special()
+                : base()
+            {
+
+            }
+
+            public override void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            {
+                CreateToken(owner, reference, (owner, textToken, referenceBegin, referenceEnd) => new Special(owner, referenceBegin, referenceEnd), "(", ")", "[", "]");
+            }
+
         }
 
         public class Header : Token
@@ -679,7 +704,7 @@
 
             }
 
-            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            public override void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 if (reference.Text == '#')
                 {
@@ -704,7 +729,7 @@
 
             }
 
-            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            public override void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 if (owner.Last is Content content)
                 {
@@ -736,9 +761,9 @@
 
             public readonly bool IsEnd;
 
-            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            public override void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
-                CreateToken(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new Comment(owner, referenceBegin, referenceEnd, tokenText == "-->"), "<!--", "-->");
+                CreateToken(owner, reference, (owner, textToken, referenceBegin, referenceEnd) => new Comment(owner, referenceBegin, referenceEnd, textToken == "-->"), "<!--", "-->");
             }
         }
 
@@ -758,9 +783,9 @@
 
             }
 
-            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            public override void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
-                CreateToken(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new NewLine(owner, referenceBegin, referenceEnd), "\r\n", "\r", "\n");
+                CreateToken(owner, reference, (owner, textToken, referenceBegin, referenceEnd) => new NewLine(owner, referenceBegin, referenceEnd), "\r\n", "\r", "\n");
             }
         }
     }
@@ -778,6 +803,7 @@
                 syntaxFactoryList.Add(new NewLine());
                 syntaxFactoryList.Add(new Comment());
                 syntaxFactoryList.Add(new Header());
+                syntaxFactoryList.Add(new Link());
                 syntaxFactoryList.Add(new Content());
 
                 Tree.Syntax.CreateSyntaxTree(this, mdLexerDocument.ListAll, null, syntaxFactoryList);
@@ -874,10 +900,10 @@
 
             public override void CreateSyntax(Tree.Component owner, Tree.Syntax reference, CreateSyntaxResult result)
             {
-                Create(owner, (MarkdownLexer.Token)reference, result);
+                CreateSyntax(owner, (MarkdownLexer.Token)reference, result);
             }
 
-            public virtual void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
+            public virtual void CreateSyntax(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
 
             }
@@ -900,7 +926,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
+            public override void CreateSyntax(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.Space)
                 {
@@ -927,7 +953,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
+            public override void CreateSyntax(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.NewLine)
                 {
@@ -953,7 +979,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
+            public override void CreateSyntax(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.Comment comment && comment.IsEnd == false)
                 {
@@ -987,7 +1013,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
+            public override void CreateSyntax(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.Header tokenHeader)
                 {
@@ -1004,6 +1030,51 @@
             }
         }
 
+        public class Link : Node
+        {
+            public Link(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd, MarkdownLexer.Content linkUrl, MarkdownLexer.Content linkText)
+                : base(owner, referenceBegin, referenceEnd)
+            {
+                LinkUrl = linkUrl;
+                LinkText = linkText;
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Link()
+                : base(null, null, null)
+            {
+
+            }
+
+            public MarkdownLexer.Content LinkUrl;
+
+            public MarkdownLexer.Content LinkText;
+
+            public override void CreateSyntax(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
+            {
+                if (reference is MarkdownLexer.Special specialOpen && specialOpen.Text == "[")
+                {
+                    if (reference.Next is MarkdownLexer.Content contentLinkUrl)
+                    {
+                        if (reference.Next?.Next is MarkdownLexer.Special specialClose && specialClose.Text == "]")
+                        {
+                            if (reference.Next?.Next?.Next is MarkdownLexer.Special specialOpen2 && specialOpen2.Text == "(")
+                            {
+                                if (reference.Next?.Next?.Next?.Next is MarkdownLexer.Content contentLinkText)
+                                {
+                                    if (reference.Next?.Next?.Next?.Next?.Next is MarkdownLexer.Special specialClose2 && specialClose2.Text == ")")
+                                    {
+                                        new Link(owner, reference, specialClose2, LinkUrl, LinkText);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public class Content : Node
         {
@@ -1022,7 +1093,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
+            public override void CreateSyntax(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (owner.Last is Content content)
                 {
