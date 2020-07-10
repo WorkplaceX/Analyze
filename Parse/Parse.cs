@@ -309,7 +309,7 @@
             /// <param name="reference">Reference component in referenceList to start with or null to start with first component.</param>
             /// <param name="syntaxFactoryList">Factories to create syntax components.</param>
             /// <param name="syntaxFactoryStopList">If referenceList hits one of this factories, walk through stops.</param>
-            public static void CreateSyntaxTree(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList, List<Syntax> syntaxFactoryStopList)
+            private static void CreateSyntaxTree(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList, List<Syntax> syntaxFactoryStopList)
             {
                 int referenceIndex = 0;
                 if (reference != null)
@@ -334,7 +334,12 @@
                         Syntax syntaxLast = (Syntax)owner.Last;
 
                         // Create
-                        syntaxFactoryItem.CreateSyntax(owner, referenceList, item, syntaxFactoryList);
+                        var result = new CreateSyntaxResult(referenceList, syntaxFactoryList);
+                        syntaxFactoryItem.CreateSyntax(owner, item, result);
+                        if (result.Reference != null)
+                        {
+                            CreateSyntaxTree(result.Owner, result.ReferenceList, result.Reference, result.SyntaxFactoryList, result.SyntaxFactoryStopList);
+                        }
 
                         // Create after
                         int syntaxLengthNew = owner.List.Count;
@@ -391,9 +396,40 @@
             /// <summary>
             /// Create one new Syntax component or replace owners last Syntax component.
             /// </summary>
-            public virtual void CreateSyntax(Component owner, List<Component> referenceList, Syntax reference, List<Syntax> syntaxFactoryList)
+            public virtual void CreateSyntax(Component owner, Syntax reference, CreateSyntaxResult result)
             {
 
+            }
+
+            public class CreateSyntaxResult
+            {
+                internal CreateSyntaxResult(List<Component> referenceList, List<Syntax> syntaxFactoryList)
+                {
+                    ReferenceList = referenceList;
+                    SyntaxFactoryList = syntaxFactoryList;
+                    SyntaxFactoryStopList = new List<Syntax>();
+                }
+
+                internal List<Component> ReferenceList;
+
+                internal List<Syntax> SyntaxFactoryList;
+
+                public void CreateSyntaxTree(Component owner, Syntax reference, params Type[] syntaxFactoryStopList)
+                {
+                    UtilFramework.Assert(owner != null && reference != null);
+                    Owner = owner;
+                    Reference = reference;
+                    foreach (var type in syntaxFactoryStopList)
+                    {
+                        SyntaxFactoryStopList.Add(SyntaxFactoryList.Single(item => item.GetType() == type));
+                    }
+                }
+
+                public Component Owner { get; private set; }
+
+                public Syntax Reference { get; private set; }
+
+                public List<Syntax> SyntaxFactoryStopList { get; private set; }
             }
         }
     }
@@ -482,12 +518,12 @@
 
             }
 
-            public override void CreateSyntax(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void CreateSyntax(Tree.Component owner, Tree.Syntax reference, CreateSyntaxResult result)
             {
                 if (reference is Storage.FileText referenceFileText)
                 {
                     var fileText = new FileText((Document)owner, referenceFileText);
-                    CreateSyntaxTree(fileText, referenceList, reference.NextAll, syntaxFactoryList);
+                    result.CreateSyntaxTree(fileText, reference.NextAll);
                 }
             }
         }
@@ -581,12 +617,12 @@
                 }
             }
 
-            public override void CreateSyntax(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void CreateSyntax(Tree.Component owner, Tree.Syntax reference, CreateSyntaxResult result)
             {
-                Create((FileText)owner, referenceList, (Storage.Character)reference, syntaxFactoryList);
+                Create((FileText)owner, (Storage.Character)reference, result);
             }
 
-            public virtual void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference, List<Tree.Syntax> syntaxFactoryList)
+            public virtual void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
 
             }
@@ -609,7 +645,7 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 var character =reference;
                 if (character.Text == ' ')
@@ -643,7 +679,7 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 if (reference.Text == '#')
                 {
@@ -668,7 +704,7 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 if (owner.Last is Content content)
                 {
@@ -700,7 +736,7 @@
 
             public readonly bool IsEnd;
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 CreateToken(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new Comment(owner, referenceBegin, referenceEnd, tokenText == "-->"), "<!--", "-->");
             }
@@ -722,7 +758,7 @@
 
             }
 
-            public override void Create(FileText owner, List<Tree.Component> referenceList, Storage.Character reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(FileText owner, Storage.Character reference, CreateSyntaxResult result)
             {
                 CreateToken(owner, reference, (owner, tokenText, referenceBegin, referenceEnd) => new NewLine(owner, referenceBegin, referenceEnd), "\r\n", "\r", "\n");
             }
@@ -765,12 +801,12 @@
 
             }
 
-            public override void CreateSyntax(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void CreateSyntax(Tree.Component owner, Tree.Syntax reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.FileText referenceFileText)
                 {
                     var page = new Page((Document)owner, referenceFileText);
-                    CreateSyntaxTree(page, referenceList, reference.NextAll, syntaxFactoryList);
+                    result.CreateSyntaxTree(page, reference.NextAll);
                 }
             }
         }
@@ -831,17 +867,17 @@
                 return result;
             }
 
-            public static List<Tree.Syntax> SyntaxFactoryStopList(List<Tree.Syntax> syntaxFactoryList)
+            public static Type[] SyntaxFactoryStopList()
             {
-                return syntaxFactoryList.Where(item => item is NewLine).ToList();
+                return new Type[] { typeof(NewLine) };
             }
 
-            public override void CreateSyntax(Tree.Component owner, List<Tree.Component> referenceList, Tree.Syntax reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void CreateSyntax(Tree.Component owner, Tree.Syntax reference, CreateSyntaxResult result)
             {
-                Create(owner, referenceList, (MarkdownLexer.Token)reference, syntaxFactoryList);
+                Create(owner, (MarkdownLexer.Token)reference, result);
             }
 
-            public virtual void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList)
+            public virtual void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
 
             }
@@ -864,7 +900,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.Space)
                 {
@@ -891,7 +927,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.NewLine)
                 {
@@ -917,7 +953,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.Comment comment && comment.IsEnd == false)
                 {
@@ -951,7 +987,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (reference is MarkdownLexer.Header tokenHeader)
                 {
@@ -962,7 +998,7 @@
                     if (isNull || isSpace || isNewLine)
                     {
                         var header = new Header(owner, reference, reference);
-                        CreateSyntaxTree(header, referenceList, reference.Next, syntaxFactoryList, SyntaxFactoryStopList(syntaxFactoryList));
+                        result.CreateSyntaxTree(header, reference.Next, SyntaxFactoryStopList());
                     }
                 }
             }
@@ -986,7 +1022,7 @@
 
             }
 
-            public override void Create(Tree.Component owner, List<Tree.Component> referenceList, MarkdownLexer.Token reference, List<Tree.Syntax> syntaxFactoryList)
+            public override void Create(Tree.Component owner, MarkdownLexer.Token reference, CreateSyntaxResult result)
             {
                 if (owner.Last is Content content)
                 {
