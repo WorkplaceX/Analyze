@@ -496,6 +496,7 @@
                 syntaxFactoryList.Add(new Space());
                 syntaxFactoryList.Add(new Special());
                 syntaxFactoryList.Add(new Header());
+                syntaxFactoryList.Add(new Bullet());
                 syntaxFactoryList.Add(new Content());
 
                 Tree.Syntax.CreateSyntaxTree(this, storageDocument.ListAll, null, syntaxFactoryList);
@@ -531,8 +532,29 @@
 
         public class Token : Tree.Syntax
         {
+            /// <summary>
+            /// Constructor for token component with reference range.
+            /// </summary>
             public Token(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
                 : base(owner, referenceBegin, referenceEnd)
+            {
+
+            }
+
+            /// <summary>
+            /// Constructor for token component with reference.
+            /// </summary>
+            public Token(FileText owner, Storage.Character reference)
+                : base(owner, reference)
+            {
+
+            }
+
+            /// <summary>
+            /// Constructor for token component factory.
+            /// </summary>
+            public Token()
+                : base()
             {
 
             }
@@ -542,15 +564,6 @@
             public new Storage.Character ReferenceBegin => (Storage.Character)base.ReferenceBegin;
 
             public new Storage.Character ReferenceEnd => (Storage.Character)base.ReferenceEnd;
-
-            /// <summary>
-            /// Constructor factory.
-            /// </summary>
-            public Token()
-                : base()
-            {
-
-            }
 
             public new Token Next
             {
@@ -690,8 +703,8 @@
 
         public class Header : Token
         {
-            public Header(FileText owner, Storage.Character referenceBegin, Storage.Character referenceEnd)
-                : base(owner, referenceBegin, referenceEnd)
+            public Header(FileText owner, Storage.Character reference)
+                : base(owner, reference)
             {
 
             }
@@ -708,7 +721,32 @@
             {
                 if (reference.Text == '#')
                 {
-                    new Header(owner, reference, reference);
+                    new Header(owner, reference);
+                }
+            }
+        }
+
+        public class Bullet : Token
+        {
+            public Bullet(FileText owner, Storage.Character reference)
+                : base(owner, reference)
+            {
+
+            }
+
+            /// <summary>
+            /// Constructor factory.
+            /// </summary>
+            public Bullet()
+            {
+
+            }
+
+            public override void CreateSyntax(FileText owner, Storage.Character reference, CreateSyntaxResult result)
+            {
+                if (reference.Text == '*')
+                {
+                    new Bullet(owner, reference);
                 }
             }
         }
@@ -837,10 +875,19 @@
             }
         }
 
+        /// <summary>
+        /// Markdown Node.
+        /// </summary>
         public class Node : Tree.Syntax
         {
             public Node(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
                 : base(owner, referenceBegin, referenceEnd)
+            {
+
+            }
+
+            public Node(Tree.Component owner, MarkdownLexer.Token reference)
+                : base(owner, reference)
             {
 
             }
@@ -998,8 +1045,8 @@
 
         public class Header : Node
         {
-            public Header(Tree.Component owner, MarkdownLexer.Token referenceBegin, MarkdownLexer.Token referenceEnd)
-                : base(owner, referenceBegin, referenceEnd)
+            public Header(Tree.Component owner, MarkdownLexer.Token reference)
+                : base(owner, reference)
             {
 
             }
@@ -1023,7 +1070,7 @@
                     bool isNewLine = tokenHeader.Previous is MarkdownLexer.NewLine;
                     if (isNull || isSpace || isNewLine)
                     {
-                        var header = new Header(owner, reference, reference);
+                        var header = new Header(owner, reference);
                         result.CreateSyntaxTree(header, reference.Next, SyntaxFactoryStopList());
                     }
                 }
