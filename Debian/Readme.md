@@ -34,3 +34,9 @@ sudo systemctl status ssh # Check status
 ip address # Search inet 0.0.0.0
 sudo apt install hyperv-daemons # Shows ip address in Hyper-V manager
 ```
+
+# Install Git
+```sh
+sudo apt install git
+git --version
+```
