@@ -40,3 +40,40 @@ sudo apt install hyperv-daemons # Shows ip address in Hyper-V manager
 sudo apt install git
 git --version
 ```
+
+# Install .NET 5
+https://docs.microsoft.com/en-us/dotnet/core/install/linux-debian
+
+# Install Node.js
+https://github.com/nodesource/distributions/blob/master/README.md
+```sh
+su root
+# Using Debian, as root
+curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+apt-get install -y nodejs
+node -v
+```
+
+# Install MS-SQL Server
+https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-ubuntu?view=sql-server-ver15
+Follow: For Ubuntu 18.04:
+```sh
+sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/18.04/mssql-server-2019.list)"
+sudo apt-get update
+sudo apt-get install -y mssql-server
+sudo /opt/mssql/bin/mssql-conf setup
+systemctl status mssql-server --no-pager # Check status
+
+# MS-SQL server tools
+curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+sudo apt-get update 
+sudo apt-get install mssql-tools unixodbc-dev
+sudo apt-get update 
+sudo apt-get install mssql-tools
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+# Close terminal
+sqlcmd -S localhost -U SA -P '<YourPassword>'
+CREATE DATABASE ApplicationDemo
+GO
+EXIT
+```
