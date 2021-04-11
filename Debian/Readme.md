@@ -83,3 +83,10 @@ CREATE DATABASE ApplicationDemo
 GO
 EXIT
 ```
+
+# Program Listen on Port
+```sh
+sudo apt install net-tools
+sudo netstat -ltp # Show all program listening to port
+killall -g -SIGKILL -r Application.S # Close group starting (regular expression with Application.S)
+```
