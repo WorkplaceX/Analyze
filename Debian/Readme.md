@@ -22,6 +22,12 @@ sudo apt install fonts-liberationsudo # dependency
 dpkg -i google-chrome-stable_current_amd64.deb
 ```
 
+# Install Visual Code
+Download file: code_1.55.1-1617808414_amd64.deb
+```sh
+dpkg -i code_1.55.1-1617808414_amd64.deb
+```
+
 # Install SSH for Putty
 ```sh
 sudo apt-get update
