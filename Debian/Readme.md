@@ -77,6 +77,8 @@ sudo apt-get install mssql-tools unixodbc-dev
 sudo apt-get update 
 sudo apt-get install mssql-tools
 echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+source ~/.bashrc
 # Close terminal
 sqlcmd -S localhost -U SA -P '<YourPassword>'
 CREATE DATABASE ApplicationDemo
@@ -114,3 +116,22 @@ https://hub.docker.com/_/mysql (See stack.yml)
 
 # Docker WordPress
 https://hub.docker.com/_/wordpress (See stack.yml)
+
+# Docker GitLab
+https://docs.gitlab.com/omnibus/docker/#install-gitlab-using-docker-compose
+https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/docker/docker-compose.yml
+```sh
+# docker-compose.yml
+# change to: external_url 'http://localhost'
+# change to: - '23:23'
+docker-compose up
+# http://localhost/
+```
+
+# Docker Laravel
+https://hub.docker.com/r/bitnami/laravel
+```sh
+curl -LO https://raw.githubusercontent.com/bitnami/bitnami-docker-laravel/master/docker-compose.yml
+docker-compose up
+# http://localhost:3000
+```
