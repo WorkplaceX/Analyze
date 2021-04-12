@@ -90,3 +90,27 @@ sudo apt install net-tools
 sudo netstat -ltp # Show all program listening to port
 killall -g -SIGKILL -r Application.S # Close group starting (regular expression with Application.S)
 ```
+
+# Docker
+https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script
+```sh
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker <your-user>
+# logout and login
+sudo docker run hello-world
+```
+
+# Docker Compose
+```sh
+https://docs.docker.com/compose/install/
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+```
+
+# Docker MySql
+https://hub.docker.com/_/mysql (See stack.yml)
+
+# Docker WordPress
+https://hub.docker.com/_/wordpress (See stack.yml)
