@@ -2,9 +2,11 @@
   "scripts": {
     "build": "webpack"
   },
-  "devDependencies": {
+  "dependencies": {
     "google-protobuf": "^3.18.0-rc.1",
-    "grpc-web": "^1.2.1",
+    "grpc-web": "^1.2.1"
+  },
+  "devDependencies": {
     "webpack": "^5.51.1",
     "webpack-cli": "^4.8.0"
   }
