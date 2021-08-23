@@ -6,14 +6,14 @@
 * Add to environment variable Path
 * Start from command line protoc
 
-## Generate gRPC javascript files
+## Generate gRPC javascript files (folder Web/src)
 ```batch
-protoc --proto_path="../GrpcService/Protos/" greet.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+protoc --proto_path="../../GrpcService/Protos/" greet.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
 ```
 
 ## Build
 ```batch
-npx webpack main.js
+npm run build
 ```
 
 Copy Web/dist/main.js to GrpcService/wwwroot/main.js
