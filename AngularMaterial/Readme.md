@@ -13,6 +13,9 @@ ng --version
 ```
 ng new application # No routing, Scss
 ng add @angular/material # Global styles, animations
+ng add @nguniversal/express-engine
+npm run build:ssr
+npm run serve:ssr
 ```
 
 # Icons
