@@ -1,5 +1,6 @@
 # Angular Material
 Minimal layout
+
 ![](Doc/Material.png)
 
 # Version
