@@ -1,4 +1,7 @@
 # Angular Material
+Minimal layout
+![](Doc/Material.png)
+
 # Version
 ```
 ng --version
@@ -9,7 +12,7 @@ ng --version
 # Install
 ```
 ng new application # No routing, Scss
-ng add @angular/material
+ng add @angular/material # Global styles, animations
 ```
 
 # Icons
