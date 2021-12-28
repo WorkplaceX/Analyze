@@ -1,4 +1,4 @@
-# Angular 13
+# Angular App
 
 Install
 * Angular
@@ -7,10 +7,8 @@ Install
 
 # Version Check
 ```
-ng --version
+ng --version # Angular CLI: 13.1.2
 ```
-
-* Angular CLI: 13.1.2
 
 # Install
 ```
