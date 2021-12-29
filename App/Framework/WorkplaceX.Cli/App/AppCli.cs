@@ -23,9 +23,9 @@
             });
 
             // Register command templateZip
-            if (UtilCli.FolderNameSln != null)
+            if (UtilCli.FolderNameFrameworkSln != null)
             {
-                var folderNameTemplate = new Uri(new Uri(UtilCli.FolderNameSln), "Framework/Framework.Template/").AbsolutePath;
+                var folderNameTemplate = new Uri(new Uri(UtilCli.FolderNameFrameworkSln), "Framework.Template/").AbsolutePath;
                 if (Directory.Exists(folderNameTemplate))
                 {
                     commandLineApplication.Command("templateZip", (configuration) =>
@@ -77,7 +77,7 @@
         {
             Console.WriteLine("Create Framework.Template.zip");
 
-            var folderNameTemplate = new Uri(new Uri(UtilCli.FolderNameSln!), "Framework/Framework.Template/").AbsolutePath;
+            var folderNameTemplate = new Uri(new Uri(UtilCli.FolderNameFrameworkSln!), "Framework.Template/").AbsolutePath;
             var fileNameList = UtilCli.FileNameList(folderNameTemplate);
             
             // Filter folder node_modules, bin, obj, vs
@@ -96,7 +96,7 @@
             }
 
             // Zip
-            var fileNameZip = UtilCli.FolderNameSln + "Framework/WorkplaceX.Cli/Framework.Template.zip";
+            var fileNameZip = UtilCli.FolderNameFrameworkSln + "WorkplaceX.Cli/Framework.Template.zip";
             if (File.Exists(fileNameZip))
             {
                 File.Delete(fileNameZip);

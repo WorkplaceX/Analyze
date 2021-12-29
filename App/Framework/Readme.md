@@ -1,5 +1,5 @@
 # WorkplaceX Framework
-Framework to create database web apps based on .NET Core, Angular, SQL Server and UI (Angular Material or Bootstrap or Bulma).  Runs on Windows and Linux. Provides CI/CD pipeline.
+Framework to create database web apps based on .NET Core, Angular, SQL Server and UI (Angular Material or Bootstrap or Bulma). Runs on Windows and Linux. Provides CI/CD pipeline.
 
 Project page: [WorkplaceX.org](https://www.workplacex.org)
 
@@ -21,8 +21,9 @@ git --version # git version 2.34.1.windows.1
 # Install Framework.Cli (wplx)
 Before you can use the wplx command you need to install the tool. In the folder Framework/ run:
 ```
-dotnet pack ./WorkplaceX.Cli/ # Compile source code and create tool package
-dotnet tool install --global --add-source ./WorkplaceX.Cli/bin/Debug/ workplacex.cli # Install tool package
+dotnet run --project WorkplaceX.Cli -- templateZip # Creates Framework.Template.zip which is used for dotnet pack
+dotnet pack WorkplaceX.Cli # Create tool package
+dotnet tool install --global --add-source WorkplaceX.Cli/bin/Debug/ workplacex.cli # Install tool package
 dotnet tool list --global # Show all installed tools
 dotnet tool uninstall --global workplacex.cli # Uninstall it again (if needed)
 ```

@@ -60,14 +60,14 @@
         /// <summary>
         /// Gets FolderNameSln. This is the root folder where App.sln is located. Returns null for example if installed as global package.
         /// </summary>
-        internal static string? FolderNameSln
+        internal static string? FolderNameFrameworkSln
         {
             get
             {
                 string? result = null;
                 Uri uri = new Uri(typeof(UtilCli).Assembly.Location);
-                uri = new Uri(uri, "../../../../../");
-                if (File.Exists(uri.AbsolutePath + "App.sln"))
+                uri = new Uri(uri, "../../../../");
+                if (File.Exists(uri.AbsolutePath + "Framework.sln"))
                 {
                     result = uri.AbsolutePath;
                 }
