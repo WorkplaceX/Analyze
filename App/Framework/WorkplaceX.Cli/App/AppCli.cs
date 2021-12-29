@@ -1,6 +1,8 @@
 ﻿namespace WorkplaceX.Cli.App
 {
     using Microsoft.Extensions.CommandLineUtils;
+    using System.Diagnostics;
+    using System.IO.Compression;
 
     internal class AppCli
     {
@@ -17,7 +19,7 @@
             commandLineApplication.Command("new", (configuration) =>
             {
                 configuration.Description = "Create new project";
-                configuration.OnExecute(() => CommandNewProject());
+                configuration.OnExecute(() => Command(configuration, CommandNewProject));
             });
 
             // Register command templateZip
@@ -29,7 +31,7 @@
                     commandLineApplication.Command("templateZip", (configuration) =>
                     {
                         configuration.Description = "Zip folder Framework.Template/ before pack.";
-                        configuration.OnExecute(() => CommandTemplateZip());
+                        configuration.OnExecute(() => Command(configuration, CommandTemplateZip));
                     });
                 }
             }
@@ -51,23 +53,56 @@
             }
         }
 
+        public static int Command(CommandLineApplication command, Action action)
+        {
+            UtilCli.ConsoleWriteLineColor($"Command run ({ command.Name })", ConsoleColor.Green);
+            action();
+            UtilCli.ConsoleWriteLineColor($"Command success! ({ command.Name })", ConsoleColor.Green);
+            return 0;
+        }
+
         /// <summary>
         /// Create new project from Framework.Template/ into empty folder.
         /// </summary>
-        public static int CommandNewProject()
+        public static void CommandNewProject()
         {
             Console.WriteLine("Create new project...");
             Console.WriteLine(typeof(UtilCli).Assembly.Location);
-            return 0;
         }
 
         /// <summary>
         /// Zip folder Framework.Template/ before running dotnet pack.
         /// </summary>
-        public static int CommandTemplateZip()
+        public static void CommandTemplateZip()
         {
-            var d = UtilCli.FolderNameSln;
-            return 0;
+            Console.WriteLine("Create Framework.Template.zip");
+
+            var folderNameTemplate = new Uri(new Uri(UtilCli.FolderNameSln!), "Framework/Framework.Template/").AbsolutePath;
+            var fileNameList = UtilCli.FileNameList(folderNameTemplate);
+            
+            // Filter folder node_modules, bin, obj, vs
+            fileNameList = fileNameList.Where(item => !item.Contains("/node_modules/") && !item.Contains("/bin/") && !item.Contains("/obj/") && !item.Contains("/.vs/")).ToList();
+            
+            // Temp FolderName
+            var folderNameTemp = Path.GetTempPath().Replace("\\", "/") + Guid.NewGuid() + "/" + "Framework.Template/";
+            Directory.CreateDirectory(folderNameTemp);
+
+            // Copy FileName
+            foreach (var fileName in fileNameList)
+            {
+                Debug.Assert(fileName.StartsWith(folderNameTemplate));
+                var fileNameDest = folderNameTemp + fileName.Substring(folderNameTemplate.Length);
+                UtilCli.FileNameCopy(fileName, fileNameDest);
+            }
+
+            // Zip
+            var fileNameZip = UtilCli.FolderNameSln + "Framework/WorkplaceX.Cli/Framework.Template.zip";
+            if (File.Exists(fileNameZip))
+            {
+                File.Delete(fileNameZip);
+            }
+            ZipFile.CreateFromDirectory(folderNameTemp, fileNameZip);
+            Directory.Delete(folderNameTemp, recursive: true);
         }
     }
 }

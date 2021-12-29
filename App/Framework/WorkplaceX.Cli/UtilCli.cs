@@ -27,7 +27,38 @@
         }
 
         /// <summary>
-        /// Gets FolderNameSln. This is the root folder where App.sln is located.
+        /// Write to console in color.
+        /// </summary>
+        internal static void ConsoleWriteLineColor(object value, ConsoleColor? color, bool isLine = true)
+        {
+            if (color == null)
+            {
+                if (isLine)
+                {
+                    Console.WriteLine(value);
+                }
+                else
+                {
+                    Console.Write(value);
+                }
+            }
+            else
+            {
+                Console.ForegroundColor = color.Value;
+                if (isLine)
+                {
+                    Console.WriteLine(value);
+                }
+                else
+                {
+                    Console.Write(value);
+                }
+                Console.ResetColor();
+            }
+        }
+
+        /// <summary>
+        /// Gets FolderNameSln. This is the root folder where App.sln is located. Returns null for example if installed as global package.
         /// </summary>
         internal static string? FolderNameSln
         {
@@ -42,6 +73,35 @@
                 }
                 return result;
             }
+        }
+
+        /// <summary>
+        /// Returns all files. Also in sub folder.
+        /// </summary>
+        internal static List<string> FileNameList(string folderName, string searchPattern)
+        {
+            return Directory.GetFiles(folderName, searchPattern, SearchOption.AllDirectories).Select(item => item.Replace("\\", "/")).ToList();
+        }
+
+        /// <summary>
+        /// Returns all files. Also in sub folder.
+        /// </summary>
+        internal static List<string> FileNameList(string folderName)
+        {
+            return FileNameList(folderName, "*.*");
+        }
+
+        /// <summary>
+        /// Copy file and create folder.
+        /// </summary>
+        internal static void FileNameCopy(string fileNameSource, string fileNameDest)
+        {
+            string folderNameDest = new FileInfo(fileNameDest).DirectoryName!;
+            if (!Directory.Exists(folderNameDest))
+            {
+                Directory.CreateDirectory(folderNameDest);
+            }
+            File.Copy(fileNameSource, fileNameDest);
         }
     }
 }
