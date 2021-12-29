@@ -2,7 +2,7 @@
   "profiles": {
     "WorkplaceX.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "templateZip"
+      "commandLineArgs": "new"
     }
   }
 }

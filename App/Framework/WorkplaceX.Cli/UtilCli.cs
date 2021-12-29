@@ -58,7 +58,34 @@
         }
 
         /// <summary>
-        /// Gets FolderNameSln. This is the root folder where App.sln is located. Returns null for example if installed as global package.
+        /// Gets FolderNameAssembly. This is the folder of the executing assembly.
+        /// </summary>
+        internal static string FolderNameAssembly
+        {
+            get
+            {
+                return typeof(UtilCli).Assembly.Location;
+            }
+        }
+
+        /// <summary>
+        /// Returns FolderNameCurrent. This is the current working directory.
+        /// </summary>
+        internal static string FolderNameCurrent
+        {
+            get
+            {
+                var result = Directory.GetCurrentDirectory().Replace("\\", "/");
+                if (!result.EndsWith("/"))
+                {
+                    result += "/";
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets FolderNameFrameworkSln. This is the folder where file Framework.sln is located. Returns null if for example installed as global package.
         /// </summary>
         internal static string? FolderNameFrameworkSln
         {
@@ -68,6 +95,60 @@
                 Uri uri = new Uri(typeof(UtilCli).Assembly.Location);
                 uri = new Uri(uri, "../../../../");
                 if (File.Exists(uri.AbsolutePath + "Framework.sln"))
+                {
+                    result = uri.AbsolutePath;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets FolderNameContent. This is the folder where file Framework.Template.zip is located. Returns null if for example not installed as global package.
+        /// </summary>
+        internal static string? FolderNameContent
+        {
+            get
+            {
+                string? result = null;
+                Uri uri = new Uri(typeof(UtilCli).Assembly.Location);
+                uri = new Uri(uri, "../../../content/");
+                if (File.Exists(uri.AbsolutePath + "Framework.Template.zip"))
+                {
+                    result = uri.AbsolutePath;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets FolderNameAppCliExe. This is the folder where file App.Cli.exe is located. Returns null if for example not built or current working directory is not a WorkplaceX application.
+        /// </summary>
+        internal static string? FolderNameAppCliExe
+        {
+            get
+            {
+                string? result = null;
+                Uri uri = new Uri(FolderNameCurrent);
+                uri = new Uri(uri, "App.Cli/bin/Debug/net6.0/"); // net6.0
+                if (File.Exists(uri.AbsolutePath + "App.Cli.exe"))
+                {
+                    result = uri.AbsolutePath;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets FolderNameAppCliCsproj. This is the folder where file App.Cli.csproj is located. Returns null if for example current working directory is not a WorkplaceX application.
+        /// </summary>
+        internal static string? FolderNameAppCliCsproj
+        {
+            get
+            {
+                string? result = null;
+                Uri uri = new Uri(FolderNameCurrent);
+                uri = new Uri(uri, "App.Cli/");
+                if (File.Exists(uri.AbsolutePath + "App.Cli.csproj"))
                 {
                     result = uri.AbsolutePath;
                 }

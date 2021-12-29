@@ -41,7 +41,15 @@
             {
                 commandLineApplication.Execute("-h"); // Show list of available commands.
             }
-            
+
+            // Debug
+            Console.WriteLine("FolderNameAssembly=" + UtilCli.FolderNameAssembly);
+            Console.WriteLine("FolderNameCurrent=" + UtilCli.FolderNameCurrent);
+            Console.WriteLine("FolderNameFrameworkSln=" + UtilCli.FolderNameFrameworkSln);
+            Console.WriteLine("FolderNameContent=" + UtilCli.FolderNameContent);
+            Console.WriteLine("FolderNameAppCliExe=" + UtilCli.FolderNameAppCliExe);
+            Console.WriteLine("FolderNameAppCliCsproj=" + UtilCli.FolderNameAppCliCsproj);
+
             // Execute command
             try
             {
@@ -67,7 +75,6 @@
         public static void CommandNewProject()
         {
             Console.WriteLine("Create new project...");
-            Console.WriteLine(typeof(UtilCli).Assembly.Location);
         }
 
         /// <summary>
