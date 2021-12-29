@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WorkplaceX.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "templateZip"
+    }
+  }
+}

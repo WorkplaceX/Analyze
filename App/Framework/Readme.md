@@ -6,7 +6,7 @@ Project page: [WorkplaceX.org](https://www.workplacex.org)
 # Getting Started
 Prerequisites for Linux and Windows
 * [Node.js](https://nodejs.org/en/) (LTS Version)
-* [.NET Core SDK](https://dotnet.microsoft.com/download)
+* [.NET Core SDK](https://dotnet.microsoft.com/download) (LTS Version)
 * [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (Free Express)
 
 # Version Check
@@ -21,10 +21,10 @@ git --version # git version 2.34.1.windows.1
 # Install Framework.Cli (wplx)
 Before you can use the wplx command you need to install the tool. In the folder Framework/ run:
 ```
-dotnet pack ./Framework.Cli/ # Compile source code and create tool package
-dotnet tool install --global --add-source ./Framework.Cli/bin/Debug/ framework.cli # Install tool package
+dotnet pack ./WorkplaceX.Cli/ # Compile source code and create tool package
+dotnet tool install --global --add-source ./WorkplaceX.Cli/bin/Debug/ workplacex.cli # Install tool package
 dotnet tool list --global # Show all installed tools
-dotnet tool uninstall --global framework.cli # Uninstall it again (if needed)
+dotnet tool uninstall --global workplacex.cli # Uninstall it again (if needed)
 ```
 
 # Project and Folder Structure
