@@ -19,3 +19,9 @@ jobs:
       run: ./GitHubActions/install.sh
     - name: Build script
       run: ./GitHubActions/build.sh
+    - name: Arti
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifact-readme
+        path: README.md
+    
