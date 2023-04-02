@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DataService, Json } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
+  constructor(private dataService: DataService) {
+    this.json = dataService.json
+  }
+
+  json: Json
+
+  onClick() {
+    this.dataService.update()
+  }
 }
