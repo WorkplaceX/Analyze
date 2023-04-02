@@ -10,41 +10,86 @@ export class DataService {
   public json: Json = {
     text: "App",
     requestCount: 0,
-    list: [{
-      text: "Div1",
-      list: [{
-        text: "Div11",
-      },{
-        text: "Div12",
+    list: [
+      {
+        contentType: "Nav",
+        list: [
+          {
+            cssClass: "my-container",
+            list: [
+              {
+                cssClass: "my-item",
+                text: "Home",
+                href: "/",
+                contentType: "Anchor"
+              },
+              {
+                cssClass: "my-item",
+                text: "About",
+                href: "/about",
+                contentType: "Anchor"
+              },
+            ]
+          }
+        ]
+      }, {
+        text: "Div1",
+        list: [{
+          text: "Div11",
+        }, {
+          text: "Div12",
+        }]
+      }, {
+        text: "Div2",
+      }, {
+        cssClass: "my-container",
+        cssStyle: "grid-template-columns: 1fr 1fr 1fr",
+        cssStyleMedium: "grid-template-columns: 1fr 1fr",
+        cssStyleSmall: "grid-template-columns: 1fr",
+        list: [
+          {
+            text: "Item1",
+            cssClass: "my-item",
+            contentType: "Html"
+          }, {
+            text: "Item2",
+            cssClass: "my-item",
+            contentType: "Html"
+          }, {
+            text: "Item3",
+            cssClass: "my-item",
+            contentType: "Html"
+          }, {
+            cssClass: "my-container",
+            cssStyle: "grid-template-columns: 1fr 1fr 1fr",
+            list: [
+              {
+                text: "ItemA",
+                cssClass: "my-item",
+                contentType: "Html"
+              }, {
+                text: "ItemB",
+                cssClass: "my-item",
+                contentType: "Html"
+              }, {
+                text: "ItemC",
+                href: "/abc/",
+                cssClass: "my-item",
+                contentType: "Anchor"
+              }
+            ]
+          }
+        ]
+      }, {
+        text: "<h1>Hello World</h1>",
+        contentType: "Html"
+      }, {
+        text: "Click",
+        contentType: "Button"
+      }, {
+        text: "Footer",
+        contentType: "Footer",
       }]
-    }, {
-      text: "Div2",
-    }, {
-      text: "Row",
-      cssClass: "my-container",
-      cssStyle: "grid-template-columns: auto auto",
-      list: [
-        {
-          text: "Item1",
-          cssClass: "my-item",
-          contentType: "Html"
-        }, {
-          text: "Item2",
-          cssClass: "my-item",
-          contentType: "Html"
-        }, {
-          text: "Item3",
-          cssClass: "my-item",
-          contentType: "Html"
-        }
-      ]
-    }, {
-      text: "<h1>Hello World</h1>",
-      contentType: "Html"
-    }, {
-      text: "Click",
-      contentType: "Button"
-    }]
   }
 
   public update() {
@@ -58,5 +103,10 @@ export interface Json {
   contentType?: string
   cssClass?: string
   cssStyle?: string
+  cssStyleSmall?: string
+  cssStyleMedium?: string
+  cssStyleCurrent?: string
+  href?: string
+  isActive?: boolean
   requestCount?: number
 }

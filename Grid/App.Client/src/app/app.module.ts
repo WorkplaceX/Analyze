@@ -2,14 +2,19 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { ButtonComponent, DivComponent, HtmlComponent } from './framework/framework.component';
+import { AnchorComponent, ButtonComponent, DivComponent, HtmlComponent } from './framework/framework.component';
+import { FooterComponent } from './footer/footer.component';
+import { NavComponent } from './nav/nav.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DivComponent,
     HtmlComponent,
-    ButtonComponent
+    ButtonComponent,
+    AnchorComponent,
+    FooterComponent,
+    NavComponent
   ],
   imports: [
     BrowserModule

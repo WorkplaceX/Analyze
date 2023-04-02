@@ -5,9 +5,11 @@ import { Json } from '../data.service';
 @Component({
   selector: '[app-div]',
   template: `
-  <div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClass" [style]="item.cssStyle" ></div>
+  <div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClass" [style]="item.cssStyleCurrent"></div>
   <div app-button *ngIf="json.contentType == 'Button'" [json]="json" style="display: inline;"></div>
+  <div app-anchor *ngIf="json.contentType == 'Anchor'" [json]="json" style="display: inline;"></div>
   <div app-html *ngIf="json.contentType == 'Html'" [json]="json" style="display: inline;"></div>
+  <div app-footer *ngIf="json.contentType == 'Footer'" [json]="json" style="display: inline;"></div>
   `,
 })
 export class DivComponent {
@@ -23,7 +25,7 @@ export class DivComponent {
   `,
 })
 export class HtmlComponent {
-  @Input() 
+  @Input()
   json!: Json
 }
 
@@ -33,6 +35,16 @@ export class HtmlComponent {
   template: `<button>{{json.text}}</button>`,
 })
 export class ButtonComponent {
+  @Input() 
+  json!: Json
+}
+
+/* Anchor */
+@Component({
+  selector: '[app-anchor]',
+  template: `<a href="{{json.href}}">{{json.text}}</a>`,
+})
+export class AnchorComponent {
   @Input() 
   json!: Json
 }
