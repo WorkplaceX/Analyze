@@ -1,0 +1,25 @@
+.flex {
+    display: flex;
+    background-color: #2196F3;
+}
+
+.flex-item {
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.grid {
+    display: grid;
+    background-color: #2196F3;
+    padding: 10px;
+}
+
+.grid-item {
+    background-color: rgb(255, 255, 94);
+    border: 2px solid rgba(0, 0, 0, 0.8);
+    padding: 30px;
+    font-size: 30px;
+    text-align: center;
+}

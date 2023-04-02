@@ -22,10 +22,10 @@ export class AppComponent {
 
   responsive(json: Json, screenWidth: number) {
     json.cssStyleCurrent = json.cssStyle
-    if (screenWidth < 1024) {
+    if (screenWidth < 1024 && json.cssStyleMedium) {
       json.cssStyleCurrent = json.cssStyleMedium
     }
-    if (screenWidth < 768) {
+    if (screenWidth < 768 && json.cssStyleSmall) {
       json.cssStyleCurrent = json.cssStyleSmall
     }
     if (json.list) {

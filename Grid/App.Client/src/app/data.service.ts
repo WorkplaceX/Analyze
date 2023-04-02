@@ -12,22 +12,22 @@ export class DataService {
     requestCount: 0,
     list: [
       {
-        contentType: "Nav",
+        type: "Nav",
         list: [
           {
-            cssClass: "my-container",
+            cssClass: "flex",
             list: [
               {
-                cssClass: "my-item",
+                cssClass: "flex-item",
                 text: "Home",
                 href: "/",
-                contentType: "Anchor"
+                type: "Anchor"
               },
               {
-                cssClass: "my-item",
+                cssClass: "flex-item",
                 text: "About",
                 href: "/about",
-                contentType: "Anchor"
+                type: "Anchor"
               },
             ]
           }
@@ -42,53 +42,53 @@ export class DataService {
       }, {
         text: "Div2",
       }, {
-        cssClass: "my-container",
+        cssClass: "grid",
         cssStyle: "grid-template-columns: 1fr 1fr 1fr",
         cssStyleMedium: "grid-template-columns: 1fr 1fr",
         cssStyleSmall: "grid-template-columns: 1fr",
         list: [
           {
             text: "Item1",
-            cssClass: "my-item",
-            contentType: "Html"
+            cssClass: "grid-item",
+            type: "Html"
           }, {
             text: "Item2",
-            cssClass: "my-item",
-            contentType: "Html"
+            cssClass: "grid-item",
+            type: "Html"
           }, {
             text: "Item3",
-            cssClass: "my-item",
-            contentType: "Html"
+            cssClass: "grid-item",
+            type: "Html"
           }, {
-            cssClass: "my-container",
-            cssStyle: "grid-template-columns: 1fr 1fr 1fr",
+            cssClass: "grid",
+            cssStyle: "grid-template-columns: 1fr 1fr",
             list: [
               {
                 text: "ItemA",
-                cssClass: "my-item",
-                contentType: "Html"
+                cssClass: "grid-item",
+                type: "Html"
               }, {
                 text: "ItemB",
-                cssClass: "my-item",
-                contentType: "Html"
+                cssClass: "grid-item",
+                type: "Html"
               }, {
                 text: "ItemC",
                 href: "/abc/",
-                cssClass: "my-item",
-                contentType: "Anchor"
+                cssClass: "grid-item",
+                type: "Anchor"
               }
             ]
           }
         ]
       }, {
         text: "<h1>Hello World</h1>",
-        contentType: "Html"
+        type: "Html"
       }, {
         text: "Click",
-        contentType: "Button"
+        type: "Button"
       }, {
         text: "Footer",
-        contentType: "Footer",
+        type: "Footer",
       }]
   }
 
@@ -100,7 +100,7 @@ export class DataService {
 export interface Json {
   text?: string
   list?: Json[]
-  contentType?: string
+  type?: string
   cssClass?: string
   cssStyle?: string
   cssStyleSmall?: string

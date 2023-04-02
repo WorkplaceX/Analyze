@@ -1,0 +1,5 @@
+<div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClass" [style]="item.cssStyleCurrent"></div>
+<div app-button *ngIf="json.type == 'Button'" [json]="json" style="display: inline;"></div>
+<div app-anchor *ngIf="json.type == 'Anchor'" [json]="json" style="display: inline;"></div>
+<div app-html *ngIf="json.type == 'Html'" [json]="json" style="display: inline;"></div>
+<div app-footer *ngIf="json.type == 'Footer'" [json]="json" style="display: inline;"></div>
