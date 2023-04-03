@@ -11,29 +11,16 @@ export class AppComponent {
     this.json = dataService.json
   }
 
+  json: Json
+
   ngOnInit() {
-    this.responsive(this.json, window.innerWidth)
+    this.dataService.resize(window.innerWidth)
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.responsive(this.json, event.target.innerWidth)
+    this.dataService.resize(event.target.innerWidth)
   }
-
-  responsive(json: Json, screenWidth: number) {
-    json.cssStyleCurrent = json.cssStyle
-    if (screenWidth < 1024 && json.cssStyleMedium) {
-      json.cssStyleCurrent = json.cssStyleMedium
-    }
-    if (screenWidth < 768 && json.cssStyleSmall) {
-      json.cssStyleCurrent = json.cssStyleSmall
-    }
-    if (json.list) {
-      json.list.forEach((item) => this.responsive(item, screenWidth))
-    }
-  }
-
-  json: Json
 
   onClick() {
     this.dataService.update()

@@ -45,20 +45,17 @@ export class DataService {
   }
 
   public json: Json = {
-    text: "App",
     requestCount: 0,
-    type: "Button",
     list: [
       {
-        text: "NavX8",
         type: "Nav",
         list: [
           {
-            text: "Nav1",
             cssClass: "flex",
+            cssStyleSmall: "flex-direction: column",
             list: [
               {
-                cssClass: "flex-item",
+                cssClass: "flex-item nav-item",
                 text: "Home",
                 href: "/",
                 type: "Anchor"
@@ -66,6 +63,21 @@ export class DataService {
               {
                 cssClass: "flex-item",
                 text: "About",
+                href: "/about",
+                type: "Anchor"
+              },
+              {
+                cssClass: "flex-item",
+                cssStyle: "margin-left: auto; background-color: green",
+                cssStyleSmall: "",
+                cssStyleHover: "background-color: lightgreen",
+                text: "Sign In",
+                href: "/about",
+                type: "Anchor"
+              },
+              {
+                cssClass: "flex-item",
+                text: "Sign Out",
                 href: "/about",
                 type: "Anchor"
               },
@@ -188,6 +200,40 @@ export class DataService {
     ]
   }
 
+  public resize(screenWidth: number) {
+    this.json.breakPoint = undefined;
+    if (screenWidth < 1024) {
+      this.json.breakPoint = "Medium"
+    }
+    if (screenWidth < 768) {
+      this.json.breakPoint = "Small"
+    }
+    this.cssUpdateRecursive(this.json)
+  }
+
+  public cssUpdate(json: Json) {
+    json.cssStyleCurrent = json.cssStyle
+    if (this.json.breakPoint == "Medium" && json.cssStyleMedium != null) {
+      json.cssStyleCurrent = json.cssStyleMedium
+    }
+    if (this.json.breakPoint == "Small" && json.cssStyleSmall != null) {
+      json.cssStyleCurrent = json.cssStyleSmall
+    }
+    if (json.isHover && json.cssStyleHover != null) {
+      if (json.cssStyleCurrent && !json.cssStyleCurrent.endsWith(";")) {
+        json.cssStyleCurrent += "; "
+      }
+      json.cssStyleCurrent += json.cssStyleHover
+    }
+  }
+
+  cssUpdateRecursive(json: Json) {
+    this.cssUpdate(json)
+    if (json.list) {
+      json.list.forEach((item) => this.cssUpdateRecursive(item))
+    }
+  }
+
   public update() {
     this.json.requestCount! += 1
   }
@@ -213,8 +259,15 @@ export interface Json {
   cssStyleSmall?: string
   
   cssStyleMedium?: string
+
+  cssStyleHover?: string
   
   cssStyleCurrent?: string
+
+  isHover?: boolean
+
+  /** BreakPoint (null, Medium, Small). Root element only. */
+  breakPoint?: string
   
   /** Href for AnchorComponent. */
   href?: string
