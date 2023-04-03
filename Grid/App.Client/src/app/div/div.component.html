@@ -2,9 +2,9 @@
   <ng-container *ngSwitchCase="null">
     <div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClass" [style]="item.cssStyleCurrent"></div>
   </ng-container>
-  <div app-button *ngSwitchCase="'Button'" [json]="json" style="display: inline;"></div>
-  <div app-anchor *ngSwitchCase="'Anchor'" [json]="json" style="display: inline;"></div>
-  <div app-html *ngSwitchCase="'Html'" [json]="json" style="display: inline;"></div>
-  <nav app-nav *ngSwitchCase="'Nav'" [json]="json" style="display: inline;"></nav>
-  <footer app-footer *ngSwitchCase="'Footer'" [json]="json" style="display: inline;"></footer>
+  <div my-button-wrapper app-button *ngSwitchCase="'Button'" [json]="json"></div>
+  <div app-anchor *ngSwitchCase="'Anchor'" [json]="json"></div>
+  <div app-html *ngSwitchCase="'Html'" [json]="json"></div>
+  <nav app-nav *ngSwitchCase="'Nav'" [json]="json"></nav>
+  <footer app-footer *ngSwitchCase="'Footer'" [json]="json"></footer>
 </ng-container>

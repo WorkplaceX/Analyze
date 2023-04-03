@@ -7,33 +7,47 @@ export class DataService {
 
   constructor() { }
 
-  public json3: Json = {
-    text: "App2",
-    type: "Nav",
+  public json2: Json = {
+    text: "App",
+    cssClass: "MyApp",
     list: [
       {
-        cssClass: "flex",
+        type: "Nav",
+        cssClass: "MyNav",
         list: [
           {
-            cssClass: "flex-item",
-            text: "Home",
-            href: "/",
-            type: "Anchor"
-          },
-          {
-            cssClass: "flex-item",
-            text: "About",
-            href: "/about",
-            type: "Anchor"
-          },
+            cssClass: "flex MyFlex",
+            list: [
+              {
+                cssClass: "flex-item MyFlexItem",
+                text: "Home",
+                href: "/",
+                type: "Anchor"
+              },
+              {
+                cssClass: "flex-item MyFlexItem",
+                text: "About",
+                href: "/about",
+                type: "Anchor"
+              },
+              {
+                cssClass: "MyNavClass",
+                type: "Nav",
+                list: [
+
+                ]
+              }
+            ]
+          }
         ]
-      }
+      },
     ]
   }
 
   public json: Json = {
     text: "App",
     requestCount: 0,
+    type: "Button",
     list: [
       {
         text: "NavX8",
@@ -71,13 +85,13 @@ export class DataService {
         text: "Div2",
         type: "Html"
       }, {
-        cssClass: "grid",
+        cssClass: "grid mygrid",
         cssStyle: "grid-template-columns: 1fr 1fr 1fr",
         cssStyleMedium: "grid-template-columns: 1fr 1fr",
         cssStyleSmall: "grid-template-columns: 1fr",
         list: [
           {
-            text: "Item1",
+            text: "Item1A",
             cssClass: "grid-item",
             type: "Html"
           }, {
@@ -91,6 +105,7 @@ export class DataService {
           }, {
             cssClass: "grid",
             cssStyle: "grid-template-columns: 1fr 1fr",
+            cssStyleSmall: "grid-template-columns: 1fr",
             list: [
               {
                 text: "ItemA",
@@ -178,17 +193,33 @@ export class DataService {
   }
 }
 
+/** Component is either a DivComponent or a content component like AnchorComponent. */
 export interface Json {
+  /** Text for content component. */
   text?: string
+
+  /** List of child components. If null use field type to select content component. */
   list?: Json[]
-  list2?: Json[]
+  
+  /** Type of content component. If null, DivComponent is rendered. */
   type?: string
+  
+  /** CssClass of DivComponent. Not applicable to root element. */
   cssClass?: string
+  
+  /** CssStyle of DivComponent. Not applicable to root element. */
   cssStyle?: string
+  
   cssStyleSmall?: string
+  
   cssStyleMedium?: string
+  
   cssStyleCurrent?: string
+  
+  /** Href for AnchorComponent. */
   href?: string
+  
   isActive?: boolean
+  
   requestCount?: number
 }
