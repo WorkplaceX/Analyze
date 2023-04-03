@@ -1,5 +1,10 @@
-<div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClass" [style]="item.cssStyleCurrent"></div>
-<div app-button *ngIf="json.type == 'Button'" [json]="json" style="display: inline;"></div>
-<div app-anchor *ngIf="json.type == 'Anchor'" [json]="json" style="display: inline;"></div>
-<div app-html *ngIf="json.type == 'Html'" [json]="json" style="display: inline;"></div>
-<div app-footer *ngIf="json.type == 'Footer'" [json]="json" style="display: inline;"></div>
+<ng-container [ngSwitch]="json.type">
+  <ng-container *ngSwitchCase="null">
+    <div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClass" [style]="item.cssStyleCurrent"></div>
+  </ng-container>
+  <div app-button *ngSwitchCase="'Button'" [json]="json" style="display: inline;"></div>
+  <div app-anchor *ngSwitchCase="'Anchor'" [json]="json" style="display: inline;"></div>
+  <div app-html *ngSwitchCase="'Html'" [json]="json" style="display: inline;"></div>
+  <nav app-nav *ngSwitchCase="'Nav'" [json]="json" style="display: inline;"></nav>
+  <footer app-footer *ngSwitchCase="'Footer'" [json]="json" style="display: inline;"></footer>
+</ng-container>

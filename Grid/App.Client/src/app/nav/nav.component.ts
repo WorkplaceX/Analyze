@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Json } from '../data.service';
 
 @Component({
-  selector: 'app-nav',
+  selector: '[app-nav]',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss']
 })
