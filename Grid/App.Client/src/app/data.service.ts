@@ -59,12 +59,28 @@ export class DataService {
   }
 
   public cssUpdate(json: Json) {
+    // CssClass
+    json.cssClassCurrent = json.cssClass
+    if (this.json.breakPoint == "Medium" && json.cssClassMedium != null) {
+      json.cssClassCurrent = json.cssClassMedium
+    }
+    if (this.json.breakPoint == "Small" && json.cssClassSmall != null) {
+      json.cssClassCurrent = json.cssClassSmall
+    }
+    // CssStyle
     json.cssStyleCurrent = json.cssStyle
     if (this.json.breakPoint == "Medium" && json.cssStyleMedium != null) {
       json.cssStyleCurrent = json.cssStyleMedium
     }
     if (this.json.breakPoint == "Small" && json.cssStyleSmall != null) {
       json.cssStyleCurrent = json.cssStyleSmall
+    }
+    // CssHover
+    if (json.isHover && json.cssClassHover != null) {
+      if (json.cssClassCurrent) {
+        json.cssClassCurrent += " "
+      }
+      json.cssClassCurrent += json.cssClassHover
     }
     if (json.isHover && json.cssStyleHover != null) {
       if (json.cssStyleCurrent && !json.cssStyleCurrent.endsWith(";")) {
@@ -100,12 +116,20 @@ export interface Json {
   /** CssClass of DivComponent. Not applicable to root element. */
   cssClass?: string
 
-  /** CssStyle of DivComponent. Not applicable to root element. */
+  cssClassMedium?: string
+
+  cssClassSmall?: string
+
+  cssClassHover?: string
+
+  cssClassCurrent?: string
+
+  /** CssStyle of DivComponent. Used for example for grid-template-columns. Not applicable to root element. */
   cssStyle?: string
 
-  cssStyleSmall?: string
-
   cssStyleMedium?: string
+
+  cssStyleSmall?: string
 
   cssStyleHover?: string
 

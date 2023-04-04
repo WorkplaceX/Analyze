@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="json.type">
   <ng-container *ngSwitchCase="null">
-    <div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClass" [style]="item.cssStyleCurrent"></div>
+    <div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClassCurrent" [style]="item.cssStyleCurrent"></div>
   </ng-container>
   <div my-button-wrapper app-button *ngSwitchCase="'Button'" [json]="json"></div>
   <div app-anchor *ngSwitchCase="'Anchor'" [json]="json"></div>

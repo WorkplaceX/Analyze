@@ -5,6 +5,85 @@ export class Data {
     requestCount: 0,
     list: [
       {
+        cssClass: "flex",
+        list: [
+          {
+            cssClass: "flex-item",
+            text: "Logo",
+            type: "Html"
+          },
+          {
+            cssClass: "flex",
+            cssClassSmall: "flex dropdown",
+            cssStyle: "flex: 1;", // stretch
+            cssStyleSmall: "flex-direction: column; width: 100%", // flex vertical; dropdown stretch;
+            list: [
+              {
+                cssClass: "flex-item",
+                text: "Home",
+                href: "/",
+                type: "Anchor"
+              },
+              {
+                cssClass: "flex-item dropdown-hover",
+                list: [
+                  {
+                    cssClass: "flex-item",
+                    text: "About",
+                    href: "/about",
+                    type: "Anchor",
+                  },
+                  {
+                    cssClass: "flex-item dropdown",
+                    cssStyleSmall: "",
+                    list: [
+                      {
+                        cssClass: "flex-item",
+                        text: "Version",
+                        href: "/version",
+                        type: "Anchor",
+                      },
+                      {
+                        cssClass: "flex-item",
+                        text: "Contact",
+                        href: "/contact",
+                        type: "Anchor",
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                cssClass: "flex-item",
+                cssStyle: "margin-left: auto; background-color: green",
+                cssStyleSmall: "",
+                cssStyleHover: "background-color: lightgreen",
+                text: "Sign In",
+                href: "/about",
+                type: "Anchor"
+              },
+              {
+                cssClass: "flex-item",
+                text: "Sign Out",
+                href: "/about",
+                type: "Anchor"
+              },
+            ]
+          },
+          {
+            cssClass: "flex-item",
+            cssStyle: "margin-left: auto; display: none",
+            cssStyleSmall: "margin-left: auto; display: block",
+            text: "Hamburger",
+            type: "Html"
+          },
+        ]
+      },
+      {
+        type: "Html",
+        text: "<h1>Hello World</h1><p>This is a demo layout</p><p>This is a demo layout</p><p>This is a demo layout</p><p>This is a demo layout</p>"
+      },
+      {
         type: "Nav",
         list: [
           {
@@ -12,12 +91,12 @@ export class Data {
             cssStyleSmall: "flex-direction: column",
             list: [
               {
-                cssClass: "flex-item nav-item",
+                cssClass: "flex-item",
                 text: "Logo",
                 type: "Html"
               },
               {
-                cssClass: "flex-item nav-item",
+                cssClass: "flex-item",
                 text: "Home",
                 href: "/",
                 type: "Anchor"
