@@ -61,10 +61,33 @@ export class DataService {
                 type: "Anchor"
               },
               {
-                cssClass: "flex-item",
-                text: "About",
-                href: "/about",
-                type: "Anchor"
+                cssClass: "flex-item dropdown-hover",
+                list: [
+                  {
+                    cssClass: "flex-item",
+                    text: "About",
+                    href: "/about",
+                    type: "Anchor",
+                  },
+                  {
+                    cssClass: "flex-item dropdown",
+                    cssStyleSmall: "",
+                    list: [
+                      {
+                        cssClass: "flex-item",
+                        text: "Version",
+                        href: "/version",
+                        type: "Anchor",
+                      },
+                      {
+                        cssClass: "flex-item",
+                        text: "Contact",
+                        href: "/contact",
+                        type: "Anchor",
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 cssClass: "flex-item",
@@ -246,33 +269,33 @@ export interface Json {
 
   /** List of child components. If null use field type to select content component. */
   list?: Json[]
-  
+
   /** Type of content component. If null, DivComponent is rendered. */
   type?: string
-  
+
   /** CssClass of DivComponent. Not applicable to root element. */
   cssClass?: string
-  
+
   /** CssStyle of DivComponent. Not applicable to root element. */
   cssStyle?: string
-  
+
   cssStyleSmall?: string
-  
+
   cssStyleMedium?: string
 
   cssStyleHover?: string
-  
+
   cssStyleCurrent?: string
 
   isHover?: boolean
 
   /** BreakPoint (null, Medium, Small). Root element only. */
   breakPoint?: string
-  
+
   /** Href for AnchorComponent. */
   href?: string
-  
+
   isActive?: boolean
-  
+
   requestCount?: number
 }

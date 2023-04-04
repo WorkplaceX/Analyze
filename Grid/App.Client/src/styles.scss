@@ -32,3 +32,17 @@
 .nav-item:hover {
     background-color: lightblue;
 }
+
+.dropdown {
+    position: absolute; 
+    font-size: 40px; 
+    background-color: yellow
+}
+
+.dropdown-hover > .dropdown {
+    display: none; // Hide drop down
+}
+
+.dropdown-hover:hover > .dropdown {
+    display: block; // Show drop down
+}
