@@ -5,77 +5,89 @@ export class Data {
     requestCount: 0,
     list: [
       {
-        cssClass: "flex",
+        type: "Nav",
         list: [
           {
-            cssClass: "flex-item",
-            text: "Logo",
-            type: "Html"
-          },
-          {
             cssClass: "flex",
-            cssClassSmall: "flex dropdown",
-            cssStyle: "flex: 1;", // stretch
-            cssStyleSmall: "flex-direction: column; width: 100%", // flex vertical; dropdown stretch;
             list: [
               {
+                name: "Logo",
                 cssClass: "flex-item",
-                text: "Home",
-                href: "/",
-                type: "Anchor"
+                text: "Logo",
+                type: "Html",
+                //isSwitchLeave: true,
+                cssStyleSwitch: "background-color: green"
               },
               {
-                cssClass: "flex-item dropdown-hover",
+                name: "Dropdown",
+                cssClass: "flex",
+                cssClassSmall: "flex dropdown",
+                cssStyle: "flex: 1;", // stretch
+                cssStyleSmall: "flex-direction: column; width: 100%; display: none;", // flex vertical; dropdown stretch;
+                cssStyleSwitch: "display: block",
                 list: [
                   {
                     cssClass: "flex-item",
-                    text: "About",
-                    href: "/about",
-                    type: "Anchor",
+                    text: "Home",
+                    href: "/",
+                    type: "Anchor"
                   },
                   {
-                    cssClass: "flex-item dropdown",
-                    cssStyleSmall: "",
+                    cssClass: "flex-item dropdown-hover",
                     list: [
                       {
                         cssClass: "flex-item",
-                        text: "Version",
-                        href: "/version",
+                        text: "About",
+                        href: "/about",
                         type: "Anchor",
                       },
                       {
-                        cssClass: "flex-item",
-                        text: "Contact",
-                        href: "/contact",
-                        type: "Anchor",
+                        cssClass: "flex-item dropdown",
+                        cssClassSmall: "flex-item",
+                        cssStyleSmall: "",
+                        list: [
+                          {
+                            cssClass: "flex-item",
+                            text: "Version",
+                            href: "/version",
+                            type: "Anchor",
+                          },
+                          {
+                            cssClass: "flex-item",
+                            text: "Contact",
+                            href: "/contact",
+                            type: "Anchor",
+                          }
+                        ]
                       }
                     ]
-                  }
+                  },
+                  {
+                    cssClass: "flex-item",
+                    cssStyle: "margin-left: auto; background-color: green",
+                    cssStyleSmall: "",
+                    cssStyleHover: "background-color: lightgreen",
+                    text: "Sign In",
+                    href: "/about",
+                    type: "Anchor"
+                  },
+                  {
+                    cssClass: "flex-item",
+                    text: "Sign Out",
+                    href: "/about",
+                    type: "Anchor"
+                  },
                 ]
               },
               {
                 cssClass: "flex-item",
-                cssStyle: "margin-left: auto; background-color: green",
-                cssStyleSmall: "",
-                cssStyleHover: "background-color: lightgreen",
-                text: "Sign In",
-                href: "/about",
-                type: "Anchor"
-              },
-              {
-                cssClass: "flex-item",
-                text: "Sign Out",
-                href: "/about",
-                type: "Anchor"
+                cssStyle: "margin-left: auto; display: none",
+                cssStyleSmall: "margin-left: auto; display: block",
+                text: "Hamburger",
+                type: "Html",
+                switchNames: ["Logo", "Dropdown"]
               },
             ]
-          },
-          {
-            cssClass: "flex-item",
-            cssStyle: "margin-left: auto; display: none",
-            cssStyleSmall: "margin-left: auto; display: block",
-            text: "Hamburger",
-            type: "Html"
           },
         ]
       },
@@ -84,76 +96,6 @@ export class Data {
         text: "<h1>Hello World</h1><p>This is a demo layout</p><p>This is a demo layout</p><p>This is a demo layout</p><p>This is a demo layout</p>"
       },
       {
-        type: "Nav",
-        list: [
-          {
-            cssClass: "flex",
-            cssStyleSmall: "flex-direction: column",
-            list: [
-              {
-                cssClass: "flex-item",
-                text: "Logo",
-                type: "Html"
-              },
-              {
-                cssClass: "flex-item",
-                text: "Home",
-                href: "/",
-                type: "Anchor"
-              },
-              {
-                cssClass: "flex-item dropdown-hover",
-                list: [
-                  {
-                    cssClass: "flex-item",
-                    text: "About",
-                    href: "/about",
-                    type: "Anchor",
-                  },
-                  {
-                    cssClass: "flex-item dropdown",
-                    cssStyleSmall: "",
-                    list: [
-                      {
-                        cssClass: "flex-item",
-                        text: "Version",
-                        href: "/version",
-                        type: "Anchor",
-                      },
-                      {
-                        cssClass: "flex-item",
-                        text: "Contact",
-                        href: "/contact",
-                        type: "Anchor",
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                cssClass: "flex-item",
-                cssStyle: "margin-left: auto; background-color: green",
-                cssStyleSmall: "",
-                cssStyleHover: "background-color: lightgreen",
-                text: "Sign In",
-                href: "/about",
-                type: "Anchor"
-              },
-              {
-                cssClass: "flex-item",
-                text: "Sign Out",
-                href: "/about",
-                type: "Anchor"
-              },
-              {
-                cssClass: "flex-item",
-                text: "Hamburger",
-                type: "Html"
-              },
-            ]
-          }
-        ]
-      }, {
         text: "Div1",
         list: [{
           text: "Div11",

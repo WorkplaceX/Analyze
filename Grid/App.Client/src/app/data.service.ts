@@ -8,43 +8,6 @@ export class DataService {
 
   constructor() { }
 
-  public json2: Json = {
-    text: "App",
-    cssClass: "MyApp",
-    list: [
-      {
-        type: "Nav",
-        cssClass: "MyNav",
-        list: [
-          {
-            cssClass: "flex MyFlex",
-            list: [
-              {
-                cssClass: "flex-item MyFlexItem",
-                text: "Home",
-                href: "/",
-                type: "Anchor"
-              },
-              {
-                cssClass: "flex-item MyFlexItem",
-                text: "About",
-                href: "/about",
-                type: "Anchor"
-              },
-              {
-                cssClass: "MyNavClass",
-                type: "Nav",
-                list: [
-
-                ]
-              }
-            ]
-          }
-        ]
-      },
-    ]
-  }
-
   public json: Json = Data.json
 
   public resize(screenWidth: number) {
@@ -75,26 +38,32 @@ export class DataService {
     if (this.json.breakPoint == "Small" && json.cssStyleSmall != null) {
       json.cssStyleCurrent = json.cssStyleSmall
     }
+    // CssSwitch
+    this.cssUpdateAppend(json, json.isSwitch, json.cssClassSwitch, json.cssStyleSwitch)
     // CssHover
-    if (json.isHover && json.cssClassHover != null) {
+    this.cssUpdateAppend(json, json.isHover, json.cssClassHover, json.cssStyleHover)
+  }
+
+  cssUpdateAppend(json: Json, value?: boolean, cssClass?: string, cssStyle?: string) {
+    // CssClass
+    if (value && cssClass != null) {
       if (json.cssClassCurrent) {
         json.cssClassCurrent += " "
       }
-      json.cssClassCurrent += json.cssClassHover
+      json.cssClassCurrent = (json.cssClassCurrent || "") + cssClass
     }
-    if (json.isHover && json.cssStyleHover != null) {
+    // CssStyle
+    if (value && cssStyle != null) {
       if (json.cssStyleCurrent && !json.cssStyleCurrent.endsWith(";")) {
         json.cssStyleCurrent += "; "
       }
-      json.cssStyleCurrent += json.cssStyleHover
+      json.cssStyleCurrent = (json.cssStyleCurrent || "") + cssStyle
     }
   }
 
   cssUpdateRecursive(json: Json) {
     this.cssUpdate(json)
-    if (json.list) {
-      json.list.forEach((item) => this.cssUpdateRecursive(item))
-    }
+    json.list?.forEach((item) => this.cssUpdateRecursive(item))
   }
 
   public update() {
@@ -104,6 +73,8 @@ export class DataService {
 
 /** Component is either a DivComponent or a content component like AnchorComponent. */
 export interface Json {
+  name?: string
+
   /** Text for content component. */
   text?: string
 
@@ -116,28 +87,51 @@ export interface Json {
   /** CssClass of DivComponent. Not applicable to root element. */
   cssClass?: string
 
+  /** Replaces cssClass for medium screen */
   cssClassMedium?: string
 
+  /** Replaces cssClass for small screen */
   cssClassSmall?: string
 
+  /** Append if isHover */
   cssClassHover?: string
 
+  /** Append if isSwitch */
+  cssClassSwitch?: string
+
+  /** Calculated */
   cssClassCurrent?: string
 
-  /** CssStyle of DivComponent. Used for example for grid-template-columns. Not applicable to root element. */
+  /** Css style of DivComponent. Used for example for grid-template-columns. Not applicable to root element. */
   cssStyle?: string
 
+  /** Replaces cssStyle for medium screen. */
   cssStyleMedium?: string
 
+  /** Replaces cssStyle for small screen. */
   cssStyleSmall?: string
 
+  /** Append if isHover */
   cssStyleHover?: string
 
+  /** Append if isSwitch */
+  cssStyleSwitch?: string
+
+  /** Calculated */
   cssStyleCurrent?: string
 
+  /** True if user mouse hovers over. */
   isHover?: boolean
 
-  /** BreakPoint (null, Medium, Small). Root element only. */
+  /** True if user clicks DivComponent and unassigned if user clicks again. */
+  isSwitch?: boolean
+
+  /** If true, isSwitch is set to unassigned when mouse leaves. */
+  isSwitchLeave?: boolean
+
+  switchNames?: string[]
+
+  /** Breakpoint (null, Medium, Small). Root element only. */
   breakPoint?: string
 
   /** Href for AnchorComponent. */
