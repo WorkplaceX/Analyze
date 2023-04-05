@@ -41,7 +41,7 @@ export class DivComponent {
     if (this.comp.switchNames) {
       this.switchName(this.dataService.comp, this.comp.switchNames)
     }
-    if (this.comp.activePath) {
+    if (this.comp.activePath && this.comp.isActiveDisable != true) {
       this.active(this.dataService.comp, this.comp.activePath)
     }
     this.dataService.cssUpdate(this.comp)

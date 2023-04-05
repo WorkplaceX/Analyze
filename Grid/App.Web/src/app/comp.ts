@@ -5,7 +5,7 @@ export class Data {
     requestCount: 0,
     list: [
       {
-        type: "Nav",
+        type: "nav",
         list: [
           {
             cssClass: "flex",
@@ -14,7 +14,7 @@ export class Data {
                 name: "Logo",
                 cssClass: "flex-item",
                 text: "Logo",
-                type: "Html",
+                type: "html",
                 //isSwitchLeave: true,
                 cssStyleSwitch: "background-color: green"
               },
@@ -29,17 +29,24 @@ export class Data {
                   {
                     cssClass: "flex-item",
                     text: "Home",
+                    activePath: "home/",
+                    cssClassActive: "active",
+                    cssClassActiveParent: "active-parent",
                     href: "/",
-                    type: "Anchor"
+                    type: "anchor"
                   },
                   {
                     cssClass: "flex-item dropdown-hover",
                     list: [
                       {
                         cssClass: "flex-item",
-                        text: "About",
-                        href: "/about",
-                        type: "Anchor",
+                        text: "Product",
+                        activePath: "product/",
+                        isActiveDisable: true,
+                        cssClassActive: "active",
+                        cssClassActiveParent: "active-parent",
+                        href: "/product",
+                        type: "anchor",
                       },
                       {
                         cssClass: "flex-item dropdown",
@@ -50,8 +57,8 @@ export class Data {
                             cssClass: "flex-item",
                             text: "Version",
                             href: "/version",
-                            type: "Anchor",
-                            activePath: "about/",
+                            type: "anchor",
+                            activePath: "product/version/",
                             cssClassActive: "active",
                             cssClassActiveParent: "active-parent"
                           },
@@ -59,8 +66,8 @@ export class Data {
                             cssClass: "flex-item",
                             text: "Contact",
                             href: "/contact",
-                            type: "Anchor",
-                            activePath: "about/contact",
+                            type: "anchor",
+                            activePath: "product/contact/",
                             cssClassActive: "active",
                             cssClassActiveParent: "active-parent"
                           }
@@ -70,18 +77,27 @@ export class Data {
                   },
                   {
                     cssClass: "flex-item",
+                    text: "About",
+                    activePath: "about/",
+                    cssClassActive: "active",
+                    cssClassActiveParent: "active-parent",
+                    href: "/about",
+                    type: "anchor"
+                  },
+                  {
+                    cssClass: "flex-item",
                     cssStyle: "margin-left: auto; background-color: green",
                     cssStyleSmall: "",
                     cssStyleHover: "background-color: lightgreen",
                     text: "Sign In",
-                    href: "/about",
-                    type: "Anchor"
+                    href: "/product",
+                    type: "anchor"
                   },
                   {
                     cssClass: "flex-item",
                     text: "Sign Out",
-                    href: "/about",
-                    type: "Anchor"
+                    href: "/product",
+                    type: "anchor"
                   },
                 ]
               },
@@ -90,7 +106,7 @@ export class Data {
                 cssStyle: "margin-left: auto; display: none",
                 cssStyleSmall: "margin-left: auto; display: block",
                 text: "Hamburger",
-                type: "Html",
+                type: "html",
                 switchNames: ["Logo", "Dropdown"]
               },
             ]
@@ -98,23 +114,55 @@ export class Data {
         ]
       },
       {
-        cssClass: "grid",
+        cssClassActive: "grid",
+        cssClassActiveParent: "grid",
+        cssClass: "hide",
         cssStyle: "grid-template-columns: 1fr 2fr",
         cssStyleMedium: "grid-template-columns: 1fr",
+        activePath: "product/contact/",
         list: [
           {
             cssClass: "grid-item",
-            type: "Anchor",
-            text: "Install",
-            activePath: "about/contact/install",
+            type: "anchor",
+            text: "Email",
+            activePath: "product/contact/install",
             cssClassActive: "active"
           },
           {
             cssClass: "grid-item",
-            type: "Html",
-            text: "<h1>Hello World</h1><p>Install the application <b>on a pc</b> to edit content and publish it.</p>"
+            type: "html",
+            text: "<h1>Contact</h1><p>Street</p>"
           },
         ]
+      },
+      {
+        cssClassActive: "grid",
+        cssClassActiveParent: "grid",
+        cssClass: "hide",
+        cssStyle: "grid-template-columns: 1fr 2fr",
+        cssStyleMedium: "grid-template-columns: 1fr",
+        activePath: "product/version/",
+        list: [
+          {
+            cssClass: "grid-item",
+            type: "anchor",
+            text: "Install",
+            activePath: "product/version/install",
+            cssClassActive: "active"
+          },
+          {
+            cssClass: "grid-item",
+            type: "html",
+            text: "<h1>Version</h1><p>Install the application <b>on a pc</b> to edit content and publish it.</p>"
+          },
+        ]
+      },
+      {
+        cssClassActive: "block",
+        cssClass: "hide",
+        text: "<h1>About</h1><p>About this site</p>",
+        type: "html",
+        activePath: "about/",
       },
       {
         cssClass: "grid",
@@ -125,15 +173,15 @@ export class Data {
           {
             text: "Item1A",
             cssClass: "grid-item",
-            type: "Html"
+            type: "html"
           }, {
             text: "Item2",
             cssClass: "grid-item",
-            type: "Html"
+            type: "html"
           }, {
             text: "Item3",
             cssClass: "grid-item",
-            type: "Html"
+            type: "html"
           }, {
             cssClass: "grid",
             cssStyle: "grid-template-columns: 1fr 1fr",
@@ -142,23 +190,23 @@ export class Data {
               {
                 text: "ItemA",
                 cssClass: "grid-item",
-                type: "Html"
+                type: "html"
               }, {
                 text: "ItemB",
                 cssClass: "grid-item",
-                type: "Html"
+                type: "html"
               }, {
                 text: "ItemC",
                 href: "/abc/",
                 cssClass: "grid-item",
-                type: "Anchor"
+                type: "anchor"
               }
             ]
           }
         ]
       },
       {
-        type: "Footer",
+        type: "footer",
         list: [
           {
             cssClass: "grid",
@@ -171,12 +219,12 @@ export class Data {
                   {
                     text: "ABOUT",
                     cssClass: "grid-item",
-                    type: "Html"
+                    type: "html"
                   },
                   {
                     cssClass: "grid-item",
                     text: "WorkplaceX is an initiative to simplify and standardize the development of business applications. It is based on ASP.NET Core, Angular, Bootstrap, Bulma and SQL Server.",
-                    type: "Html"
+                    type: "html"
                   },
                 ]
               },
@@ -186,24 +234,24 @@ export class Data {
                   {
                     text: "QUICK LINKS",
                     cssClass: "grid-item",
-                    type: "Html"
+                    type: "html"
                   },
                   {
                     cssClass: "grid-item",
                     text: "<a href='/'>Home</a>",
-                    type: "Html"
+                    type: "html"
                   },
                 ]
               },
               {
                 cssClass: "grid-item",
                 text: "Copyright © 2022 All Rights Reserved by WorkplaceX.org",
-                type: "Html"
+                type: "html"
               },
               {
                 cssClass: "grid-item",
                 text: "<a href='/'>Twitter</a><a href='/'>Youtube</a>",
-                type: "Html"
+                type: "html"
               },
             ]
           }

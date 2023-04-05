@@ -2,9 +2,9 @@
   <ng-container *ngSwitchCase="null">
     <div app-div *ngFor="let item of comp.list" [comp]="item" [ngClass]="item.cssClassCurrent" [style]="item.cssStyleCurrent"></div>
   </ng-container>
-  <div my-button-wrapper app-button *ngSwitchCase="'Button'" [comp]="comp"></div>
-  <div app-anchor *ngSwitchCase="'Anchor'" [comp]="comp"></div>
-  <div app-html *ngSwitchCase="'Html'" [comp]="comp"></div>
-  <nav app-nav *ngSwitchCase="'Nav'" [comp]="comp"></nav>
-  <footer app-footer *ngSwitchCase="'Footer'" [comp]="comp"></footer>
+  <div my-button-wrapper app-button *ngSwitchCase="'button'" [comp]="comp"></div>
+  <div app-anchor *ngSwitchCase="'anchor'" [comp]="comp"></div>
+  <div app-html *ngSwitchCase="'html'" [comp]="comp"></div>
+  <nav app-nav *ngSwitchCase="'nav'" [comp]="comp"></nav>
+  <footer app-footer *ngSwitchCase="'footer'" [comp]="comp"></footer>
 </ng-container>

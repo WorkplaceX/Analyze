@@ -148,6 +148,9 @@ export interface Comp {
 
   isActive?: boolean
 
+  /** If true, user can not click and activate component. */
+  isActiveDisable?: boolean
+
   isActiveParent?: boolean
 
   cssClassActive?: string
