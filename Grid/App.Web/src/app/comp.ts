@@ -51,12 +51,18 @@ export class Data {
                             text: "Version",
                             href: "/version",
                             type: "Anchor",
+                            activePath: "about/",
+                            cssClassActive: "active",
+                            cssClassActiveParent: "active-parent"
                           },
                           {
                             cssClass: "flex-item",
                             text: "Contact",
                             href: "/contact",
                             type: "Anchor",
+                            activePath: "about/contact",
+                            cssClassActive: "active",
+                            cssClassActiveParent: "active-parent"
                           }
                         ]
                       }
@@ -92,23 +98,26 @@ export class Data {
         ]
       },
       {
-        type: "Html",
-        text: "<h1>Hello World</h1><p>This is a demo layout</p><p>This is a demo layout</p><p>This is a demo layout</p><p>This is a demo layout</p>"
+        cssClass: "grid",
+        cssStyle: "grid-template-columns: 1fr 2fr",
+        cssStyleMedium: "grid-template-columns: 1fr",
+        list: [
+          {
+            cssClass: "grid-item",
+            type: "Anchor",
+            text: "Install",
+            activePath: "about/contact/install",
+            cssClassActive: "active"
+          },
+          {
+            cssClass: "grid-item",
+            type: "Html",
+            text: "<h1>Hello World</h1><p>Install the application <b>on a pc</b> to edit content and publish it.</p>"
+          },
+        ]
       },
       {
-        text: "Div1",
-        list: [{
-          text: "Div11",
-          type: "Html"
-        }, {
-          text: "Div12",
-          type: "Html"
-        }]
-      }, {
-        text: "Div2",
-        type: "Html"
-      }, {
-        cssClass: "grid mygrid",
+        cssClass: "grid",
         cssStyle: "grid-template-columns: 1fr 1fr 1fr",
         cssStyleMedium: "grid-template-columns: 1fr 1fr",
         cssStyleSmall: "grid-template-columns: 1fr",
@@ -147,14 +156,6 @@ export class Data {
             ]
           }
         ]
-      },
-      {
-        text: "<h1>Hello World</h1>",
-        type: "Html"
-      },
-      {
-        text: "Click",
-        type: "Button"
       },
       {
         type: "Footer",

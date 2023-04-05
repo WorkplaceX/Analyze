@@ -41,7 +41,26 @@ export class DivComponent {
     if (this.comp.switchNames) {
       this.switchName(this.dataService.comp, this.comp.switchNames)
     }
+    if (this.comp.activePath) {
+      this.active(this.dataService.comp, this.comp.activePath)
+    }
     this.dataService.cssUpdate(this.comp)
+  }
+
+  active(comp: Comp, activePath: string) {
+    if (comp.activePath) {
+      comp.isActive = undefined
+      comp.isActiveParent = undefined
+      if (comp.activePath == activePath) {
+        comp.isActive = true
+      } else {
+        if (activePath.startsWith(comp.activePath)) {
+          comp.isActiveParent = true
+        }
+      }
+      this.dataService.cssUpdate(comp)
+    }
+    comp.list?.forEach((item) => this.active(item, activePath))
   }
 
   switchName(comp: Comp, switchNames?: string[]) {

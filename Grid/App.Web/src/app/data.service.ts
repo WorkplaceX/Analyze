@@ -6,7 +6,9 @@ import { Data } from './comp';
 })
 export class DataService {
 
-  constructor() { }
+  constructor() {
+
+  }
 
   public comp: Comp = Data.comp
 
@@ -28,36 +30,42 @@ export class DataService {
       comp.cssClassCurrent = comp.cssClassMedium
     }
     if (this.comp.breakPoint == "Small" && comp.cssClassSmall != null) {
-      comp.cssClassCurrent = comp.cssClassSmall
+      comp.cssClassCurrent = comp.cssClassMedium ? comp.cssClassMedium : comp.cssClassSmall ? comp.cssClassSmall : comp.cssClassCurrent
     }
     // CssStyle
     comp.cssStyleCurrent = comp.cssStyle
     if (this.comp.breakPoint == "Medium" && comp.cssStyleMedium != null) {
       comp.cssStyleCurrent = comp.cssStyleMedium
     }
-    if (this.comp.breakPoint == "Small" && comp.cssStyleSmall != null) {
-      comp.cssStyleCurrent = comp.cssStyleSmall
+    if (this.comp.breakPoint == "Small") {
+      comp.cssStyleCurrent = comp.cssStyleMedium ? comp.cssStyleMedium : comp.cssStyleSmall ? comp.cssStyleSmall : comp.cssStyleCurrent
     }
     // CssSwitch
     this.cssUpdateAppend(comp, comp.isSwitch, comp.cssClassSwitch, comp.cssStyleSwitch)
+    // CssActive
+    this.cssUpdateAppend(comp, comp.isActive, comp.cssClassActive, comp.cssStyleActive)
+    // CssActiveParent
+    this.cssUpdateAppend(comp, comp.isActiveParent, comp.cssClassActiveParent, comp.cssStyleActiveParent)
     // CssHover
     this.cssUpdateAppend(comp, comp.isHover, comp.cssClassHover, comp.cssStyleHover)
   }
 
   cssUpdateAppend(comp: Comp, value?: boolean, cssClass?: string, cssStyle?: string) {
     // CssClass
-    if (value && cssClass != null) {
-      if (comp.cssClassCurrent) {
-        comp.cssClassCurrent += " "
+    if (value) {
+      if (cssClass != null) {
+        if (comp.cssClassCurrent) {
+          comp.cssClassCurrent += " "
+        }
+        comp.cssClassCurrent = (comp.cssClassCurrent || "") + cssClass
       }
-      comp.cssClassCurrent = (comp.cssClassCurrent || "") + cssClass
-    }
-    // CssStyle
-    if (value && cssStyle != null) {
-      if (comp.cssStyleCurrent && !comp.cssStyleCurrent.endsWith(";")) {
-        comp.cssStyleCurrent += "; "
+      // CssStyle
+      if (cssStyle != null) {
+        if (comp.cssStyleCurrent && !comp.cssStyleCurrent.endsWith(";")) {
+          comp.cssStyleCurrent += "; "
+        }
+        comp.cssStyleCurrent = (comp.cssStyleCurrent || "") + cssStyle
       }
-      comp.cssStyleCurrent = (comp.cssStyleCurrent || "") + cssStyle
     }
   }
 
@@ -129,6 +137,7 @@ export interface Comp {
   /** If true, isSwitch is set to unassigned when mouse leaves. */
   isSwitchLeave?: boolean
 
+  /** Other switches to also click. */
   switchNames?: string[]
 
   /** Breakpoint (null, Medium, Small). Root element only. */
@@ -138,6 +147,18 @@ export interface Comp {
   href?: string
 
   isActive?: boolean
+
+  isActiveParent?: boolean
+
+  cssClassActive?: string
+
+  cssStyleActive?: string
+
+  cssClassActiveParent?: string
+
+  cssStyleActiveParent?: string
+
+  activePath?: string
 
   requestCount?: number
 }

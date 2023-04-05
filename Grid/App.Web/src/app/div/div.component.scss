@@ -40,3 +40,11 @@
 .dropdown-hover:hover > .dropdown {
     display: block; // Show drop down
 }
+
+.active {
+    background-color: slateblue;
+}
+
+.active-parent {
+    background-color: darkslateblue;
+}
