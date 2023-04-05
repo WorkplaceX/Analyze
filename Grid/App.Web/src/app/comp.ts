@@ -1,7 +1,7 @@
-import { Json } from "./data.service";
+import { Comp } from "./data.service";
 
 export class Data {
-  public static json: Json = {
+  public static comp: Comp = {
     requestCount: 0,
     list: [
       {

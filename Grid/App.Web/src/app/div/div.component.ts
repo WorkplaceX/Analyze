@@ -1,5 +1,5 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { DataService, Json } from '../data.service';
+import { DataService, Comp } from '../data.service';
 
 @Component({
   selector: '[app-div]',
@@ -12,47 +12,47 @@ export class DivComponent {
   }
 
   @Input()
-  json!: Json
+  comp!: Comp
 
   @HostListener('mouseenter', ['$event'])
   handleMouseEnter(event: any) {
-    this.json.isHover = true
-    this.dataService.cssUpdate(this.json)
+    this.comp.isHover = true
+    this.dataService.cssUpdate(this.comp)
   }
 
   @HostListener('mouseleave', ['$event'])
   handleMouseleave(event: any) {
-    this.json.isHover = undefined
-    if (this.json.isSwitchLeave) {
-      this.json.isSwitch = undefined
+    this.comp.isHover = undefined
+    if (this.comp.isSwitchLeave) {
+      this.comp.isSwitch = undefined
     }
-    this.dataService.cssUpdate(this.json)
+    this.dataService.cssUpdate(this.comp)
   }
 
   @HostListener('click', ['$event'])
   onClick(event: any) {
     event.stopPropagation()
     event.stopImmediatePropagation()
-    if (this.json.isSwitch == undefined) {
-      this.json.isSwitch = true
+    if (this.comp.isSwitch == undefined) {
+      this.comp.isSwitch = true
     } else {
-      this.json.isSwitch = undefined
+      this.comp.isSwitch = undefined
     }
-    if (this.json.switchNames) {
-      this.switchName(this.dataService.json, this.json.switchNames)
+    if (this.comp.switchNames) {
+      this.switchName(this.dataService.comp, this.comp.switchNames)
     }
-    this.dataService.cssUpdate(this.json)
+    this.dataService.cssUpdate(this.comp)
   }
 
-  switchName(json: Json, switchNames?: string[]) {
-    if (switchNames?.includes(json.name!)) {
-      if (json.isSwitch == undefined) {
-        json.isSwitch = true
+  switchName(comp: Comp, switchNames?: string[]) {
+    if (switchNames?.includes(comp.name!)) {
+      if (comp.isSwitch == undefined) {
+        comp.isSwitch = true
       } else {
-        json.isSwitch = undefined
+        comp.isSwitch = undefined
       }
-      this.dataService.cssUpdate(json)
+      this.dataService.cssUpdate(comp)
     }
-    json.list?.forEach((item) => this.switchName(item, switchNames))
+    comp.list?.forEach((item) => this.switchName(item, switchNames))
   }
 }

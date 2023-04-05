@@ -1,10 +1,10 @@
-<ng-container [ngSwitch]="json.type">
+<ng-container [ngSwitch]="comp.type">
   <ng-container *ngSwitchCase="null">
-    <div app-div *ngFor="let item of json.list" [json]="item" [ngClass]="item.cssClassCurrent" [style]="item.cssStyleCurrent"></div>
+    <div app-div *ngFor="let item of comp.list" [comp]="item" [ngClass]="item.cssClassCurrent" [style]="item.cssStyleCurrent"></div>
   </ng-container>
-  <div my-button-wrapper app-button *ngSwitchCase="'Button'" [json]="json"></div>
-  <div app-anchor *ngSwitchCase="'Anchor'" [json]="json"></div>
-  <div app-html *ngSwitchCase="'Html'" [json]="json"></div>
-  <nav app-nav *ngSwitchCase="'Nav'" [json]="json"></nav>
-  <footer app-footer *ngSwitchCase="'Footer'" [json]="json"></footer>
+  <div my-button-wrapper app-button *ngSwitchCase="'Button'" [comp]="comp"></div>
+  <div app-anchor *ngSwitchCase="'Anchor'" [comp]="comp"></div>
+  <div app-html *ngSwitchCase="'Html'" [comp]="comp"></div>
+  <nav app-nav *ngSwitchCase="'Nav'" [comp]="comp"></nav>
+  <footer app-footer *ngSwitchCase="'Footer'" [comp]="comp"></footer>
 </ng-container>

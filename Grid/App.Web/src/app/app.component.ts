@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { DataService, Json } from './data.service';
+import { DataService, Comp } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +8,10 @@ import { DataService, Json } from './data.service';
 })
 export class AppComponent {
   constructor(private dataService: DataService) {
-    this.json = dataService.json
+    this.comp = dataService.comp
   }
 
-  json: Json
+  comp: Comp
 
   ngOnInit() {
     this.dataService.resize(window.innerWidth)

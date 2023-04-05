@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Data } from './json';
+import { Data } from './comp';
 
 @Injectable({
   providedIn: 'root'
@@ -8,78 +8,78 @@ export class DataService {
 
   constructor() { }
 
-  public json: Json = Data.json
+  public comp: Comp = Data.comp
 
   public resize(screenWidth: number) {
-    this.json.breakPoint = undefined;
+    this.comp.breakPoint = undefined;
     if (screenWidth < 1024) {
-      this.json.breakPoint = "Medium"
+      this.comp.breakPoint = "Medium"
     }
     if (screenWidth < 768) {
-      this.json.breakPoint = "Small"
+      this.comp.breakPoint = "Small"
     }
-    this.cssUpdateRecursive(this.json)
+    this.cssUpdateRecursive(this.comp)
   }
 
-  public cssUpdate(json: Json) {
+  public cssUpdate(comp: Comp) {
     // CssClass
-    json.cssClassCurrent = json.cssClass
-    if (this.json.breakPoint == "Medium" && json.cssClassMedium != null) {
-      json.cssClassCurrent = json.cssClassMedium
+    comp.cssClassCurrent = comp.cssClass
+    if (this.comp.breakPoint == "Medium" && comp.cssClassMedium != null) {
+      comp.cssClassCurrent = comp.cssClassMedium
     }
-    if (this.json.breakPoint == "Small" && json.cssClassSmall != null) {
-      json.cssClassCurrent = json.cssClassSmall
+    if (this.comp.breakPoint == "Small" && comp.cssClassSmall != null) {
+      comp.cssClassCurrent = comp.cssClassSmall
     }
     // CssStyle
-    json.cssStyleCurrent = json.cssStyle
-    if (this.json.breakPoint == "Medium" && json.cssStyleMedium != null) {
-      json.cssStyleCurrent = json.cssStyleMedium
+    comp.cssStyleCurrent = comp.cssStyle
+    if (this.comp.breakPoint == "Medium" && comp.cssStyleMedium != null) {
+      comp.cssStyleCurrent = comp.cssStyleMedium
     }
-    if (this.json.breakPoint == "Small" && json.cssStyleSmall != null) {
-      json.cssStyleCurrent = json.cssStyleSmall
+    if (this.comp.breakPoint == "Small" && comp.cssStyleSmall != null) {
+      comp.cssStyleCurrent = comp.cssStyleSmall
     }
     // CssSwitch
-    this.cssUpdateAppend(json, json.isSwitch, json.cssClassSwitch, json.cssStyleSwitch)
+    this.cssUpdateAppend(comp, comp.isSwitch, comp.cssClassSwitch, comp.cssStyleSwitch)
     // CssHover
-    this.cssUpdateAppend(json, json.isHover, json.cssClassHover, json.cssStyleHover)
+    this.cssUpdateAppend(comp, comp.isHover, comp.cssClassHover, comp.cssStyleHover)
   }
 
-  cssUpdateAppend(json: Json, value?: boolean, cssClass?: string, cssStyle?: string) {
+  cssUpdateAppend(comp: Comp, value?: boolean, cssClass?: string, cssStyle?: string) {
     // CssClass
     if (value && cssClass != null) {
-      if (json.cssClassCurrent) {
-        json.cssClassCurrent += " "
+      if (comp.cssClassCurrent) {
+        comp.cssClassCurrent += " "
       }
-      json.cssClassCurrent = (json.cssClassCurrent || "") + cssClass
+      comp.cssClassCurrent = (comp.cssClassCurrent || "") + cssClass
     }
     // CssStyle
     if (value && cssStyle != null) {
-      if (json.cssStyleCurrent && !json.cssStyleCurrent.endsWith(";")) {
-        json.cssStyleCurrent += "; "
+      if (comp.cssStyleCurrent && !comp.cssStyleCurrent.endsWith(";")) {
+        comp.cssStyleCurrent += "; "
       }
-      json.cssStyleCurrent = (json.cssStyleCurrent || "") + cssStyle
+      comp.cssStyleCurrent = (comp.cssStyleCurrent || "") + cssStyle
     }
   }
 
-  cssUpdateRecursive(json: Json) {
-    this.cssUpdate(json)
-    json.list?.forEach((item) => this.cssUpdateRecursive(item))
+  cssUpdateRecursive(comp: Comp) {
+    this.cssUpdate(comp)
+    comp.list?.forEach((item) => this.cssUpdateRecursive(item))
   }
 
   public update() {
-    this.json.requestCount! += 1
+    this.comp.requestCount! += 1
   }
 }
 
-/** Component is either a DivComponent or a content component like AnchorComponent. */
-export interface Json {
+/** Json component is either a DivComponent or a content component like AnchorComponent. */
+export interface Comp {
   name?: string
 
   /** Text for content component. */
   text?: string
 
   /** List of child components. If null use field type to select content component. */
-  list?: Json[]
+  list?: Comp[]
 
   /** Type of content component. If null, DivComponent is rendered. */
   type?: string

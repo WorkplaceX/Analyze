@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Json } from '../data.service';
+import { Comp } from '../data.service';
 
 @Component({
   selector: '[app-footer]',
@@ -8,5 +8,5 @@ import { Json } from '../data.service';
 })
 export class FooterComponent {
   @Input()
-  json!: Json
+  comp!: Comp
 }

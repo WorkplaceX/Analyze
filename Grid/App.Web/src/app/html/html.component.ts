@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Json } from '../data.service';
+import { Comp } from '../data.service';
 
 @Component({
   selector: '[app-html]',
@@ -8,5 +8,5 @@ import { Json } from '../data.service';
 })
 export class HtmlComponent {
   @Input()
-  json!: Json
+  comp!: Comp
 }
