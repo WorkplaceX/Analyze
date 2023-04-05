@@ -4,7 +4,7 @@ import { Comp } from '../data.service';
 @Component({
   selector: '[app-button]',
   templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss']
+  styleUrls: ['../div/div.component.scss', './button.component.scss']
 })
 export class ButtonComponent {
   @Input() 

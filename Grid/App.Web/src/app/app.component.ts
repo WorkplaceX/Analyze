@@ -4,7 +4,7 @@ import { DataService, Comp } from './data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./div/div.component.scss', './app.component.scss']
 })
 export class AppComponent {
   constructor(private dataService: DataService) {

@@ -4,7 +4,7 @@ import { Comp } from '../data.service';
 @Component({
   selector: '[app-nav]',
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.scss']
+  styleUrls: ['../div/div.component.scss', './nav.component.scss']
 })
 export class NavComponent {
   @Input()
