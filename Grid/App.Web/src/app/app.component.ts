@@ -8,18 +8,18 @@ import { DataService, Comp } from './data.service';
 })
 export class AppComponent {
   constructor(private dataService: DataService) {
-    this.comp = dataService.comp
+    this.comp = dataService.compRoot
   }
 
   comp: Comp
 
   ngOnInit() {
-    this.dataService.resize(window.innerWidth)
+    DataService.resize(window.innerWidth, this.dataService.compRoot)
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.dataService.resize(event.target.innerWidth)
+    DataService.resize(event.target.innerWidth, this.dataService.compRoot)
   }
 
   onClick() {

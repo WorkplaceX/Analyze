@@ -14,64 +14,23 @@ export class DivComponent {
   @Input()
   comp!: Comp
 
+  @HostListener('mousedown', ['$event']) // See also dropdown:active to hide after click. Use mousedown event. Event click is too slow!
+  mousedown(event: any) {
+    console.log("Hello")
+    event.stopPropagation()
+    event.stopImmediatePropagation()
+    DataService.click(this.comp, this.dataService.compRoot)
+  }
+
   @HostListener('mouseenter', ['$event'])
-  handleMouseEnter(event: any) {
+  mouseenter(event: any) {
     this.comp.isHover = true
-    this.dataService.cssUpdate(this.comp)
+    DataService.cssUpdate(this.comp, this.dataService.compRoot)
   }
 
   @HostListener('mouseleave', ['$event'])
-  handleMouseleave(event: any) {
+  mouseleave(event: any) {
     this.comp.isHover = undefined
-    if (this.comp.isSwitchLeave) {
-      this.comp.isSwitch = undefined
-    }
-    this.dataService.cssUpdate(this.comp)
-  }
-
-  @HostListener('click', ['$event'])
-  onClick(event: any) {
-    event.stopPropagation()
-    event.stopImmediatePropagation()
-    if (this.comp.isSwitch == undefined) {
-      this.comp.isSwitch = true
-    } else {
-      this.comp.isSwitch = undefined
-    }
-    if (this.comp.switchNames) {
-      this.switchName(this.dataService.comp, this.comp.switchNames)
-    }
-    if (this.comp.activePath && this.comp.isActiveDisable != true) {
-      this.active(this.dataService.comp, this.comp.activePath)
-    }
-    this.dataService.cssUpdate(this.comp)
-  }
-
-  active(comp: Comp, activePath: string) {
-    if (comp.activePath) {
-      comp.isActive = undefined
-      comp.isActiveParent = undefined
-      if (comp.activePath == activePath) {
-        comp.isActive = true
-      } else {
-        if (activePath.startsWith(comp.activePath)) {
-          comp.isActiveParent = true
-        }
-      }
-      this.dataService.cssUpdate(comp)
-    }
-    comp.list?.forEach((item) => this.active(item, activePath))
-  }
-
-  switchName(comp: Comp, switchNames?: string[]) {
-    if (switchNames?.includes(comp.name!)) {
-      if (comp.isSwitch == undefined) {
-        comp.isSwitch = true
-      } else {
-        comp.isSwitch = undefined
-      }
-      this.dataService.cssUpdate(comp)
-    }
-    comp.list?.forEach((item) => this.switchName(item, switchNames))
+    DataService.cssUpdate(this.comp, this.dataService.compRoot)
   }
 }

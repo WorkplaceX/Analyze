@@ -2,7 +2,7 @@ import { Comp } from "./data.service";
 
 export class Data {
   public static comp: Comp = {
-    requestCount: 0,
+    rootRequestCount: 0,
     list: [
       {
         type: "nav",
@@ -15,7 +15,6 @@ export class Data {
                 cssClass: "flex-item",
                 text: "Logo",
                 type: "html",
-                //isSwitchLeave: true,
                 cssStyleSwitch: "background-color: green"
               },
               {
@@ -107,6 +106,8 @@ export class Data {
                 cssStyleSmall: "margin-left: auto; display: block",
                 text: "Hamburger",
                 type: "html",
+                isSwitchResetBreakpoint: true,
+                isSwitchResetSwitch: true,
                 switchNames: ["Logo", "Dropdown"]
               },
             ]
@@ -171,17 +172,29 @@ export class Data {
         cssStyleSmall: "grid-template-columns: 1fr",
         list: [
           {
-            text: "Item1A",
+            type: "html",
+            text: "Item1",
             cssClass: "grid-item",
-            type: "html"
+            cssClassHover: "hover",
+            activePath: "a/",
+            activePathGroup: "content",
+            cssClassActive: "active"
           }, {
+            type: "html",
             text: "Item2",
             cssClass: "grid-item",
-            type: "html"
+            cssClassHover: "hover",
+            activePath: "b/",
+            activePathGroup: "content",
+            cssClassActive: "active"
           }, {
+            type: "html",
             text: "Item3",
             cssClass: "grid-item",
-            type: "html"
+            cssClassHover: "hover",
+            activePath: "c/",
+            activePathGroup: "content",
+            cssClassActive: "active"
           }, {
             cssClass: "grid",
             cssStyle: "grid-template-columns: 1fr 1fr",
@@ -190,16 +203,26 @@ export class Data {
               {
                 text: "ItemA",
                 cssClass: "grid-item",
-                type: "html"
+                type: "html",
+                cssClassSwitch: "switch",
+                cssClassHover: "hover",
+                isSwitchResetSwitch: true,
+                switchGroup: "x"
               }, {
                 text: "ItemB",
                 cssClass: "grid-item",
-                type: "html"
+                type: "html",
+                cssClassSwitch: "switch",
+                cssClassHover: "hover",
+                switchGroup: "x"
               }, {
                 text: "ItemC",
                 href: "/abc/",
                 cssClass: "grid-item",
-                type: "anchor"
+                cssClassSwitch: "switch",
+                cssClassHover: "hover",
+                type: "anchor",
+                switchGroup: "x"
               }
             ]
           }

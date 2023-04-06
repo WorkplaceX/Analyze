@@ -49,10 +49,22 @@
     display: block; // Show drop down
 }
 
+.dropdown-hover:hover > .dropdown:active {
+    display: none; // Hide after click. Use mousedown event. Event click is too slow!
+}
+
 .active {
     background-color: darkslateblue;
 }
 
 .active-parent {
     background-color: slateblue;
+}
+
+.switch {
+    background-color: green;
+}
+
+.hover {
+    opacity: 0.5;
 }

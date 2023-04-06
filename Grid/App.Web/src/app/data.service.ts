@@ -7,37 +7,60 @@ import { Data } from './comp';
 export class DataService {
 
   constructor() {
-
+    DataService.transform(this.compRoot, this.compRoot)
   }
 
-  public comp: Comp = Data.comp
+  compRoot: Comp = Data.comp
 
-  public resize(screenWidth: number) {
-    this.comp.breakPoint = undefined;
+  static transform(comp: Comp, compRoot: Comp) {
+    if (comp.list == undefined) {
+      comp.cssClassHover = "hover"
+    }
+    comp.list?.forEach((item) => this.transform(item, compRoot))
+  }
+
+  static click(comp: Comp, compRoot: Comp) {
+    this.isSwitchUpdate(comp)
+    if (comp.switchNames) {
+      this.isSwitchUpdateNamesAll(compRoot, compRoot, comp)
+    }
+    if (comp.activePath && comp.isActiveDisable != true) {
+      this.isActiveUpdateAll(compRoot, compRoot, comp)
+    }
+    this.isSwitchResetSwitchAll(compRoot, compRoot, comp)
+    DataService.cssUpdate(comp, compRoot)
+  }
+
+  static resize(screenWidth: number, compRoot: Comp) {
+    let breakpoint = compRoot.rootBreakpoint
+    compRoot.rootBreakpoint = undefined
     if (screenWidth < 1024) {
-      this.comp.breakPoint = "Medium"
+      compRoot.rootBreakpoint = "Medium"
     }
     if (screenWidth < 768) {
-      this.comp.breakPoint = "Small"
+      compRoot.rootBreakpoint = "Small"
     }
-    this.cssUpdateRecursive(this.comp)
+    this.cssUpdateAll(compRoot, compRoot)
+    if (breakpoint != compRoot.rootBreakpoint) { // Breakpoint changed
+      this.isSwitchResetBreakpointAll(compRoot, compRoot)
+    }
   }
 
-  public cssUpdate(comp: Comp) {
+  static cssUpdate(comp: Comp, compRoot: Comp) {
     // CssClass
     comp.cssClassCurrent = comp.cssClass
-    if (this.comp.breakPoint == "Medium" && comp.cssClassMedium != null) {
+    if (compRoot.rootBreakpoint == "Medium" && comp.cssClassMedium != null) {
       comp.cssClassCurrent = comp.cssClassMedium
     }
-    if (this.comp.breakPoint == "Small" && comp.cssClassSmall != null) {
+    if (compRoot.rootBreakpoint == "Small" && comp.cssClassSmall != null) {
       comp.cssClassCurrent = comp.cssClassMedium ? comp.cssClassMedium : comp.cssClassSmall ? comp.cssClassSmall : comp.cssClassCurrent
     }
     // CssStyle
     comp.cssStyleCurrent = comp.cssStyle
-    if (this.comp.breakPoint == "Medium" && comp.cssStyleMedium != null) {
+    if (compRoot.rootBreakpoint == "Medium" && comp.cssStyleMedium != null) {
       comp.cssStyleCurrent = comp.cssStyleMedium
     }
-    if (this.comp.breakPoint == "Small") {
+    if (compRoot.rootBreakpoint == "Small") {
       comp.cssStyleCurrent = comp.cssStyleMedium ? comp.cssStyleMedium : comp.cssStyleSmall ? comp.cssStyleSmall : comp.cssStyleCurrent
     }
     // CssSwitch
@@ -50,7 +73,7 @@ export class DataService {
     this.cssUpdateAppend(comp, comp.isHover, comp.cssClassHover, comp.cssStyleHover)
   }
 
-  cssUpdateAppend(comp: Comp, value?: boolean, cssClass?: string, cssStyle?: string) {
+  static cssUpdateAppend(comp: Comp, value?: boolean, cssClass?: string, cssStyle?: string) {
     // CssClass
     if (value) {
       if (cssClass != null) {
@@ -69,28 +92,82 @@ export class DataService {
     }
   }
 
-  cssUpdateRecursive(comp: Comp) {
-    this.cssUpdate(comp)
-    comp.list?.forEach((item) => this.cssUpdateRecursive(item))
+  static cssUpdateAll(comp: Comp, compRoot: Comp) {
+    this.cssUpdate(comp, compRoot)
+    comp.list?.forEach((item) => this.cssUpdateAll(item, compRoot))
+  }
+
+  static isSwitchResetBreakpointAll(comp: Comp, compRoot: Comp) {
+    if (comp.isSwitchResetBreakpoint) {
+      if (comp.isSwitch) {
+        this.click(comp, compRoot)
+      }
+    }
+    comp.list?.forEach((item) => this.isSwitchResetBreakpointAll(item, compRoot))
+  }
+
+  static isSwitchResetSwitchAll(comp: Comp, compRoot: Comp, compClick: Comp) {
+    if (comp.isSwitchResetSwitch && comp != compClick && comp.switchGroup == compClick.switchGroup) {
+      if (comp.isSwitch) {
+        this.click(comp, compRoot)
+      }
+    }
+    comp.list?.forEach((item) => this.isSwitchResetSwitchAll(item, compRoot, compClick))
+  }
+
+  static isSwitchUpdate(comp: Comp) {
+    if (comp.isSwitch == undefined) {
+      comp.isSwitch = true
+    } else {
+      comp.isSwitch = undefined
+    }
+  }
+
+  /** Switch through names related switches */
+  static isSwitchUpdateNamesAll(comp: Comp, compRoot: Comp, compClick: Comp) {
+    if (compClick.switchNames?.includes(comp.name!)) {
+      this.isSwitchUpdate(comp)
+      DataService.cssUpdate(comp, compRoot)
+    }
+    comp.list?.forEach((item) => this.isSwitchUpdateNamesAll(item, compRoot, compClick))
+  }
+
+  static isActiveUpdateAll(comp: Comp, compRoot: Comp, compClick: Comp) {
+    if (comp.activePath && comp.activePathGroup == compClick.activePathGroup) {
+      comp.isActive = undefined
+      comp.isActiveParent = undefined
+      if (comp.activePath == compClick.activePath) {
+        comp.isActive = true
+      } else {
+        if (compClick.activePath?.startsWith(comp.activePath)) {
+          comp.isActiveParent = true
+        }
+      }
+      DataService.cssUpdate(comp, compRoot)
+    }
+    comp.list?.forEach((item) => this.isActiveUpdateAll(item, compRoot, compClick))
   }
 
   public update() {
-    this.comp.requestCount! += 1
+    this.compRoot.rootRequestCount! += 1
   }
 }
 
 /** Json component is either a DivComponent or a content component like AnchorComponent. */
 export interface Comp {
+  /** Type of content component. If null, DivComponent is rendered. */
+  type?: string
+
   name?: string
 
   /** Text for content component. */
   text?: string
 
+  /** Href for AnchorComponent. */
+  href?: string
+
   /** List of child components. If null use field type to select content component. */
   list?: Comp[]
-
-  /** Type of content component. If null, DivComponent is rendered. */
-  type?: string
 
   /** CssClass of DivComponent. Not applicable to root element. */
   cssClass?: string
@@ -134,23 +211,23 @@ export interface Comp {
   /** True if user clicks DivComponent and unassigned if user clicks again. */
   isSwitch?: boolean
 
-  /** If true, isSwitch is set to unassigned when mouse leaves. */
-  isSwitchLeave?: boolean
+  /** If true, isSwitch is set to undefined if screen resize hits breakpoint. */
+  isSwitchResetBreakpoint?: boolean
 
-  /** Other switches to also click. */
+  /** If true, isSwitch is set to undefined if any other switch is clicked. */
+  isSwitchResetSwitch?: boolean
+
+  switchGroup?: string
+
+  /** Related switches to also click. */
   switchNames?: string[]
-
-  /** Breakpoint (null, Medium, Small). Root element only. */
-  breakPoint?: string
-
-  /** Href for AnchorComponent. */
-  href?: string
 
   isActive?: boolean
 
   /** If true, user can not click and activate component. */
   isActiveDisable?: boolean
 
+  /** If true, comp is an active parent in activePath. */
   isActiveParent?: boolean
 
   cssClassActive?: string
@@ -163,5 +240,10 @@ export interface Comp {
 
   activePath?: string
 
-  requestCount?: number
+  activePathGroup?: string
+
+  rootRequestCount?: number
+
+  /** Breakpoint (null, Medium, Small). Root comp only. */
+  rootBreakpoint?: string
 }
