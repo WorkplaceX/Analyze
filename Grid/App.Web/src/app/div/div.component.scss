@@ -8,7 +8,7 @@
 
 .flex {
     display: flex;
-    background-color: #2196F3;
+    background: #2196F3;
     position: relative; // See also .dropdown position: absolute; top: 100%;
 }
 
@@ -21,12 +21,12 @@
 
 .grid {
     display: grid;
-    background-color: #2196F3;
+    background: #2196F3;
     padding: 10px;
 }
 
 .grid-item {
-    background-color: rgb(186, 186, 0);
+    background: rgb(186, 186, 0);
     border: 2px solid rgba(0, 0, 0, 0.8);
     padding: 30px;
     font-size: 30px;
@@ -38,7 +38,7 @@
     top: 100%; // See also .flex position: relative
     z-index: 1;
     font-size: 40px; 
-    background-color: rgb(147, 192, 255);
+    background: rgb(147, 192, 255);
 }
 
 .dropdown-hover > .dropdown {
@@ -54,17 +54,29 @@
 }
 
 .active {
-    background-color: darkslateblue;
+    background: darkslateblue;
 }
 
-.active-parent {
-    background-color: slateblue;
+.active-ancestor {
+    background: slateblue;
 }
 
 .switch {
-    background-color: green;
+    background: green;
 }
 
 .hover {
-    opacity: 0.5;
+    background: rgba(255, 166, 0, 0.75)
+}
+
+.hover-switch {
+    background: rgba(0, 128, 0, 0.5);
+}
+
+.hover-active {
+    background: rgba(71, 61, 139, 0.75);
+}
+
+.hover-active-ancestor {
+    background: rgba(105, 90, 205, 0.75);
 }

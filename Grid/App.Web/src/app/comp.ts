@@ -15,7 +15,7 @@ export class Data {
                 cssClass: "flex-item",
                 text: "Logo",
                 type: "html",
-                cssStyleSwitch: "background-color: green"
+                switchGroup: "main"
               },
               {
                 name: "Dropdown",
@@ -23,14 +23,13 @@ export class Data {
                 cssClassSmall: "flex dropdown",
                 cssStyle: "flex: 1;", // stretch
                 cssStyleSmall: "flex-direction: column; width: 100%; display: none;", // flex vertical; dropdown stretch;
-                cssStyleSwitch: "display: block",
+                switchCssStyle: "display: block",
                 list: [
                   {
                     cssClass: "flex-item",
                     text: "Home",
                     activePath: "home/",
-                    cssClassActive: "active",
-                    cssClassActiveParent: "active-parent",
+                    activePathGroup: "nav",
                     href: "/",
                     type: "anchor"
                   },
@@ -41,9 +40,8 @@ export class Data {
                         cssClass: "flex-item",
                         text: "Product",
                         activePath: "product/",
+                        activePathGroup: "nav",
                         isActiveDisable: true,
-                        cssClassActive: "active",
-                        cssClassActiveParent: "active-parent",
                         href: "/product",
                         type: "anchor",
                       },
@@ -58,8 +56,7 @@ export class Data {
                             href: "/version",
                             type: "anchor",
                             activePath: "product/version/",
-                            cssClassActive: "active",
-                            cssClassActiveParent: "active-parent"
+                            activePathGroup: "nav",
                           },
                           {
                             cssClass: "flex-item",
@@ -67,8 +64,7 @@ export class Data {
                             href: "/contact",
                             type: "anchor",
                             activePath: "product/contact/",
-                            cssClassActive: "active",
-                            cssClassActiveParent: "active-parent"
+                            activePathGroup: "nav",
                           }
                         ]
                       }
@@ -78,16 +74,15 @@ export class Data {
                     cssClass: "flex-item",
                     text: "About",
                     activePath: "about/",
-                    cssClassActive: "active",
-                    cssClassActiveParent: "active-parent",
+                    activePathGroup: "nav",
                     href: "/about",
                     type: "anchor"
                   },
                   {
                     cssClass: "flex-item",
-                    cssStyle: "margin-left: auto; background-color: green",
+                    cssStyle: "margin-left: auto; background: green",
                     cssStyleSmall: "",
-                    cssStyleHover: "background-color: lightgreen",
+                    hoverCssClass: "hover",
                     text: "Sign In",
                     href: "/product",
                     type: "anchor"
@@ -106,6 +101,7 @@ export class Data {
                 cssStyleSmall: "margin-left: auto; display: block",
                 text: "Hamburger",
                 type: "html",
+                switchGroup: "nav",
                 isSwitchResetBreakpoint: true,
                 isSwitchResetSwitch: true,
                 switchNames: ["Logo", "Dropdown"]
@@ -115,19 +111,20 @@ export class Data {
         ]
       },
       {
-        cssClassActive: "grid",
-        cssClassActiveParent: "grid",
+        activeCssClass: "grid",
+        activeAncestorCssClass: "grid",
         cssClass: "hide",
         cssStyle: "grid-template-columns: 1fr 2fr",
         cssStyleMedium: "grid-template-columns: 1fr",
         activePath: "product/contact/",
+        activePathGroup: "nav",
         list: [
           {
             cssClass: "grid-item",
             type: "anchor",
             text: "Email",
             activePath: "product/contact/install",
-            cssClassActive: "active"
+            activePathGroup: "nav",
           },
           {
             cssClass: "grid-item",
@@ -137,19 +134,20 @@ export class Data {
         ]
       },
       {
-        cssClassActive: "grid",
-        cssClassActiveParent: "grid",
+        activeCssClass: "grid",
+        activeAncestorCssClass: "grid",
         cssClass: "hide",
         cssStyle: "grid-template-columns: 1fr 2fr",
         cssStyleMedium: "grid-template-columns: 1fr",
         activePath: "product/version/",
+        activePathGroup: "nav",
         list: [
           {
             cssClass: "grid-item",
             type: "anchor",
             text: "Install",
             activePath: "product/version/install",
-            cssClassActive: "active"
+            activePathGroup: "nav",
           },
           {
             cssClass: "grid-item",
@@ -159,11 +157,12 @@ export class Data {
         ]
       },
       {
-        cssClassActive: "block",
+        activeCssClass: "block",
         cssClass: "hide",
         text: "<h1>About</h1><p>About this site</p>",
         type: "html",
         activePath: "about/",
+        activePathGroup: "nav",
       },
       {
         cssClass: "grid",
@@ -175,26 +174,24 @@ export class Data {
             type: "html",
             text: "Item1",
             cssClass: "grid-item",
-            cssClassHover: "hover",
+            hoverCssClass: "hover",
             activePath: "a/",
             activePathGroup: "content",
-            cssClassActive: "active"
+            activeCssClass: "active"
           }, {
             type: "html",
             text: "Item2",
             cssClass: "grid-item",
-            cssClassHover: "hover",
+            hoverCssClass: "hover",
             activePath: "b/",
             activePathGroup: "content",
-            cssClassActive: "active"
           }, {
             type: "html",
             text: "Item3",
             cssClass: "grid-item",
-            cssClassHover: "hover",
+            hoverCssClass: "hover",
             activePath: "c/",
             activePathGroup: "content",
-            cssClassActive: "active"
           }, {
             cssClass: "grid",
             cssStyle: "grid-template-columns: 1fr 1fr",
@@ -204,23 +201,21 @@ export class Data {
                 text: "ItemA",
                 cssClass: "grid-item",
                 type: "html",
-                cssClassSwitch: "switch",
-                cssClassHover: "hover",
+                hoverCssClass: "hover",
                 isSwitchResetSwitch: true,
                 switchGroup: "x"
               }, {
                 text: "ItemB",
                 cssClass: "grid-item",
                 type: "html",
-                cssClassSwitch: "switch",
-                cssClassHover: "hover",
+                switchCssClass: "switch",
+                hoverCssClass: "hover",
                 switchGroup: "x"
               }, {
                 text: "ItemC",
                 href: "/abc/",
                 cssClass: "grid-item",
-                cssClassSwitch: "switch",
-                cssClassHover: "hover",
+                hoverCssClass: "hover",
                 type: "anchor",
                 switchGroup: "x"
               }

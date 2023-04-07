@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="comp.type">
   <ng-container *ngSwitchCase="null">
-    <div app-div *ngFor="let item of comp.list" [comp]="item" [ngClass]="item.cssClassCurrent" [style]="item.cssStyleCurrent"></div>
+    <div app-div *ngFor="let item of comp.list" [comp]="item" [ngClass]="item.calculatedCssClass" [style]="item.calculatedCssStyle"></div>
   </ng-container>
   <div my-button-wrapper app-button *ngSwitchCase="'button'" [comp]="comp"></div>
   <div app-anchor *ngSwitchCase="'anchor'" [comp]="comp"></div>

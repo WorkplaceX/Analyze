@@ -16,7 +16,6 @@ export class DivComponent {
 
   @HostListener('mousedown', ['$event']) // See also dropdown:active to hide after click. Use mousedown event. Event click is too slow!
   mousedown(event: any) {
-    console.log("Hello")
     event.stopPropagation()
     event.stopImmediatePropagation()
     DataService.click(this.comp, this.dataService.compRoot)
