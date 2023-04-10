@@ -13,46 +13,80 @@ export class DataService {
   compRoot: Comp = Data.comp
 
   static transform(comp: Comp, compRoot: Comp) {
-    if (comp.switchGroup) {
-      comp.switchCssClass ??= "switch"
-      comp.hoverCssClass ??= "hover"
-      comp.hoverSwitchCssClass ??= "hover-switch"
-    } else {
-      if (comp.activePath) {
+    if (!comp.list) {
+      if (comp.activeGroup) {
         comp.hoverCssClass ??= "hover"
         comp.activeCssClass ??= "active"
         comp.activeAncestorCssClass ??= "active-ancestor"
         comp.hoverActiveCssClass ??= "hover-active"
         comp.hoverActiveAncestorCssClass ??= "hover-active-ancestor"
       }
+      if (comp.switchGroup) {
+        comp.switchCssClass ??= "switch"
+        comp.hoverCssClass ??= "hover"
+        comp.hoverSwitchCssClass ??= "hover-switch"
+      }
     }
     comp.list?.forEach((item) => this.transform(item, compRoot))
   }
 
-  static click(comp: Comp, compRoot: Comp) {
+  static clickIsSwitch(comp: Comp, compRoot: Comp) {
     // Switch
     if (comp.switchGroup) {
-      this.isSwitchUpdate(comp)
-      if (comp.switchNames) {
-        this.isSwitchUpdateNamesAll(compRoot, compRoot, comp)
+      if (!comp.isSwitchDisable) {
+        this.isSwitchUpdate(comp)
+        if (comp.switchNames) {
+          this.isSwitchUpdateNamesAll(compRoot, compRoot, comp)
+        }
       }
-      this.isSwitchResetSwitchAll(compRoot, compRoot, comp)
     }
+    DataService.cssUpdate(comp, compRoot)
+  }
+
+  static clickIsActive(comp: Comp, compRoot: Comp) {
     // Active
-    if (comp.activePathGroup) {
+    if (comp.activeGroup) {
+      if (!comp.isActiveDisable) {
+        // Close dropdown
+        this.isSwitchResetAll(compRoot, compRoot, comp)
+      }
       this.isActiveUpdateAll(compRoot, compRoot, comp)
     }
     DataService.cssUpdate(comp, compRoot)
+  }
+
+  static mouseenter(comp: Comp, compRoot: Comp) {
+    if (!compRoot.debugIsDisableHover) {
+      comp.isHover = true
+      DataService.cssUpdate(comp, compRoot)
+      let isActiveSwitchHover = (compRoot.rootBreakpoint == null && comp.isActiveSwitchHover) || (compRoot.rootBreakpoint == "medium" && comp.isActiveSwitchHoverMedium) || (compRoot.rootBreakpoint == "small" && comp.isActiveSwitchHoverSmall)
+      if (comp.activeGroup && comp.isActiveDisable && isActiveSwitchHover) {
+        if (!comp.isSwitch) {
+          this.clickIsSwitch(comp, compRoot)
+        }
+      } else {
+        if (!comp.list && !comp.isActiveDescendent) { // TODO comp.list because of parent
+          this.isSwitchResetHoverAll(compRoot, compRoot, comp)
+        }
+      }
+    }
+  }
+
+  static mouseleave(comp: Comp, compRoot: Comp) {
+    if (!compRoot.debugIsDisableHover) {
+      comp.isHover = undefined
+      DataService.cssUpdate(comp, compRoot)
+    }
   }
 
   static resize(screenWidth: number, compRoot: Comp) {
     let breakpoint = compRoot.rootBreakpoint
     compRoot.rootBreakpoint = undefined
     if (screenWidth < 1024) {
-      compRoot.rootBreakpoint = "Medium"
+      compRoot.rootBreakpoint = "medium"
     }
     if (screenWidth < 768) {
-      compRoot.rootBreakpoint = "Small"
+      compRoot.rootBreakpoint = "small"
     }
     this.cssUpdateAll(compRoot, compRoot)
     if (breakpoint != compRoot.rootBreakpoint) { // Breakpoint changed
@@ -63,39 +97,43 @@ export class DataService {
   static cssUpdate(comp: Comp, compRoot: Comp) {
     // CssClass
     comp.calculatedCssClass = comp.cssClass
-    if (compRoot.rootBreakpoint == "Medium" && comp.cssClassMedium != null) {
+    if (compRoot.rootBreakpoint == "medium" && comp.cssClassMedium != null) {
       comp.calculatedCssClass = comp.cssClassMedium
     }
-    if (compRoot.rootBreakpoint == "Small" && comp.cssClassSmall != null) {
+    if (compRoot.rootBreakpoint == "small" && comp.cssClassSmall != null) {
       comp.calculatedCssClass = comp.cssClassMedium ? comp.cssClassMedium : comp.cssClassSmall ? comp.cssClassSmall : comp.calculatedCssClass
     }
     // CssStyle
     comp.calculatedCssStyle = comp.cssStyle
-    if (compRoot.rootBreakpoint == "Medium" && comp.cssStyleMedium != null) {
+    if (compRoot.rootBreakpoint == "medium" && comp.cssStyleMedium != null) {
       comp.calculatedCssStyle = comp.cssStyleMedium
     }
-    if (compRoot.rootBreakpoint == "Small") {
+    if (compRoot.rootBreakpoint == "small") {
       comp.calculatedCssStyle = comp.cssStyleMedium ? comp.cssStyleMedium : comp.cssStyleSmall ? comp.cssStyleSmall : comp.calculatedCssStyle
     }
-    // Switch
-    this.cssUpdateAppend(comp, comp.isSwitch, comp.switchCssClass, comp.switchCssStyle)
+
     // Active
-    this.cssUpdateAppend(comp, comp.isActive, comp.activeCssClass, comp.activeCssStyle)
-    // ActiveAncestor
-    this.cssUpdateAppend(comp, comp.isActiveAncestor, comp.activeAncestorCssClass, comp.activeAncestorCssStyle)
+    if (comp.activeGroup) {
+      this.cssUpdateAppend(comp, comp.isActive, comp.activeCssClass, comp.activeCssStyle)
+      this.cssUpdateAppend(comp, comp.isActiveAncestor, comp.activeAncestorCssClass, comp.activeAncestorCssStyle)
+    } else {
+      // Switch
+      if (comp.switchGroup) {
+        this.cssUpdateAppend(comp, comp.isSwitch, comp.switchCssClass, comp.switchCssStyle)
+      }
+    }
+
     // Hover
     if (comp.isHover) {
-      if (comp.isSwitch) {
-        this.cssUpdateAppend(comp, true, comp.hoverSwitchCssClass, comp.hoverSwitchCssStyle)
+      this.cssUpdateAppend(comp, true, comp.hoverCssClass, comp.hoverCssStyle)
+      // Active
+      if (comp.activeGroup) {
+        this.cssUpdateAppend(comp, comp.isActive, comp.hoverActiveCssClass, comp.hoverActiveCssStyle)
+        this.cssUpdateAppend(comp, comp.isActiveAncestor, comp.hoverActiveAncestorCssClass, comp.hoverActiveCssStyle)
       } else {
-        if (comp.isActive) {
-          this.cssUpdateAppend(comp, true, comp.hoverActiveCssClass, comp.hoverActiveCssStyle)
-        } else {
-          if (comp.isActiveAncestor) {
-            this.cssUpdateAppend(comp, true, comp.hoverActiveAncestorCssClass, comp.hoverActiveCssStyle)
-          } else {
-            this.cssUpdateAppend(comp, true, comp.hoverCssClass, comp.hoverCssStyle)
-          }
+        // Switch
+        if (comp.switchGroup) {
+          this.cssUpdateAppend(comp, comp.isSwitch, comp.hoverSwitchCssClass, comp.hoverSwitchCssStyle)
         }
       }
     }
@@ -128,19 +166,31 @@ export class DataService {
   static isSwitchResetBreakpointAll(comp: Comp, compRoot: Comp) {
     if (comp.isSwitchResetBreakpoint) {
       if (comp.isSwitch) {
-        this.click(comp, compRoot)
+        this.clickIsSwitch(comp, compRoot)
       }
     }
     comp.list?.forEach((item) => this.isSwitchResetBreakpointAll(item, compRoot))
   }
 
-  static isSwitchResetSwitchAll(comp: Comp, compRoot: Comp, compClick: Comp) {
-    if (comp.isSwitchResetSwitch && comp != compClick && comp.switchGroup == compClick.switchGroup) {
+  static isSwitchResetAll(comp: Comp, compRoot: Comp, compClick: Comp) {
+    if (comp.isSwitchReset && comp != compClick && !compClick.switchNames?.includes(comp.name!)) {
       if (comp.isSwitch) {
-        this.click(comp, compRoot)
+        this.clickIsSwitch(comp, compRoot)
       }
     }
-    comp.list?.forEach((item) => this.isSwitchResetSwitchAll(item, compRoot, compClick))
+    comp.list?.forEach((item) => this.isSwitchResetAll(item, compRoot, compClick))
+  }
+
+  static isSwitchResetHoverAll(comp: Comp, compRoot: Comp, compClick: Comp) {
+    if (comp.activeGroup) {
+      let isActiveSwitchHover = (compRoot.rootBreakpoint == null && comp.isActiveSwitchHover) || (compRoot.rootBreakpoint == "medium" && comp.isActiveSwitchHoverMedium) || (compRoot.rootBreakpoint == "small" && comp.isActiveSwitchHoverSmall)
+      if (isActiveSwitchHover) {
+        if (comp.isSwitch) {
+          this.clickIsSwitch(comp, compRoot)
+        }
+      }
+    }
+    comp.list?.forEach((item) => this.isSwitchResetHoverAll(item, compRoot, compClick))
   }
 
   static isSwitchUpdate(comp: Comp) {
@@ -161,18 +211,27 @@ export class DataService {
   }
 
   static isActiveUpdateAll(comp: Comp, compRoot: Comp, compClick: Comp) {
-    if (comp.activePath && comp.activePathGroup == compClick.activePathGroup && compClick.isActiveDisable != true) {
-      comp.isActive = undefined
-      comp.isActiveAncestor = undefined
-      if (comp.activePath == compClick.activePath) {
-        comp.isActive = true
-      } else {
-        if (compClick.activePath?.startsWith(comp.activePath)) {
-          comp.isActiveAncestor = true
+    if (comp.activeGroup == compClick.activeGroup && comp.activePath) {
+      // IsActive, IsActiveAncestor
+      if (compClick.isActiveDisable != true) {
+        comp.isActive = undefined
+        comp.isActiveAncestor = undefined
+        if (comp.activePath == compClick.activePath) {
+          comp.isActive = true
+        } else {
+          if (compClick.activePath?.startsWith(comp.activePath)) {
+            comp.isActiveAncestor = true
+          }
         }
+      }
+      // IsActiveDescendent
+      comp.isActiveDescendent = undefined
+      if (comp.activePath != compClick.activePath && comp.activePath?.startsWith(compClick.activePath!)) {
+        comp.isActiveDescendent = true
       }
       DataService.cssUpdate(comp, compRoot)
     }
+
     comp.list?.forEach((item) => this.isActiveUpdateAll(item, compRoot, compClick))
   }
 
@@ -237,7 +296,10 @@ export interface Comp {
   isSwitchResetBreakpoint?: boolean
 
   /** If true, isSwitch is set to undefined if any other switch is clicked. */
-  isSwitchResetSwitch?: boolean
+  isSwitchReset?: boolean
+
+  /** If true, user can not click this component. */
+  isSwitchDisable?: boolean
 
   switchGroup?: string
 
@@ -246,15 +308,27 @@ export interface Comp {
 
   activePath?: string
 
-  activePathGroup?: string
+  activeGroup?: string
 
   isActive?: boolean
 
-  /** If true, user can not click and activate component. */
+  /** If true, user can not click and activate this component. */
   isActiveDisable?: boolean
 
   /** If true, comp is an ancestor of activePath. */
   isActiveAncestor?: boolean
+
+  /** If true, comp is a descendent of activePath */
+  isActiveDescendent?: boolean
+
+  /** If true, switch is clicked when hover. */
+  isActiveSwitchHover?: boolean
+
+  /** If true, switch is clicked when hover. */
+  isActiveSwitchHoverSmall?: boolean
+
+  /** If true, switch is clicked when hover. */
+  isActiveSwitchHoverMedium?: boolean
 
   activeCssClass?: string
 
@@ -280,10 +354,12 @@ export interface Comp {
 
   hoverActiveAncestorCssStyle?: string
 
-  // Root
-
   rootRequestCount?: number
 
   /** Breakpoint (null, Medium, Small). Root comp only. */
   rootBreakpoint?: string
+
+  debugIsDisableHover?: boolean
+
+  debug?: string
 }

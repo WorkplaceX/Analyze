@@ -40,11 +40,11 @@
     font-size: 40px; 
     background: rgb(147, 192, 255);
 }
+/* // TODO
 
 .dropdown-hover > .dropdown {
     display: none; // Hide drop down
 }
-
 .dropdown-hover:hover > .dropdown {
     display: block; // Show drop down
 }
@@ -52,7 +52,7 @@
 .dropdown-hover:hover > .dropdown:active {
     display: none; // Hide after click. Use mousedown event. Event click is too slow!
 }
-
+*/
 .active {
     background: darkslateblue;
 }
