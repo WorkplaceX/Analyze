@@ -1,3 +1,4 @@
+<!-- <div style="font-size: 14px; background-color: rgba(255, 255, 255, 0.5);">{{compDebug()}}</div> -->
 <ng-container [ngSwitch]="comp.type">
   <ng-container *ngSwitchCase="null">
     <div app-div *ngFor="let item of comp.list" [comp]="item" [ngClass]="item.calculatedCssClass" [style]="item.calculatedCssStyle"></div>

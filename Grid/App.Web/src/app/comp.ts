@@ -3,7 +3,7 @@ import { Comp } from "./data.service";
 export class Data {
   public static comp: Comp = {
     rootRequestCount: 0,
-    debugIsDisableHover: true,
+    rootIsDisableHoverSwitch: false,
     list: [
       {
         type: "nav",
@@ -13,16 +13,17 @@ export class Data {
             list: [
               {
                 cssClass: "flex-item",
-                name: "Logo",
+                name: "logo",
                 text: "Logo",
                 type: "html",
                 switchGroup: "main"
               },
               {
-                name: "Dropdown",
+                name: "dropdownMain",
                 switchGroup: "nav",
                 isSwitchReset: true,
                 isSwitchDisable: true,
+                isSwitchResetBreakpoint: true,
                 cssClass: "flex",
                 cssClassSmall: "hide",
                 cssStyle: "flex: 1;", // stretch
@@ -49,15 +50,17 @@ export class Data {
                         isActiveDisable: true,
                         isActiveSwitchHover: true,
                         isActiveSwitchHoverMedium: true,
-                        switchNames: ["productDropdown"],
+                        isSwitchResetHover: true,
+                        isSwitchResetHoverMedium: true,
+                        switchNames: ["dropdownProduct"],
                         switchGroup: "nav",
                         href: "/product",
                         type: "anchor",
                       },
                       {
-                        name: "productDropdown",
+                        name: "dropdownProduct",
                         switchGroup: "nav",
-                        isSwitchReset: true,
+                        isSwitchResetHover: true,
                         isSwitchResetBreakpoint: true,
                         cssClassSmall: "flex-item hide",
                         cssClass: "flex-item dropdown hide",
@@ -89,7 +92,7 @@ export class Data {
                     activePath: "about/",
                     activeGroup: "nav",
                     href: "/about",
-                    type: "anchor"
+                    type: "anchor",
                   },
                   {
                     cssClass: "flex-item",
@@ -115,8 +118,7 @@ export class Data {
                 type: "html",
                 switchGroup: "nav",
                 isSwitchResetBreakpoint: true,
-                isSwitchReset: true,
-                switchNames: ["Logo", "Dropdown"]
+                switchNames: ["logo", "dropdownMain"]
               },
             ]
           },
@@ -186,7 +188,6 @@ export class Data {
             type: "html",
             text: "Item1",
             cssClass: "grid-item",
-            hoverCssClass: "hover",
             activePath: "a/",
             activeGroup: "content",
             activeCssClass: "active"
@@ -194,14 +195,12 @@ export class Data {
             type: "html",
             text: "Item2",
             cssClass: "grid-item",
-            hoverCssClass: "hover",
             activePath: "b/",
             activeGroup: "content",
           }, {
             type: "html",
             text: "Item3",
             cssClass: "grid-item",
-            hoverCssClass: "hover",
             activePath: "c/",
             activeGroup: "content",
           }, {

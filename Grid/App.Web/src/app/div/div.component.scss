@@ -40,19 +40,17 @@
     font-size: 40px; 
     background: rgb(147, 192, 255);
 }
-/* // TODO
 
-.dropdown-hover > .dropdown {
-    display: none; // Hide drop down
-}
-.dropdown-hover:hover > .dropdown {
-    display: block; // Show drop down
+// Switch component
+.switch-default {
+    background: rgba(0, 64, 0, 0.5);
 }
 
-.dropdown-hover:hover > .dropdown:active {
-    display: none; // Hide after click. Use mousedown event. Event click is too slow!
+// Switch component with isSwitch
+.switch {
+    background: rgba(32, 128, 32, 1);
 }
-*/
+
 .active {
     background: darkslateblue;
 }
@@ -61,16 +59,18 @@
     background: slateblue;
 }
 
-.switch {
-    background: green;
-}
-
 .hover {
     background: rgba(255, 166, 0, 0.75)
 }
 
+// Hover switch component
+.hover-switch-default {
+    background: rgba(0, 128, 0, 1);
+}
+
+// Hover switch component with isSwitch
 .hover-switch {
-    background: rgba(0, 128, 0, 0.5);
+    background: rgba(64, 192, 64, 1);
 }
 
 .hover-active {

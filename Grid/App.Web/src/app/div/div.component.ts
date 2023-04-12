@@ -14,12 +14,15 @@ export class DivComponent {
   @Input()
   comp!: Comp
 
-  @HostListener('click', ['$event']) // See also dropdown:active to hide after click. Use mousedown event. Event click is too slow!
+  compDebug() {
+    return (this.comp.isSwitch ? "S " : "") + (this.comp.isActive ? "A " : "") + (this.comp.isActiveAncestor ? "P " : "") + (this.comp.isActiveDescendent ? "D " : "") + (this.comp.isHover ? "H" : "")
+  }
+
+  @HostListener('click', ['$event'])
   click(event: any) {
     event.stopPropagation()
     event.stopImmediatePropagation()
-    DataService.clickIsSwitch(this.comp, this.dataService.compRoot)
-    DataService.clickIsActive(this.comp, this.dataService.compRoot)
+    DataService.click(this.comp, this.dataService.compRoot)
   }
 
   @HostListener('mouseenter')

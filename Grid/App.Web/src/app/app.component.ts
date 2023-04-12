@@ -8,10 +8,10 @@ import { DataService, Comp } from './data.service';
 })
 export class AppComponent {
   constructor(private dataService: DataService) {
-    this.comp = dataService.compRoot
+    this.compRoot = dataService.compRoot
   }
 
-  comp: Comp
+  compRoot: Comp
 
   ngOnInit() {
     DataService.resize(window.innerWidth, this.dataService.compRoot)
