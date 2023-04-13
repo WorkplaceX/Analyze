@@ -28,7 +28,7 @@ export class Data {
                 cssClassSmall: "hide",
                 cssStyle: "flex: 1;", // stretch
                 cssStyleSmall: "flex-direction: column; width: 100%;", // flex vertical; dropdown stretch;
-                switchCssClass: "flex dropdown block",
+                switchOnCssClass: "flex dropdown block",
                 list: [
                   {
                     cssClass: "flex-item",
@@ -64,7 +64,7 @@ export class Data {
                         isSwitchResetBreakpoint: true,
                         cssClassSmall: "flex-item hide",
                         cssClass: "flex-item dropdown hide",
-                        switchCssClass: "block",
+                        switchOnCssClass: "block",
                         list: [
                           {
                             cssClass: "flex-item",
@@ -125,7 +125,7 @@ export class Data {
         ]
       },
       {
-        activeCssClass: "grid",
+        activeOnCssClass: "grid",
         activeAncestorCssClass: "grid",
         cssClass: "hide",
         cssStyle: "grid-template-columns: 1fr 2fr",
@@ -148,7 +148,7 @@ export class Data {
         ]
       },
       {
-        activeCssClass: "grid",
+        activeOnCssClass: "grid",
         activeAncestorCssClass: "grid",
         cssClass: "hide",
         cssStyle: "grid-template-columns: 1fr 2fr",
@@ -172,7 +172,7 @@ export class Data {
       },
       {
         cssClass: "hide",
-        activeCssClass: "block",
+        activeOnCssClass: "block",
         text: "<h1>About</h1><p>About this site</p>",
         type: "html",
         activePath: "about/",
@@ -188,19 +188,21 @@ export class Data {
             type: "html",
             text: "Item1",
             cssClass: "grid-item",
+            activeCssClass: "",
             activePath: "a/",
             activeGroup: "content",
-            activeCssClass: "active"
           }, {
             type: "html",
             text: "Item2",
             cssClass: "grid-item",
+            activeCssClass: "",
             activePath: "b/",
             activeGroup: "content",
           }, {
             type: "html",
             text: "Item3",
             cssClass: "grid-item",
+            activeCssClass: "",
             activePath: "c/",
             activeGroup: "content",
           }, {
@@ -212,21 +214,17 @@ export class Data {
                 text: "ItemA",
                 cssClass: "grid-item",
                 type: "html",
-                hoverCssClass: "hover",
                 isSwitchReset: true,
                 switchGroup: "x"
               }, {
                 text: "ItemB",
                 cssClass: "grid-item",
                 type: "html",
-                switchCssClass: "switch",
-                hoverCssClass: "hover",
                 switchGroup: "x"
               }, {
                 text: "ItemC",
                 href: "/abc/",
                 cssClass: "grid-item",
-                hoverCssClass: "hover",
                 type: "anchor",
                 switchGroup: "x"
               }

@@ -14,18 +14,19 @@ export class DataService {
 
   static transform(comp: Comp, compRoot: Comp) {
     if (!comp.list) {
-      if (comp.activeGroup) {
-        comp.hoverCssClass ??= "hover"
-        comp.activeCssClass ??= "active"
-        comp.activeAncestorCssClass ??= "active-ancestor"
-        comp.hoverActiveCssClass ??= "hover-active"
-        comp.hoverActiveAncestorCssClass ??= "hover-active-ancestor"
-      }
       if (comp.switchGroup) {
         comp.switchCssClass ??= "switch"
-        comp.switchDefaultCssClass ??= "switch-default"
-        comp.hoverSwitchCssClass ??= "hover-switch"
-        comp.hoverSwitchDefaultCssClass ??= "hover-switch-default"
+        comp.switchHoverCssClass ??= "switch-hover"
+        comp.switchOnCssClass ??= "switch-on"
+        comp.switchOnHoverCssClass ??= "switch-on-hover"
+      }
+      if (comp.activeGroup) {
+        comp.activeCssClass ??= "active"
+        comp.activeHoverCssClass ??= "active-hover"
+        comp.activeOnCssClass ??= "active-on"
+        comp.activeOnHoverCssClass ??= "active-on-hover"
+        comp.activeAncestorCssClass ??= "active-ancestor"
+        comp.activeAncestorHoverCssClass ??= "active-ancestor-hover"
       }
     }
     comp.list?.forEach((item) => this.transform(item, compRoot))
@@ -124,13 +125,14 @@ export class DataService {
 
     // Active
     if (comp.activeGroup) {
-      this.cssUpdateAppend(comp, comp.isActive, comp.activeCssClass, comp.activeCssStyle)
+      this.cssUpdateAppend(comp, true, comp.activeCssClass, comp.activeCssStyle)
+      this.cssUpdateAppend(comp, comp.isActive, comp.activeOnCssClass, comp.activeOnCssStyle)
       this.cssUpdateAppend(comp, comp.isActiveAncestor, comp.activeAncestorCssClass, comp.activeAncestorCssStyle)
     } else {
       // Switch
       if (comp.switchGroup) {
-        this.cssUpdateAppend(comp, true, comp.switchDefaultCssClass, comp.switchDefaultCssStyle)
-        this.cssUpdateAppend(comp, comp.isSwitch, comp.switchCssClass, comp.switchCssStyle)
+        this.cssUpdateAppend(comp, true, comp.switchCssClass, comp.switchCssStyle)
+        this.cssUpdateAppend(comp, comp.isSwitch, comp.switchOnCssClass, comp.switchOnCssStyle)
       }
     }
 
@@ -139,13 +141,14 @@ export class DataService {
       this.cssUpdateAppend(comp, true, comp.hoverCssClass, comp.hoverCssStyle)
       // Active
       if (comp.activeGroup) {
-        this.cssUpdateAppend(comp, comp.isActive, comp.hoverActiveCssClass, comp.hoverActiveCssStyle)
-        this.cssUpdateAppend(comp, comp.isActiveAncestor, comp.hoverActiveAncestorCssClass, comp.hoverActiveCssStyle)
+        this.cssUpdateAppend(comp, true, comp.activeHoverCssClass, comp.activeHoverCssStyle)
+        this.cssUpdateAppend(comp, comp.isActive, comp.activeOnHoverCssClass, comp.activeOnHoverCssStyle)
+        this.cssUpdateAppend(comp, comp.isActiveAncestor, comp.activeAncestorHoverCssClass, comp.activeOnHoverCssStyle)
       } else {
         // Switch
         if (comp.switchGroup) {
-          this.cssUpdateAppend(comp, true, comp.hoverSwitchDefaultCssClass, comp.hoverSwitchDefaultCssStyle)
-          this.cssUpdateAppend(comp, comp.isSwitch, comp.hoverSwitchCssClass, comp.hoverSwitchCssStyle)
+          this.cssUpdateAppend(comp, true, comp.switchHoverCssClass, comp.switchHoverCssStyle)
+          this.cssUpdateAppend(comp, comp.isSwitch, comp.switchOnHoverCssClass, comp.switchOnHoverCssStyle)
         }
       }
     }
@@ -275,10 +278,10 @@ export interface Comp {
   cssClassSmall?: string
 
   /** Append if switchGroup */
-  switchDefaultCssClass?: string
+  switchCssClass?: string
 
   /** Append if isSwitch */
-  switchCssClass?: string
+  switchOnCssClass?: string
 
   /** Calculated */
   calculatedCssClass?: string
@@ -293,10 +296,10 @@ export interface Comp {
   cssStyleSmall?: string
 
   /** Append if switchGroup */
-  switchDefaultCssStyle?: string
+  switchCssStyle?: string
 
   /** Append if isSwitch */
-  switchCssStyle?: string
+  switchOnCssStyle?: string
 
   /** Calculated */
   calculatedCssStyle?: string
@@ -356,6 +359,10 @@ export interface Comp {
 
   activeCssStyle?: string
 
+  activeOnCssClass?: string
+
+  activeOnCssStyle?: string
+
   activeAncestorCssClass?: string
 
   activeAncestorCssStyle?: string
@@ -364,21 +371,25 @@ export interface Comp {
 
   hoverCssStyle?: string
 
-  hoverSwitchCssClass?: string
+  switchOnHoverCssClass?: string
 
-  hoverSwitchCssStyle?: string
+  switchOnHoverCssStyle?: string
 
-  hoverSwitchDefaultCssClass?: string
+  switchHoverCssClass?: string
 
-  hoverSwitchDefaultCssStyle?: string
+  switchHoverCssStyle?: string
 
-  hoverActiveCssClass?: string
+  activeHoverCssClass?: string
 
-  hoverActiveCssStyle?: string
+  activeHoverCssStyle?: string
 
-  hoverActiveAncestorCssClass?: string
+  activeOnHoverCssClass?: string
 
-  hoverActiveAncestorCssStyle?: string
+  activeOnHoverCssStyle?: string
+
+  activeAncestorHoverCssClass?: string
+
+  activeAncestorHoverCssStyle?: string
 
   rootRequestCount?: number
 
