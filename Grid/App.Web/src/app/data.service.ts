@@ -63,11 +63,11 @@ export class DataService {
 
   static mouseenter(comp: Comp, compRoot: Comp) {
     // Hover
-    if (!compRoot.rootIsDisableHover) {
+    if (compRoot.rootIsEnableHover) {
       comp.isHover = true
     }
     // HoverSwitch
-    if (!compRoot.rootIsDisableHoverSwitch) {
+    if (compRoot.rootIsEnableHoverSwitch) {
       let isActiveSwitchHover = (compRoot.rootBreakpoint == null && comp.isActiveSwitchHover) || (compRoot.rootBreakpoint == "medium" && comp.isActiveSwitchHoverMedium) || (compRoot.rootBreakpoint == "small" && comp.isActiveSwitchHoverSmall)
       if (comp.activeGroup && isActiveSwitchHover && comp.isActiveDisable) {
         if (!comp.isSwitch) {
@@ -84,7 +84,7 @@ export class DataService {
 
   static mouseleave(comp: Comp, compRoot: Comp) {
     // Hover
-    if (!compRoot.rootIsDisableHover) {
+    if (compRoot.rootIsEnableHover) {
       comp.isHover = undefined
       DataService.cssUpdate(comp, compRoot)
     }
@@ -396,9 +396,9 @@ export interface Comp {
   /** Breakpoint (null, Medium, Small). Root comp only. */
   rootBreakpoint?: string
 
-  rootIsDisableHover?: boolean
+  rootIsEnableHover?: boolean
 
-  rootIsDisableHoverSwitch?: boolean
+  rootIsEnableHoverSwitch?: boolean
 
   debug?: string
 }

@@ -3,7 +3,8 @@ import { Comp } from "./data.service";
 export class Data {
   public static comp: Comp = {
     rootRequestCount: 0,
-    rootIsDisableHoverSwitch: false,
+    rootIsEnableHover: true,
+    rootIsEnableHoverSwitch: true,
     list: [
       {
         type: "nav",
