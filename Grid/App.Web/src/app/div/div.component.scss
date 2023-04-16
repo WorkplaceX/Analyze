@@ -9,7 +9,7 @@
 .flex {
     display: flex;
     background: #2196F3;
-    position: relative; // See also .dropdown position: absolute; top: 100%;
+    //position: relative; // See also .dropdown position: absolute; top: 100%;
 }
 
 .flex-item {
@@ -33,11 +33,14 @@
     text-align: center;
 }
 
+.dropdown-host {
+    position: relative;
+}
+
 .dropdown {
     position: absolute; 
-    top: 100%; // See also .flex position: relative
-    z-index: 1;
-    font-size: 40px; 
+    top: 100%; // See also .dropdown-host position: relative
+    left: 0;
     background: rgb(147, 192, 255);
 }
 

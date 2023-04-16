@@ -10,7 +10,7 @@ export class Data {
         type: "nav",
         list: [
           {
-            cssClass: "flex",
+            cssClass: "flex dropdown-host",
             list: [
               {
                 cssClass: "flex-item",
@@ -27,7 +27,7 @@ export class Data {
                 isSwitchResetBreakpoint: true,
                 cssClass: "flex",
                 cssClassSmall: "hide",
-                cssStyle: "flex: 1;", // stretch
+                cssStyle: "flex: 1", // stretch
                 cssStyleSmall: "flex-direction: column; width: 100%;", // flex vertical; dropdown stretch;
                 switchOnCssClass: "flex dropdown block",
                 list: [
@@ -40,15 +40,15 @@ export class Data {
                     type: "anchor"
                   },
                   {
-                    cssClass: "flex-item",
+                    cssClass: "flex-item dropdown-host",
                     list: [
                       {
-                        debug: "my",
                         cssClass: "flex-item",
                         text: "Product",
                         activePath: "product/",
                         activeGroup: "nav",
                         isActiveDisable: true,
+                        isSwitchReset: true,
                         isActiveSwitchHover: true,
                         isActiveSwitchHoverMedium: true,
                         isSwitchResetHover: true,
@@ -61,11 +61,15 @@ export class Data {
                       {
                         name: "dropdownProduct",
                         switchGroup: "nav",
+                        isSwitchReset: true,
                         isSwitchResetHover: true,
+                        isSwitchResetHoverMedium: true,
                         isSwitchResetBreakpoint: true,
                         cssClassSmall: "flex-item hide",
                         cssClass: "flex-item dropdown hide",
                         switchOnCssClass: "block",
+                        activePath: "product/",
+                        activeGroup: "nav",
                         list: [
                           {
                             cssClass: "flex-item",
@@ -82,6 +86,50 @@ export class Data {
                             type: "anchor",
                             activePath: "product/contact/",
                             activeGroup: "nav",
+                          },
+                          {
+                            cssClass: "flex-item",
+                            text: "Service",
+                            activePath: "product/service/",
+                            isActiveDisable: true,
+                            isActiveSwitchHover: true,
+                            isActiveSwitchHoverMedium: true,
+                            isSwitchResetHover: true,
+                            isSwitchResetHoverMedium: true,
+                            switchNames: ["dropdownService"],
+                            switchGroup: "nav",
+                            type: "html",
+                            activeGroup: "nav",
+                          },
+                          {
+                            name: "dropdownService",
+                            switchGroup: "nav",
+                            activeGroup: "nav",
+                            activePath: "product/service/",
+                            isSwitchReset: true,
+                            isSwitchResetHover: true,
+                            isSwitchResetBreakpoint: true,
+                            cssClassSmall: "flex-item hide",
+                            cssClass: "flex-item dropdown hide",
+                            switchOnCssClass: "block",
+                            list:[
+                              {
+                                cssClass: "flex-item",
+                                text: "Teach",
+                                href: "/teach",
+                                type: "anchor",
+                                activePath: "product/service/teach/",
+                                activeGroup: "nav",
+                              },
+                              {
+                                cssClass: "flex-item",
+                                text: "Clean",
+                                href: "/clean",
+                                type: "anchor",
+                                activePath: "product/service/clean/",
+                                activeGroup: "nav",
+                              },
+                            ]
                           }
                         ]
                       }
@@ -251,7 +299,7 @@ export class Data {
                   },
                   {
                     cssClass: "grid-item",
-                    text: "WorkplaceX is an initiative to simplify and standardize the development of business applications. It is based on ASP.NET Core, Angular, Bootstrap, Bulma and SQL Server.",
+                    text: "Is an initiative to simplify and standardize the development of business applications. It is based on ASP.NET Core, Angular and PostgreSQL.",
                     type: "html"
                   },
                 ]
@@ -273,7 +321,7 @@ export class Data {
               },
               {
                 cssClass: "grid-item",
-                text: "Copyright © 2022 All Rights Reserved by WorkplaceX.org",
+                text: "Copyright © 2023 All Rights Reserved by",
                 type: "html"
               },
               {
