@@ -89,7 +89,7 @@ export class Data {
                           },
                           {
                             cssClass: "flex-item",
-                            text: "Service",
+                            text: "Service >",
                             activePath: "product/service/",
                             isActiveDisable: true,
                             isActiveSwitchHover: true,
@@ -102,35 +102,95 @@ export class Data {
                             activeGroup: "nav",
                           },
                           {
-                            name: "dropdownService",
-                            switchGroup: "nav",
+                            cssClass: "flex-item dropdown-host",
                             activeGroup: "nav",
                             activePath: "product/service/",
-                            isSwitchReset: true,
-                            isSwitchResetHover: true,
-                            isSwitchResetBreakpoint: true,
-                            cssClassSmall: "flex-item hide",
-                            cssClass: "flex-item dropdown hide",
-                            switchOnCssClass: "block",
-                            list:[
+                            list: [
                               {
-                                cssClass: "flex-item",
-                                text: "Teach",
-                                href: "/teach",
-                                type: "anchor",
-                                activePath: "product/service/teach/",
+                                name: "dropdownService",
+                                switchGroup: "nav",
                                 activeGroup: "nav",
-                              },
-                              {
-                                cssClass: "flex-item",
-                                text: "Clean",
-                                href: "/clean",
-                                type: "anchor",
-                                activePath: "product/service/clean/",
-                                activeGroup: "nav",
+                                activePath: "product/service/",
+                                isSwitchReset: true,
+                                isSwitchResetHover: true,
+                                isSwitchResetBreakpoint: true,
+                                cssClassSmall: "flex-item hide",
+                                cssClass: "flex-item dropdown hide",
+                                cssStyle: "left: 100%; top: -80px",
+                                switchOnCssClass: "block",
+                                list: [
+                                  {
+                                    cssClass: "flex-item",
+                                    text: "Teach",
+                                    href: "/teach",
+                                    type: "anchor",
+                                    activePath: "product/service/teach/",
+                                    activeGroup: "nav",
+                                  },
+                                  {
+                                    cssClass: "flex-item",
+                                    text: "Clean",
+                                    href: "/clean",
+                                    type: "anchor",
+                                    activePath: "product/service/clean/",
+                                    activeGroup: "nav",
+                                  },
+                                ]
                               },
                             ]
-                          }
+                          },
+                          {
+                            cssClass: "flex-item",
+                            text: "Setting >",
+                            activePath: "product/setting/",
+                            isActiveDisable: true,
+                            isActiveSwitchHover: true,
+                            isActiveSwitchHoverMedium: true,
+                            isSwitchResetHover: true,
+                            isSwitchResetHoverMedium: true,
+                            switchNames: ["dropdownSetting"],
+                            switchGroup: "nav",
+                            type: "html",
+                            activeGroup: "nav",
+                          },
+                          {
+                            cssClass: "flex-item dropdown-host",
+                            activeGroup: "nav",
+                            activePath: "product/setting/",
+                            list: [
+                              {
+                                name: "dropdownSetting",
+                                switchGroup: "nav",
+                                activeGroup: "nav",
+                                activePath: "product/setting/",
+                                isSwitchReset: true,
+                                isSwitchResetHover: true,
+                                isSwitchResetBreakpoint: true,
+                                cssClassSmall: "flex-item hide",
+                                cssClass: "flex-item dropdown hide",
+                                cssStyle: "left: 100%; top: -80px",
+                                switchOnCssClass: "block",
+                                list: [
+                                  {
+                                    cssClass: "flex-item",
+                                    text: "Database",
+                                    href: "/database",
+                                    type: "anchor",
+                                    activePath: "product/setting/database/",
+                                    activeGroup: "nav",
+                                  },
+                                  {
+                                    cssClass: "flex-item",
+                                    text: "User",
+                                    href: "/user",
+                                    type: "anchor",
+                                    activePath: "product/setting/user/",
+                                    activeGroup: "nav",
+                                  },
+                                ]
+                              },
+                            ]
+                          },
                         ]
                       }
                     ]

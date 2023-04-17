@@ -75,10 +75,9 @@ export class DataService {
         if (!comp.isSwitch) {
           this.clickIsSwitch(comp, compRoot)
         }
-      } else {
-        if (!comp.isActiveDescendent) {
-          this.isSwitchResetHoverAll(compRoot, compRoot, comp)
-        }
+      }
+      if (!comp.isActiveDescendent) {
+        this.isSwitchResetHoverAll(compRoot, compRoot, comp)
       }
     }
     this.cssUpdateAll(compRoot, compRoot)
@@ -206,7 +205,7 @@ export class DataService {
     if (isSwitchResetHover && comp != compClick) {
       let isAncestor = compClick && comp.activeGroup == compClick.activeGroup && compClick.activePath?.startsWith(comp.activePath!)
       if (!isAncestor) {
-      this.isSwitchReset(comp)
+        this.isSwitchReset(comp)
       }
     }
     comp.list?.forEach((item) => this.isSwitchResetHoverAll(item, compRoot, compClick))

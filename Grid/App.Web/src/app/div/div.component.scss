@@ -9,7 +9,6 @@
 .flex {
     display: flex;
     background: #2196F3;
-    //position: relative; // See also .dropdown position: absolute; top: 100%;
 }
 
 .flex-item {
@@ -17,6 +16,7 @@
     padding: 20px;
     font-size: 30px;
     text-align: center;
+    white-space: nowrap;
 }
 
 .grid {
