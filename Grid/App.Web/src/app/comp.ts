@@ -183,7 +183,7 @@ export class Data {
                                     cssClass: "flex-item",
                                     text: "User",
                                     href: "/user",
-                                    type: "anchor",
+                                    type: "html",
                                     activePath: "product/setting/user/",
                                     activeGroup: "nav",
                                   },
@@ -280,11 +280,41 @@ export class Data {
         ]
       },
       {
+        cssClass: "hide overlay",
+        activeOnCssClass: "block",
+        activePath: "c/",
+        activeGroup: "content",
+        list: [
+          {
+            activeGroup: "content",
+            cssStyle: "height: 100%",
+            list: [
+              {
+                cssClass: "overlay-content",
+                cssStyle: "display: flex; flex-direction: column",
+                list: [
+                  {
+                    text: "<h1>About</h1><p>About this site</p>",
+                    type: "html",
+                  },
+                  {
+                    text: "<h1>Close</h1>",
+                    cssStyle: "background: green",
+                    type: "html",
+                    activeGroup: "content",
+                  }
+                ]
+              },
+            ]
+          }
+        ]
+      },
+      {
         cssClass: "hide",
         activeOnCssClass: "block",
-        text: "<h1>About</h1><p>About this site</p>",
+        text: "<h1>User Settings</h1><p>My User Settings</p>",
         type: "html",
-        activePath: "about/",
+        activePath: "product/setting/user/",
         activeGroup: "nav",
       },
       {
